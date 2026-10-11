@@ -149,8 +149,6 @@ export function toMarkdown(input: {
   author: string;
   published: string;
   originalUrl: string;
-  method: string;
-  methodUrl: string;
   text: string;
   images: ArticleImage[];
   partial: boolean;
@@ -162,7 +160,6 @@ export function toMarkdown(input: {
     `**Author:** ${input.author || "Unknown"}`,
     `**Published:** ${input.published || "Unknown"}`,
     `**Original URL:** ${input.originalUrl}`,
-    `**Method that succeeded:** ${input.method} — ${input.methodUrl}`,
     input.partial ? "**Note:** Text looks short or incomplete." : "",
     "",
     input.text,

@@ -145,6 +145,35 @@ describe("fetch retries", () => {
   });
 });
 
+describe("article output", () => {
+  it("returns only article fields in JSON and Markdown after a fallback succeeds", async () => {
+    const url = "https://example.com/output-story";
+    globalThis.fetch = async (input) => {
+      if (String(input) === url) throw new Error("request failed");
+      return articleResponse();
+    };
+    const result = await readArticle(url, ACCESS_HASH);
+    assert.deepEqual(Object.keys(JSON.parse(JSON.stringify(result))).sort(), [
+      "author", "images", "markdown", "originalUrl", "partial", "published", "text", "title",
+    ]);
+    assert.match(result.markdown, /Example article/);
+    assert.ok(result.markdown.includes(url));
+    assert.doesNotMatch(JSON.stringify(result), /method|freedium|bypass|Tried:/i);
+  });
+
+  it("does not expose internal request details in failure messages", async () => {
+    process.env.FETCH_RETRY_LIMIT = "0";
+    globalThis.fetch = async (input) => {
+      throw new Error(`fetch failed: ${String(input)}`);
+    };
+    await assert.rejects(readArticle("https://example.com/unavailable-story", ACCESS_HASH), (error: unknown) => {
+      assert.ok(error instanceof Error);
+      assert.equal(error.message, "Could not extract an article. Please try again later.");
+      return true;
+    });
+  });
+});
+
 describe("readArticle URL query handling", () => {
   it("recovers from a failed fetch before moving to another extraction method", async () => {
     const requested: string[] = [];
@@ -187,7 +216,7 @@ describe("readArticle URL query handling", () => {
 
     assert.equal(requested[0], "https://example.com/retry-story");
     assert.ok(requested.indexOf(originalUrl) > 0);
-    assert.equal(result.methodUrl, originalUrl);
+    assert.ok(requested.includes(originalUrl));
     assert.equal(result.originalUrl, originalUrl);
   });
 

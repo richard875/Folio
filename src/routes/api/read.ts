@@ -17,7 +17,8 @@ async function handle(request: Request): Promise<Response> {
     });
   } catch (error) {
     const status = statusOf(error);
-    const message = error instanceof Error ? error.message : "Failed";
+    const message = status === 500 ? "Unable to read the article. Please try again later."
+      : error instanceof Error ? error.message : "Failed";
     if (format === "json" || (request.headers.get("accept") || "").includes("application/json")) {
       return Response.json({ error: message }, { status });
     }

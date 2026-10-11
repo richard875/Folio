@@ -2,7 +2,7 @@ import { hashMatches } from "./auth.ts";
 import { isSubstantial, looksLikeShell, parseArticleHtml, toMarkdown } from "./extract.ts";
 import { fetchHtml } from "./fetch.ts";
 import { assertPublicHttpUrl, probeList } from "./targets.ts";
-import type { ArticleResult, Attempt } from "./types.ts";
+import type { ArticleResult } from "./types.ts";
 
 const CACHE = new Map<string, { at: number; result: ArticleResult }>();
 const CACHE_MS = 30 * 60 * 1000;
@@ -36,7 +36,6 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
   if (cached && Date.now() - cached.at < CACHE_MS) return cached.result;
 
   const started = Date.now();
-  const attempts: Attempt[] = [];
   let best: ArticleResult | null = null;
 
   const withoutSearch = new URL(original);
@@ -50,7 +49,6 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
 
     for (const probe of probeList(sourceUrl)) {
       if (Date.now() - passStarted > passBudget || Date.now() - started > BUDGET_MS) {
-        attempts.push({ method: probe.method, url: probe.url, ok: false, note: "time budget" });
         break;
       }
       try {
@@ -62,7 +60,6 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
         );
         const parsed = parseArticleHtml(html, probe.url);
         if (!parsed || looksLikeShell(parsed.title, parsed.text)) {
-          attempts.push({ method: probe.method, url: probe.url, ok: false, note: parsed ? "service shell" : "no article text" });
           continue;
         }
         const partial = !isSubstantial(parsed.text);
@@ -71,25 +68,16 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
           author: parsed.author,
           published: parsed.published,
           originalUrl: original,
-          method: probe.method,
-          methodUrl: probe.url,
           text: parsed.text,
           images: parsed.images,
           partial,
           markdown: "",
         };
         draft.markdown = toMarkdown(draft);
-        attempts.push({
-          method: probe.method,
-          url: probe.url,
-          ok: !partial,
-          note: partial ? `${parsed.text.length} chars, short` : `${parsed.text.length} chars`,
-        });
         if (!best || parsed.text.length > best.text.length) best = draft;
         if (!partial) break;
-      } catch (error) {
-        const note = error instanceof Error ? error.message : "failed";
-        attempts.push({ method: probe.method, url: probe.url, ok: false, note });
+      } catch {
+        // Continue without exposing internal request details to the caller.
       }
     }
 
@@ -99,9 +87,7 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
   }
 
   if (!best) {
-    const err = new Error(
-      `Could not extract an article. Tried: ${attempts.map((a) => `${a.method} (${a.note})`).join("; ")}`,
-    );
+    const err = new Error("Could not extract an article. Please try again later.");
     (err as Error & { status: number }).status = 422;
     throw err;
   }

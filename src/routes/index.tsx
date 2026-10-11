@@ -101,10 +101,9 @@ function Home() {
 
       {article ? (
         <article className="rounded-xl border border-line bg-paper px-5 py-6 sm:px-8">
-          <p className="text-xs tracking-wide text-muted uppercase">
-            {article.method}
-            {article.partial ? " · partial" : ""}
-          </p>
+          {article.partial ? (
+            <p className="text-xs tracking-wide text-muted uppercase">Partial article</p>
+          ) : null}
           <h2 className="mt-2 font-serif text-3xl leading-tight text-ink">{article.title || "Untitled"}</h2>
           <p className="mt-2 text-sm text-muted">
             {article.author || "Unknown author"}
