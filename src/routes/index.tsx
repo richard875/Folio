@@ -51,7 +51,7 @@ function Home() {
             Folio
           </h1>
         </div>
-        <ApiDocumentation />
+        <ApiDocumentation accessHash={hash} />
       </header>
 
       <form

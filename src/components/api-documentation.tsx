@@ -1,7 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { BookOpen, X } from "lucide-react";
 
-export function ApiDocumentation() {
+export function ApiDocumentation({ accessHash = "" }: { accessHash?: string }) {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -36,6 +36,27 @@ export function ApiDocumentation() {
               </Dialog.Close>
             </div>
             <div className="space-y-6 text-sm leading-relaxed text-muted">
+              <section className="space-y-2">
+                <h3 className="text-base font-semibold text-ink">Swagger UI</h3>
+                <p>
+                  Interactive documentation is available at{" "}
+                  <code className="break-all text-ink">/api/docs?hash=YOUR_ACCESS_HASH</code>. The
+                  OpenAPI specification is at <code className="text-ink">/api/openapi</code> and
+                  also requires your hash. “Try it out” can create files or start jobs.
+                </p>
+                {accessHash ? (
+                  <a
+                    href={`/api/docs?hash=${encodeURIComponent(accessHash)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center rounded-lg border border-line bg-bg px-3 font-medium text-ink hover:bg-paper"
+                  >
+                    Open Swagger UI
+                  </a>
+                ) : (
+                  <p>Enter your access key on the reader page to enable the Swagger link.</p>
+                )}
+              </section>
               <section className="space-y-2">
                 <h3 className="text-base font-semibold text-ink">Read an article</h3>
                 <p>

@@ -17,7 +17,7 @@
     "preview:stop": "node scripts/preview.mjs stop",
     "typecheck": "tsc --noEmit",
     "check:auth": "node scripts/check-auth-invariant.mjs",
-    "test": "node --experimental-strip-types --test 'scripts/**/*.test.mjs' && node --experimental-strip-types --test src/lib/app-data/app-data.test.ts src/lib/app-data/readiness-schedule.test.ts src/lib/auth/gate-identity.test.ts src/lib/auth/sign-in-gate.test.ts src/lib/preview-path-prefix.test.ts src/lib/reader/read.test.ts src/lib/reader/save.test.ts src/lib/batch/jobs.test.ts src/lib/rss/google-news.test.ts src/lib/agent/articles.test.ts",
+    "test": "node --experimental-strip-types --test 'scripts/**/*.test.mjs' && node --experimental-strip-types --test src/lib/app-data/app-data.test.ts src/lib/app-data/readiness-schedule.test.ts src/lib/auth/gate-identity.test.ts src/lib/auth/sign-in-gate.test.ts src/lib/preview-path-prefix.test.ts src/lib/reader/read.test.ts src/lib/reader/save.test.ts src/lib/batch/jobs.test.ts src/lib/rss/google-news.test.ts src/lib/agent/articles.test.ts src/lib/swagger/docs.test.ts",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
@@ -73,6 +73,7 @@
     "recharts": "^2.13.0",
     "rss-parser": "^3.13.0",
     "sonner": "^2.0.7",
+    "swagger-ui-dist": "^5.33.1",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.3.0",
     "tw-animate-css": "^1.3.4",

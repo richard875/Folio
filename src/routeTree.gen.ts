@@ -11,12 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiCollectRouteImport } from './routes/api/collect'
+import { Route as ApiDocsRouteImport } from './routes/api/docs'
 import { Route as ApiLinksRouteImport } from './routes/api/links'
+import { Route as ApiOpenapiRouteImport } from './routes/api/openapi'
 import { Route as ApiReadRouteImport } from './routes/api/read'
 import { Route as ApiSaveRouteImport } from './routes/api/save'
 import { Route as ApiAgentLatestRouteImport } from './routes/api/agent/latest'
 import { Route as ApiAgentReadRouteImport } from './routes/api/agent/read'
 import { Route as ApiCollectStatusRouteImport } from './routes/api/collect/status'
+import { Route as ApiDocsAssetsRouteImport } from './routes/api/docs/assets'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,9 +31,19 @@ const ApiCollectRoute = ApiCollectRouteImport.update({
   path: '/api/collect',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiDocsRoute = ApiDocsRouteImport.update({
+  id: '/api/docs',
+  path: '/api/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiLinksRoute = ApiLinksRouteImport.update({
   id: '/api/links',
   path: '/api/links',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOpenapiRoute = ApiOpenapiRouteImport.update({
+  id: '/api/openapi',
+  path: '/api/openapi',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiReadRoute = ApiReadRouteImport.update({
@@ -58,75 +71,100 @@ const ApiCollectStatusRoute = ApiCollectStatusRouteImport.update({
   path: '/status',
   getParentRoute: () => ApiCollectRoute,
 } as any)
+const ApiDocsAssetsRoute = ApiDocsAssetsRouteImport.update({
+  id: '/assets',
+  path: '/assets',
+  getParentRoute: () => ApiDocsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/collect': typeof ApiCollectRouteWithChildren
+  '/api/docs': typeof ApiDocsRouteWithChildren
   '/api/links': typeof ApiLinksRoute
+  '/api/openapi': typeof ApiOpenapiRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
   '/api/agent/latest': typeof ApiAgentLatestRoute
   '/api/agent/read': typeof ApiAgentReadRoute
   '/api/collect/status': typeof ApiCollectStatusRoute
+  '/api/docs/assets': typeof ApiDocsAssetsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/collect': typeof ApiCollectRouteWithChildren
+  '/api/docs': typeof ApiDocsRouteWithChildren
   '/api/links': typeof ApiLinksRoute
+  '/api/openapi': typeof ApiOpenapiRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
   '/api/agent/latest': typeof ApiAgentLatestRoute
   '/api/agent/read': typeof ApiAgentReadRoute
   '/api/collect/status': typeof ApiCollectStatusRoute
+  '/api/docs/assets': typeof ApiDocsAssetsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/collect': typeof ApiCollectRouteWithChildren
+  '/api/docs': typeof ApiDocsRouteWithChildren
   '/api/links': typeof ApiLinksRoute
+  '/api/openapi': typeof ApiOpenapiRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
   '/api/agent/latest': typeof ApiAgentLatestRoute
   '/api/agent/read': typeof ApiAgentReadRoute
   '/api/collect/status': typeof ApiCollectStatusRoute
+  '/api/docs/assets': typeof ApiDocsAssetsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/api/collect'
+    | '/api/docs'
     | '/api/links'
+    | '/api/openapi'
     | '/api/read'
     | '/api/save'
     | '/api/agent/latest'
     | '/api/agent/read'
     | '/api/collect/status'
+    | '/api/docs/assets'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/api/collect'
+    | '/api/docs'
     | '/api/links'
+    | '/api/openapi'
     | '/api/read'
     | '/api/save'
     | '/api/agent/latest'
     | '/api/agent/read'
     | '/api/collect/status'
+    | '/api/docs/assets'
   id:
     | '__root__'
     | '/'
     | '/api/collect'
+    | '/api/docs'
     | '/api/links'
+    | '/api/openapi'
     | '/api/read'
     | '/api/save'
     | '/api/agent/latest'
     | '/api/agent/read'
     | '/api/collect/status'
+    | '/api/docs/assets'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiCollectRoute: typeof ApiCollectRouteWithChildren
+  ApiDocsRoute: typeof ApiDocsRouteWithChildren
   ApiLinksRoute: typeof ApiLinksRoute
+  ApiOpenapiRoute: typeof ApiOpenapiRoute
   ApiReadRoute: typeof ApiReadRoute
   ApiSaveRoute: typeof ApiSaveRoute
   ApiAgentLatestRoute: typeof ApiAgentLatestRoute
@@ -149,11 +187,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCollectRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/docs': {
+      id: '/api/docs'
+      path: '/api/docs'
+      fullPath: '/api/docs'
+      preLoaderRoute: typeof ApiDocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/links': {
       id: '/api/links'
       path: '/api/links'
       fullPath: '/api/links'
       preLoaderRoute: typeof ApiLinksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/openapi': {
+      id: '/api/openapi'
+      path: '/api/openapi'
+      fullPath: '/api/openapi'
+      preLoaderRoute: typeof ApiOpenapiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/read': {
@@ -191,6 +243,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCollectStatusRouteImport
       parentRoute: typeof ApiCollectRoute
     }
+    '/api/docs/assets': {
+      id: '/api/docs/assets'
+      path: '/assets'
+      fullPath: '/api/docs/assets'
+      preLoaderRoute: typeof ApiDocsAssetsRouteImport
+      parentRoute: typeof ApiDocsRoute
+    }
   }
 }
 
@@ -206,10 +265,23 @@ const ApiCollectRouteWithChildren = ApiCollectRoute._addFileChildren(
   ApiCollectRouteChildren,
 )
 
+interface ApiDocsRouteChildren {
+  ApiDocsAssetsRoute: typeof ApiDocsAssetsRoute
+}
+
+const ApiDocsRouteChildren: ApiDocsRouteChildren = {
+  ApiDocsAssetsRoute: ApiDocsAssetsRoute,
+}
+
+const ApiDocsRouteWithChildren =
+  ApiDocsRoute._addFileChildren(ApiDocsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiCollectRoute: ApiCollectRouteWithChildren,
+  ApiDocsRoute: ApiDocsRouteWithChildren,
   ApiLinksRoute: ApiLinksRoute,
+  ApiOpenapiRoute: ApiOpenapiRoute,
   ApiReadRoute: ApiReadRoute,
   ApiSaveRoute: ApiSaveRoute,
   ApiAgentLatestRoute: ApiAgentLatestRoute,
