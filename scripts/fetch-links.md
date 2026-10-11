@@ -49,4 +49,6 @@ Write/configuration failures return HTTP 500, and invalid keys return HTTP 401.
 Only current feed entries are collected, not historical article archives.
 Duplicates are removed within a section. Google News entries keep the article
 URLs published in those feeds. Article bodies are not fetched by `/api/links`.
+The background `/api/collect` workflow resolves Google News article links to
+publisher URLs before saving; `/api/links` itself still returns the feed links.
 The npm `fetch:links` command and its CLI options have been removed.

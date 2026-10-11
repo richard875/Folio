@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
+import { isGoogleNewsArticle, resolveGoogleNewsUrl } from "../rss/google-news.ts";
 
 export type ArticleTask = { website: string; section: string; url: string };
 export type JobStatus = "in progress" | "completed" | "error";
@@ -85,6 +86,7 @@ export class JobManager {
   private readonly jobs = new Map<string, Job>();
   private running: string | null = null;
   private writes: Promise<unknown> = Promise.resolve();
+  private readonly googleUrls = new Map<string, Promise<string>>();
 
   constructor(options: ManagerOptions = {}) {
     this.root = resolve(options.root ?? process.cwd());
@@ -150,6 +152,7 @@ export class JobManager {
       this.jobs.set(callId, job);
     } catch (error) {
       this.running = null;
+      this.googleUrls.clear();
       throw error;
     }
     // Scheduling the work after returning prevents RSS or article requests from
@@ -245,14 +248,31 @@ export class JobManager {
       }
       this.running = null;
       // Bound memory retention; older statuses remain available on disk.
+      this.googleUrls.clear();
       if (this.jobs.size > 100) this.jobs.delete(this.jobs.keys().next().value!);
     }
   }
 
   private async saveTask(callId: string, task: ArticleTask, hash: string, format: string) {
+    let articleUrl = task.url;
+    if (isGoogleNewsArticle(task.url)) {
+      let resolved = this.googleUrls.get(task.url);
+      if (!resolved) {
+        resolved = resolveGoogleNewsUrl(task.url, this.fetchImpl);
+        this.googleUrls.set(task.url, resolved);
+      }
+      try {
+        articleUrl = await resolved;
+      } catch {
+        return {
+          status: "error" as const,
+          error: "Unable to resolve this article's publisher URL.",
+        };
+      }
+    }
     try {
       const query = new URLSearchParams({
-        url: task.url,
+        url: articleUrl,
         hash,
         website: task.website,
         section: task.section,
@@ -275,7 +295,12 @@ export class JobManager {
         const savedFile = response.headers.get("x-saved-file");
         await response.body?.cancel();
         if (response.ok && savedFile)
-          return { status: "saved" as const, savedFile, partial: response.status === 206 };
+          return {
+            status: "saved" as const,
+            url: articleUrl,
+            savedFile,
+            partial: response.status === 206,
+          };
         return { status: "error" as const, error: "Unable to save this article." };
       }
     } catch {

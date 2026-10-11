@@ -17,6 +17,14 @@ Article output paths remain unchanged. Add `format=json` to the start request
 to save articles as JSON rather than the default Markdown. The start and status
 responses are always JSON, regardless of article file format.
 
+Before calling `/api/save`, Google News article links are resolved to their
+publisher URLs (for example, the original Reuters URL). Direct publisher links
+are unchanged and cause no additional requests. Resolution shares the batch's
+save concurrency and has a 20-second timeout. If a destination cannot be found,
+that article is marked as failed and the other articles continue; the Google
+wrapper is never passed to the save endpoint. Successful progress records show
+the publisher URL. The website, section and call ID are preserved.
+
 Set concurrency in the root `.env` or server environment and restart:
 
 ```env

@@ -11,6 +11,55 @@ import { saveArticle } from "../reader/save.ts";
 
 const CALL_ID = "01234567-89ab-4cde-8012-3456789abcde";
 
+test("resolves only Google News wrappers before save and never saves an unresolved wrapper", async (t) => {
+  const root = await mkdtemp(join(tmpdir(), "folio-batch-google-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const linksFile = "output/links/links_2026-10-11_12-34-56.md";
+  await mkdir(join(root, "output/links"), { recursive: true });
+  await writeFile(
+    join(root, linksFile),
+    "# Reuters\n## Main feed\n- <https://news.google.com/rss/articles/CBMiWorking>\n- <https://news.google.com/rss/articles/CBMiBroken>\n# NY Times\n## Main feed\n- <https://www.nytimes.com/story>\n",
+  );
+  const saves: URL[] = [];
+  const manager = new JobManager({
+    root,
+    fetchImpl: async (input) => {
+      const url = new URL(String(input));
+      if (url.hostname === "news.google.com") {
+        assert.equal(url.searchParams.has("hash"), false);
+        if (url.pathname.endsWith("CBMiWorking"))
+          return new Response(null, {
+            status: 302,
+            headers: { location: "https://www.reuters.com/world/real-article/" },
+          });
+        return new Response("No destination", { status: 503 });
+      }
+      if (url.pathname === "/api/links") return Response.json({ savedFile: linksFile });
+      assert.equal(url.pathname, "/api/save");
+      saves.push(url);
+      return new Response("article", { headers: { "x-saved-file": "output/articles/example.md" } });
+    },
+  });
+  const job = await manager.start("test-key");
+  assert.ok(job);
+  const result = await finished(manager, job.callId);
+  assert.equal(result.status, "error");
+  assert.equal(result.saved, 2);
+  assert.equal(result.failed, 1);
+  assert.deepEqual(saves.map((url) => url.searchParams.get("url")).sort(), [
+    "https://www.nytimes.com/story",
+    "https://www.reuters.com/world/real-article/",
+  ]);
+  const reuters = saves.find((url) => url.searchParams.get("website") === "Reuters")!;
+  assert.equal(reuters.searchParams.get("section"), "Main feed");
+  assert.equal(reuters.searchParams.get("callId"), job.callId);
+  assert.equal(reuters.searchParams.get("hash"), "test-key");
+  assert.equal(
+    result.results.find((entry) => entry.website === "Reuters" && entry.status === "saved")?.url,
+    "https://www.reuters.com/world/real-article/",
+  );
+});
+
 async function finished(manager: JobManager, callId: string): Promise<Job> {
   for (let attempt = 0; attempt < 400; attempt++) {
     const job = await manager.get(callId);
