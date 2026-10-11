@@ -91,6 +91,28 @@ function Home() {
           <code className="text-ink">format=json</code> for JSON, or omit it for Markdown. A short result comes back as
           HTTP 206.
         </p>
+        <div className="space-y-2 text-sm leading-relaxed text-muted">
+          <p>
+            Save API: <code className="text-ink">GET /api/save?url=…&hash=…</code>. Returns the article
+            and saves it as Markdown. Add <code className="text-ink">format=json</code> to save and
+            return JSON. A short result comes back as HTTP 206.
+          </p>
+          <p>
+            Files are saved to{" "}
+            <code className="break-all text-ink">
+              output/articles/YYYY-MM-DD_HH/website_section_first_5_title_words_HH-mm-ss.md
+            </code>
+            {" "}(or <code className="text-ink">.json</code>). Timestamps use UTC and the 24-hour
+            clock. Folders are created automatically; existing files are never overwritten.
+          </p>
+          <p>
+            Website and section names are inferred from the article URL. Add{" "}
+            <code className="text-ink">section=Markets</code> or{" "}
+            <code className="text-ink">website=Reuters</code> to override them. The{" "}
+            <code className="text-ink">X-Saved-File</code> response header provides the saved path.
+            Saving requires a writable server filesystem.
+          </p>
+        </div>
       </form>
 
       {error ? (

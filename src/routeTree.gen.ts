@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiReadRouteImport } from './routes/api/read'
+import { Route as ApiSaveRouteImport } from './routes/api/save'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const ApiReadRoute = ApiReadRouteImport.update({
   path: '/api/read',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSaveRoute = ApiSaveRouteImport.update({
+  id: '/api/save',
+  path: '/api/save',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/read': typeof ApiReadRoute
+  '/api/save': typeof ApiSaveRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/read': typeof ApiReadRoute
+  '/api/save': typeof ApiSaveRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/read': typeof ApiReadRoute
+  '/api/save': typeof ApiSaveRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/read'
+  fullPaths: '/' | '/api/read' | '/api/save'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/read'
-  id: '__root__' | '/' | '/api/read'
+  to: '/' | '/api/read' | '/api/save'
+  id: '__root__' | '/' | '/api/read' | '/api/save'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiReadRoute: typeof ApiReadRoute
+  ApiSaveRoute: typeof ApiSaveRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiReadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/save': {
+      id: '/api/save'
+      path: '/api/save'
+      fullPath: '/api/save'
+      preLoaderRoute: typeof ApiSaveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiReadRoute: ApiReadRoute,
+  ApiSaveRoute: ApiSaveRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
