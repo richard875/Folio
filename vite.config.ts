@@ -146,7 +146,12 @@ function authPopupPlugin(): Plugin {
 // The dev server starts once `src/router.tsx` and `src/routes/` exist — see
 // AGENTS.md § "First scaffold".
 export default defineConfig(({ command, isPreview, mode }) => {
-  const serverEnvKeys = ["ACCESS_HASH", "FETCH_RETRY_LIMIT", "RSS_LINKS_PER_SECTION"];
+  const serverEnvKeys = [
+    "ACCESS_HASH",
+    "FETCH_RETRY_LIMIT",
+    "RSS_LINKS_PER_SECTION",
+    "SAVE_CONCURRENCY",
+  ];
   const env = loadEnv(mode, process.cwd(), serverEnvKeys);
   for (const key of serverEnvKeys) {
     if (process.env[key] === undefined && env[key] !== undefined) {

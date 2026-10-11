@@ -10,13 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiCollectRouteImport } from './routes/api/collect'
 import { Route as ApiLinksRouteImport } from './routes/api/links'
 import { Route as ApiReadRouteImport } from './routes/api/read'
 import { Route as ApiSaveRouteImport } from './routes/api/save'
+import { Route as ApiCollectStatusRouteImport } from './routes/api/collect/status'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCollectRoute = ApiCollectRouteImport.update({
+  id: '/api/collect',
+  path: '/api/collect',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiLinksRoute = ApiLinksRouteImport.update({
@@ -34,36 +41,67 @@ const ApiSaveRoute = ApiSaveRouteImport.update({
   path: '/api/save',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCollectStatusRoute = ApiCollectStatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => ApiCollectRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/collect': typeof ApiCollectRouteWithChildren
   '/api/links': typeof ApiLinksRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
+  '/api/collect/status': typeof ApiCollectStatusRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/collect': typeof ApiCollectRouteWithChildren
   '/api/links': typeof ApiLinksRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
+  '/api/collect/status': typeof ApiCollectStatusRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/collect': typeof ApiCollectRouteWithChildren
   '/api/links': typeof ApiLinksRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
+  '/api/collect/status': typeof ApiCollectStatusRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/links' | '/api/read' | '/api/save'
+  fullPaths:
+    | '/'
+    | '/api/collect'
+    | '/api/links'
+    | '/api/read'
+    | '/api/save'
+    | '/api/collect/status'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/links' | '/api/read' | '/api/save'
-  id: '__root__' | '/' | '/api/links' | '/api/read' | '/api/save'
+  to:
+    | '/'
+    | '/api/collect'
+    | '/api/links'
+    | '/api/read'
+    | '/api/save'
+    | '/api/collect/status'
+  id:
+    | '__root__'
+    | '/'
+    | '/api/collect'
+    | '/api/links'
+    | '/api/read'
+    | '/api/save'
+    | '/api/collect/status'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiCollectRoute: typeof ApiCollectRouteWithChildren
   ApiLinksRoute: typeof ApiLinksRoute
   ApiReadRoute: typeof ApiReadRoute
   ApiSaveRoute: typeof ApiSaveRoute
@@ -76,6 +114,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/collect': {
+      id: '/api/collect'
+      path: '/api/collect'
+      fullPath: '/api/collect'
+      preLoaderRoute: typeof ApiCollectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/links': {
@@ -99,11 +144,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSaveRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/collect/status': {
+      id: '/api/collect/status'
+      path: '/status'
+      fullPath: '/api/collect/status'
+      preLoaderRoute: typeof ApiCollectStatusRouteImport
+      parentRoute: typeof ApiCollectRoute
+    }
   }
 }
 
+interface ApiCollectRouteChildren {
+  ApiCollectStatusRoute: typeof ApiCollectStatusRoute
+}
+
+const ApiCollectRouteChildren: ApiCollectRouteChildren = {
+  ApiCollectStatusRoute: ApiCollectStatusRoute,
+}
+
+const ApiCollectRouteWithChildren = ApiCollectRoute._addFileChildren(
+  ApiCollectRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiCollectRoute: ApiCollectRouteWithChildren,
   ApiLinksRoute: ApiLinksRoute,
   ApiReadRoute: ApiReadRoute,
   ApiSaveRoute: ApiSaveRoute,

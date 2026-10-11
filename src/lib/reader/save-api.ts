@@ -1,5 +1,6 @@
 import { readArticle, statusOf } from "./read.ts";
 import { saveArticle } from "./save.ts";
+import { validCallId } from "../batch/jobs.ts";
 
 /** Dependencies are injectable so auth, write failures and responses are testable. */
 export async function handleSaveRequest(
@@ -8,14 +9,25 @@ export async function handleSaveRequest(
 ): Promise<Response> {
   const url = new URL(request.url);
   const format = (url.searchParams.get("format") || "markdown").toLowerCase();
+  const callId = url.searchParams.get("callId");
   try {
     const article = await read(url.searchParams.get("url") || "", url.searchParams.get("hash"));
+    if (callId && !validCallId(callId)) {
+      return Response.json(
+        { error: "Invalid callId." },
+        { status: 400, headers: { "cache-control": "no-store" } },
+      );
+    }
     const savedFile = await save(article, {
       format,
       website: url.searchParams.get("website"),
       section: url.searchParams.get("section"),
     });
-    const headers = { "cache-control": "no-store", "x-saved-file": savedFile };
+    const headers: Record<string, string> = {
+      "cache-control": "no-store",
+      "x-saved-file": savedFile,
+    };
+    if (callId) headers["x-call-id"] = callId;
     const status = article.partial ? 206 : 200;
     if (format === "json") return Response.json(article, { status, headers });
     return new Response(article.markdown, {
@@ -30,7 +42,8 @@ export async function handleSaveRequest(
         : error instanceof Error
           ? error.message
           : "Failed";
-    const headers = { "cache-control": "no-store" };
+    const headers: Record<string, string> = { "cache-control": "no-store" };
+    if (status === 429) headers["retry-after"] = "60";
     if (format === "json" || (request.headers.get("accept") || "").includes("application/json")) {
       return Response.json({ error: message }, { status, headers });
     }

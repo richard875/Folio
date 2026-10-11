@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { BookOpen, KeyRound, Link2, Loader2 } from "lucide-react";
+import { KeyRound, Link2, Loader2 } from "lucide-react";
+import { ApiDocumentation } from "@/components/api-documentation";
 import type { ArticleResult } from "@/lib/reader/types";
 
 export const Route = createFileRoute("/")({ component: Home });
@@ -50,7 +51,7 @@ function Home() {
             Folio
           </h1>
         </div>
-        <BookOpen className="size-8 text-accent" aria-hidden="true" />
+        <ApiDocumentation />
       </header>
 
       <form
@@ -93,43 +94,6 @@ function Home() {
           {busy ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : null}
           {busy ? "Reading" : "Read article"}
         </button>
-        <p className="text-sm leading-relaxed text-muted">
-          API: <code className="text-ink">GET /api/read?url=…&hash=…</code>. Add{" "}
-          <code className="text-ink">format=json</code> for JSON, or omit it for Markdown. A short
-          result comes back as HTTP 206.
-        </p>
-        <div className="space-y-2 text-sm leading-relaxed text-muted">
-          <p>
-            Save API: <code className="text-ink">GET /api/save?url=…&hash=…</code>. Returns the
-            article and saves it as Markdown. Add <code className="text-ink">format=json</code> to
-            save and return JSON. A short result comes back as HTTP 206.
-          </p>
-          <p>
-            Files are saved to{" "}
-            <code className="break-all text-ink">
-              output/articles/YYYY-MM-DD_HH/website_section_first_5_title_words_HH-mm-ss.md
-            </code>{" "}
-            (or <code className="text-ink">.json</code>). Timestamps use UTC and the 24-hour clock.
-            Folders are created automatically; existing files are never overwritten.
-          </p>
-          <p>
-            Website and section names are inferred from the article URL. Add{" "}
-            <code className="text-ink">section=Markets</code> or{" "}
-            <code className="text-ink">website=Reuters</code> to override them. The{" "}
-            <code className="text-ink">X-Saved-File</code> response header provides the saved path.
-            Saving requires a writable server filesystem.
-          </p>
-        </div>
-        <p className="text-sm leading-relaxed text-muted">
-          Links API: <code className="text-ink">GET /api/links?hash=…</code>. Collects RSS article
-          links and saves a timestamped Markdown file in{" "}
-          <code className="text-ink">output/links</code>. Add{" "}
-          <code className="text-ink">format=json</code> for grouped links and a saved-file summary.
-          The default is 5 links per subsection; change{" "}
-          <code className="text-ink">RSS_LINKS_PER_SECTION</code> in your server environment.
-          Collection runs on demand and may take several minutes. Only one collection runs at a
-          time.
-        </p>
       </form>
 
       {error ? (

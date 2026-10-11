@@ -27,6 +27,8 @@ node_modules/
 !/output/articles/.gitkeep
 /output/links/*
 !/output/links/.gitkeep
+/output/jobs/*
+!/output/jobs/.gitkeep
 
 # Logs and OS files
 *.log
