@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiLinksRouteImport } from './routes/api/links'
 import { Route as ApiReadRouteImport } from './routes/api/read'
 import { Route as ApiSaveRouteImport } from './routes/api/save'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLinksRoute = ApiLinksRouteImport.update({
+  id: '/api/links',
+  path: '/api/links',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiReadRoute = ApiReadRouteImport.update({
@@ -31,30 +37,34 @@ const ApiSaveRoute = ApiSaveRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/links': typeof ApiLinksRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/links': typeof ApiLinksRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/links': typeof ApiLinksRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/read' | '/api/save'
+  fullPaths: '/' | '/api/links' | '/api/read' | '/api/save'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/read' | '/api/save'
-  id: '__root__' | '/' | '/api/read' | '/api/save'
+  to: '/' | '/api/links' | '/api/read' | '/api/save'
+  id: '__root__' | '/' | '/api/links' | '/api/read' | '/api/save'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiLinksRoute: typeof ApiLinksRoute
   ApiReadRoute: typeof ApiReadRoute
   ApiSaveRoute: typeof ApiSaveRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/links': {
+      id: '/api/links'
+      path: '/api/links'
+      fullPath: '/api/links'
+      preLoaderRoute: typeof ApiLinksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/read': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiLinksRoute: ApiLinksRoute,
   ApiReadRoute: ApiReadRoute,
   ApiSaveRoute: ApiSaveRoute,
 }

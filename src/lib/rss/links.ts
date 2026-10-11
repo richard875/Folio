@@ -1,31 +1,45 @@
-#!/usr/bin/env node
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { loadEnvFile } from "node:process";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { basename, resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import Parser from "rss-parser";
-import { parseFeedCatalog } from "./rss-feed-catalog.mjs";
-import { isMainModule } from "./with-app-env.mjs";
+import { parseFeedCatalog, type Feed } from "./catalog.ts";
 
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const parser = new Parser();
 const USER_AGENT = "Mozilla/5.0 (compatible; FolioRSS/1.0)";
 
-export function configuredRetryLimit(value) {
+export type FeedResult = Feed & { urls: string[]; ok: boolean };
+export type FetchOptions = {
+  fetchImpl?: typeof fetch;
+  retryLimit?: number;
+  timeoutMs?: number;
+  limit?: number;
+  concurrency?: number;
+  onProgress?: (result: FeedResult, index: number) => void;
+};
+export type SaveLinksOptions = {
+  now?: () => Date;
+  wait?: (milliseconds: number) => Promise<unknown>;
+  limit?: number;
+};
+
+export function configuredRetryLimit(value: string | undefined): number {
   if (!value?.trim() || !/^\d+$/.test(value.trim())) return 5;
   const number = Number(value);
   return Number.isSafeInteger(number) ? number : 5;
 }
 
-export function configuredLinkLimit(value) {
+export function configuredLinkLimit(value: string | undefined): number {
   const number = configuredRetryLimit(value);
   return number > 0 ? number : 5;
 }
 
-export async function parseArticleLinks(xml, feedUrl, limit = 5) {
+export async function parseArticleLinks(
+  xml: string,
+  feedUrl: string,
+  limit = 5,
+): Promise<string[]> {
   const feed = await parser.parseString(xml);
-  const urls = new Set();
+  const urls = new Set<string>();
   for (const item of feed.items || []) {
     // GUIDs are identifiers, not necessarily article URLs.
     if (!item.link?.trim()) continue;
@@ -43,10 +57,10 @@ export async function parseArticleLinks(xml, feedUrl, limit = 5) {
 }
 
 export async function fetchFeed(
-  feed,
-  { fetchImpl = fetch, retryLimit = 5, timeoutMs = 15000, limit = 5 } = {},
-) {
-  for (let attempt = 0; attempt <= retryLimit; attempt++) {
+  feed: Feed,
+  { fetchImpl = fetch, retryLimit = 5, timeoutMs = 15000, limit = 5 }: FetchOptions = {},
+): Promise<FeedResult> {
+  for (let attempt = 0; ; attempt++) {
     try {
       const response = await fetchImpl(feed.url, {
         signal: AbortSignal.timeout(timeoutMs),
@@ -71,8 +85,11 @@ export async function fetchFeed(
   }
 }
 
-export async function collectFeeds(feeds, options = {}) {
-  const results = new Array(feeds.length);
+export async function collectFeeds(
+  feeds: Feed[],
+  options: FetchOptions = {},
+): Promise<FeedResult[]> {
+  const results = new Array<FeedResult>(feeds.length);
   let next = 0;
   const concurrency = options.concurrency ?? 6;
   await Promise.all(
@@ -85,7 +102,7 @@ export async function collectFeeds(feeds, options = {}) {
     }),
   );
   // Enforce the cap across feeds sharing a subsection, not just per feed.
-  const sections = new Map();
+  const sections = new Map<string, Set<string>>();
   return results.map((result) => {
     const key = JSON.stringify([result.site, result.section]);
     const seen = sections.get(key) || new Set();
@@ -99,11 +116,15 @@ export async function collectFeeds(feeds, options = {}) {
   });
 }
 
-function heading(text) {
+function heading(text: string): string {
   return text.replace(/[\r\n]/g, " ").replace(/[\\`*_[\]<>#]/g, "\\$&");
 }
 
-export function renderLinksMarkdown(results, generatedAt = new Date(), limit = 5) {
+export function renderLinksMarkdown(
+  results: FeedResult[],
+  generatedAt = new Date(),
+  limit = 5,
+): string {
   const lines = [`Generated: ${generatedAt.toISOString()} (UTC)`, ""];
   for (const site of new Set(results.map((result) => result.site))) {
     lines.push(`# ${heading(site)}`, "");
@@ -123,15 +144,15 @@ export function renderLinksMarkdown(results, generatedAt = new Date(), limit = 5
   return `${lines.join("\n").trimEnd()}\n`;
 }
 
-export function linksFilename(date) {
+export function linksFilename(date: Date): string {
   return `links_${date.toISOString().slice(0, 19).replace("T", "_").replace(/:/g, "-")}.md`;
 }
 
 export async function saveLinks(
-  results,
-  outputDir,
-  { now = () => new Date(), wait = sleep, limit = 5 } = {},
-) {
+  results: FeedResult[],
+  outputDir: string,
+  { now = () => new Date(), wait = sleep, limit = 5 }: SaveLinksOptions = {},
+): Promise<string> {
   await mkdir(outputDir, { recursive: true });
   for (;;) {
     const generatedAt = now();
@@ -140,86 +161,46 @@ export async function saveLinks(
       await writeFile(path, renderLinksMarkdown(results, generatedAt, limit), { flag: "wx" });
       return path;
     } catch (error) {
-      if (error.code !== "EEXIST") throw error;
+      if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
       // Two runs in the same second must not overwrite each other's output.
       await wait(1000);
     }
   }
 }
 
-function parseArgs(args) {
-  const options = {
-    input: resolve(ROOT, "attachments/News site RSS feeds by section.md"),
-    outputDir: resolve(ROOT, "output/links"),
-  };
-  for (let index = 0; index < args.length; index++) {
-    const arg = args[index];
-    if (arg === "--help") return { help: true };
-    if (
-      !["--input", "--output-dir", "--retry-limit", "--timeout-ms", "--limit"].includes(arg) ||
-      !args[index + 1]
-    )
-      throw new Error(`Invalid option: ${arg}`);
-    const value = args[++index];
-    if (arg === "--input") options.input = resolve(value);
-    if (arg === "--output-dir") options.outputDir = resolve(value);
-    if (arg === "--retry-limit" || arg === "--timeout-ms" || arg === "--limit") {
-      const number = Number(value);
-      if (
-        !/^\d+$/.test(value) ||
-        !Number.isSafeInteger(number) ||
-        (arg === "--limit" && number < 1) ||
-        (arg === "--timeout-ms" && (number < 1 || number > 2147483647))
-      )
-        throw new Error(`Invalid value for ${arg}`);
-      options[arg === "--retry-limit" ? "retryLimit" : arg === "--limit" ? "limit" : "timeoutMs"] =
-        number;
-    }
-  }
-  return options;
-}
-
-async function main() {
-  const options = parseArgs(process.argv.slice(2));
-  if (options.help) {
-    console.log(
-      "Usage: npm run fetch:links -- [--input file.md] [--output-dir directory] [--limit 5] [--retry-limit 5] [--timeout-ms 15000]",
-    );
-    return;
-  }
-  try {
-    loadEnvFile(resolve(ROOT, ".env"));
-  } catch (error) {
-    if (error.code !== "ENOENT") throw error;
-  }
-  options.retryLimit ??= configuredRetryLimit(process.env.FETCH_RETRY_LIMIT);
-  options.limit ??= configuredLinkLimit(process.env.RSS_LINKS_PER_SECTION);
-  const feeds = parseFeedCatalog(await readFile(options.input, "utf8"));
+export async function generateLinks(
+  research: string,
+  options: FetchOptions & { outputDir?: string } = {},
+) {
+  const limit = options.limit ?? configuredLinkLimit(process.env.RSS_LINKS_PER_SECTION);
+  const retryLimit = options.retryLimit ?? configuredRetryLimit(process.env.FETCH_RETRY_LIMIT);
+  const feeds = parseFeedCatalog(research);
   if (!feeds.length) throw new Error("No feed URLs found in the research file.");
-  console.log(
-    `Fetching ${feeds.length} feeds across ${new Set(feeds.map((feed) => feed.site)).size} websites…`,
-  );
-  let completed = 0;
-  const results = await collectFeeds(feeds, {
-    ...options,
-    onProgress: (result) => {
-      console.log(
-        `[${++completed}/${feeds.length}] ${result.site} / ${result.section}: ${result.ok ? `${result.urls.length} links` : "unavailable"}`,
-      );
-    },
-  });
-  const path = await saveLinks(results, options.outputDir, { limit: options.limit });
+  const results = await collectFeeds(feeds, { ...options, limit, retryLimit });
+  const outputDir = options.outputDir ?? resolve(process.cwd(), "output/links");
+  const path = await saveLinks(results, outputDir, { limit });
+  const markdown = await readFile(path, "utf8");
   const failures = results.filter((result) => !result.ok).length;
-  console.log(
-    `Saved ${results.reduce((count, result) => count + result.urls.length, 0)} section links to ${path}`,
-  );
-  if (failures)
-    console.warn(`${failures} feeds were unavailable; the other results have been saved.`);
-  if (failures === results.length) process.exitCode = 1;
+  return {
+    savedFile: `output/links/${basename(path)}`,
+    limit,
+    feedCount: feeds.length,
+    failedFeedCount: failures,
+    linkCount: results.reduce((count, result) => count + result.urls.length, 0),
+    markdown,
+    websites: [...new Set(results.map((result) => result.site))].map((name) => {
+      const siteResults = results.filter((result) => result.site === name);
+      return {
+        name,
+        sections: [...new Set(siteResults.map((result) => result.section))].map((section) => {
+          const group = siteResults.filter((result) => result.section === section);
+          return {
+            name: section,
+            links: group.flatMap((result) => result.urls),
+            available: group.every((result) => result.ok),
+          };
+        }),
+      };
+    }),
+  };
 }
-
-if (isMainModule(import.meta.url))
-  main().catch((error) => {
-    console.error(`Could not generate article links: ${error.message}`);
-    process.exitCode = 1;
-  });

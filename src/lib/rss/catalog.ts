@@ -1,9 +1,11 @@
 /** Read the feed tables, not the summary table or source/reference links. */
-export function parseFeedCatalog(markdown) {
-  const feeds = [];
+export type Feed = { site: string; section: string; url: string };
+
+export function parseFeedCatalog(markdown: string): Feed[] {
+  const feeds: Feed[] = [];
   const seen = new Set();
   let site = "";
-  const add = (section, url) => {
+  const add = (section: string, url: string) => {
     if (!/^https?:\/\//.test(url) || /[<>]|\.\.\./.test(url)) return;
     const normalized = new URL(url).href;
     const key = `${site}\n${normalized}`;
@@ -52,7 +54,7 @@ export function parseFeedCatalog(markdown) {
 
   // Concrete shorthand URLs in the research; generic templates and dead feeds
   // are intentionally excluded. Each subsection gets its own output heading.
-  const extras = {
+  const extras: Record<string, string[][]> = {
     "NY Times": [
       ...["nfl", "nba", "football"].map((league) => [
         `Sports › ${league.toUpperCase()}`,

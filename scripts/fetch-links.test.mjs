@@ -1,25 +1,23 @@
 import assert from "node:assert/strict";
-import { execFile } from "node:child_process";
-import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { fileURLToPath } from "node:url";
-import { promisify } from "node:util";
 import {
   collectFeeds,
   configuredLinkLimit,
   configuredRetryLimit,
   fetchFeed,
+  generateLinks,
   linksFilename,
   parseArticleLinks,
   renderLinksMarkdown,
   saveLinks,
-} from "./fetch-links.mjs";
-import { parseFeedCatalog } from "./rss-feed-catalog.mjs";
+} from "../src/lib/rss/links.ts";
+import { parseFeedCatalog } from "../src/lib/rss/catalog.ts";
+import { createLinksHandler } from "../src/lib/rss/api.ts";
 
-const execFileAsync = promisify(execFile);
 const feed = { site: "Example News", section: "World", url: "https://example.com/rss" };
 const rss = `<?xml version="1.0"?><rss version="2.0"><channel><title>News</title><link>https://example.com</link><description>News</description>
 <item><title>First</title><link>https://example.com/story?a=1&amp;b=2</link></item>
@@ -225,7 +223,7 @@ test("timestamped output never overwrites an existing run", async (t) => {
   assert.equal((await readdir(dir)).length, 2);
 });
 
-test("CLI fetches feeds and generates a file; timeouts and all-failed runs exit cleanly", async (t) => {
+test("collection generates a saved report, keeps successful feeds and honors environment limits", async (t) => {
   const dir = await mkdtemp(join(tmpdir(), "folio-links-cli-"));
   const server = createServer((request, response) => {
     if (request.url === "/slow") return;
@@ -239,50 +237,107 @@ test("CLI fetches feeds and generates a file; timeouts and all-failed runs exit 
     await rm(dir, { recursive: true, force: true });
   });
   const origin = `http://127.0.0.1:${server.address().port}`;
-  const input = join(dir, "feeds.md");
   const output = join(dir, "links");
-  await writeFile(
-    input,
-    `## Local News\n| Section | Feed |\n| --- | --- |\n| World | \`${origin}/rss\` |\n| Tech | \`${origin}/slow\` |\n`,
-  );
-  const script = fileURLToPath(new URL("./fetch-links.mjs", import.meta.url));
-  const args = [
-    script,
-    "--input",
-    input,
-    "--output-dir",
-    output,
-    "--retry-limit",
-    "0",
-    "--timeout-ms",
-    "100",
-  ];
-  const result = await execFileAsync(process.execPath, args);
-  assert.match(result.stdout, /Saved 2 section links/);
-  assert.match(result.stderr, /1 feeds were unavailable/);
+  const research = `## Local News\n| Section | Feed |\n| --- | --- |\n| World | \`${origin}/rss\` |\n| Tech | \`${origin}/slow\` |\n`;
+  const options = { outputDir: output, retryLimit: 0, timeoutMs: 100, limit: 5 };
+  const result = await generateLinks(research, options);
+  assert.equal(result.linkCount, 2);
+  assert.equal(result.failedFeedCount, 1);
   const files = await readdir(output);
   assert.equal(files.length, 1);
   assert.match(files[0], /^links_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.md$/);
   assert.match(await readFile(join(output, files[0]), "utf8"), /# Local News/);
-  const envOutput = join(dir, "env-links");
-  const envArgs = [...args, "--output-dir", envOutput];
-  const envOptions = { env: { ...process.env, RSS_LINKS_PER_SECTION: "1" } };
-  const envRun = await execFileAsync(process.execPath, envArgs, envOptions);
-  assert.match(envRun.stdout, /Saved 1 section links/);
-  const overrideRun = await execFileAsync(
-    process.execPath,
-    [...envArgs, "--limit", "2"],
-    envOptions,
-  );
-  assert.match(overrideRun.stdout, /Saved 2 section links/);
-  await writeFile(
-    input,
-    `## Local News\n| Section | Feed |\n| --- | --- |\n| Tech | \`${origin}/slow\` |\n`,
-  );
-  await assert.rejects(execFileAsync(process.execPath, args), (error) => {
-    assert.equal(error.code, 1);
-    assert.match(error.stdout, /Saved 0 section links/);
-    return true;
+  assert.equal(await readFile(join(output, files[0]), "utf8"), result.markdown);
+  const oldLimit = process.env.RSS_LINKS_PER_SECTION;
+  t.after(() => {
+    if (oldLimit === undefined) delete process.env.RSS_LINKS_PER_SECTION;
+    else process.env.RSS_LINKS_PER_SECTION = oldLimit;
   });
-  assert.equal((await readdir(output)).length, 2);
+  process.env.RSS_LINKS_PER_SECTION = "1";
+  const envRun = await generateLinks(research, {
+    ...options,
+    limit: undefined,
+    outputDir: join(dir, "env"),
+  });
+  assert.equal(envRun.limit, 1);
+  assert.equal(envRun.linkCount, 1);
+  const failed = await generateLinks(
+    `## Local News\n| Section | Feed |\n| --- | --- |\n| Tech | \`${origin}/slow\` |\n`,
+    { ...options, outputDir: join(dir, "failed") },
+  );
+  assert.equal(failed.linkCount, 0);
+  assert.equal(failed.failedFeedCount, 1);
+  assert.match(failed.markdown, /unavailable/);
+});
+
+test("links endpoint authenticates, returns JSON or Markdown and prevents overlapping runs", async (t) => {
+  const originalHash = process.env.ACCESS_HASH;
+  process.env.ACCESS_HASH = "test-links-key";
+  t.after(() => {
+    if (originalHash === undefined) delete process.env.ACCESS_HASH;
+    else process.env.ACCESS_HASH = originalHash;
+  });
+  const report = {
+    savedFile: "output/links/links_2026-10-11_12-34-56.md",
+    limit: 5,
+    feedCount: 1,
+    failedFeedCount: 0,
+    linkCount: 1,
+    markdown: "# News\n## World\n- <https://example.com/story>\n",
+    websites: [
+      {
+        name: "News",
+        sections: [{ name: "World", links: ["https://example.com/story"], available: true }],
+      },
+    ],
+  };
+  let calls = 0;
+  const handler = createLinksHandler("research", async (source) => {
+    assert.equal(source, "research");
+    calls++;
+    return report;
+  });
+  assert.equal((await handler(new Request("http://localhost/api/links?format=json"))).status, 401);
+  assert.equal(calls, 0);
+  const json = await handler(
+    new Request("http://localhost/api/links?hash=test-links-key&format=json"),
+  );
+  assert.equal(json.status, 200);
+  assert.deepEqual(await json.json(), report);
+  const markdown = await handler(new Request("http://localhost/api/links?hash=test-links-key"));
+  assert.equal(await markdown.text(), report.markdown);
+  assert.equal(markdown.headers.get("x-saved-file"), report.savedFile);
+  assert.equal(markdown.headers.get("cache-control"), "no-store");
+  let release;
+  const pending = new Promise((done) => {
+    release = done;
+  });
+  const locked = createLinksHandler("research", async () => {
+    await pending;
+    return report;
+  });
+  const first = locked(new Request("http://localhost/api/links?hash=test-links-key"));
+  assert.equal(
+    (await locked(new Request("http://localhost/api/links?hash=test-links-key"))).status,
+    409,
+  );
+  release();
+  assert.equal((await first).status, 200);
+  assert.equal(
+    (await locked(new Request("http://localhost/api/links?hash=test-links-key"))).status,
+    200,
+  );
+  const failed = createLinksHandler("research", async () => ({ ...report, failedFeedCount: 1 }));
+  assert.equal(
+    (await failed(new Request("http://localhost/api/links?hash=test-links-key"))).status,
+    502,
+  );
+  const broken = createLinksHandler("research", async () => {
+    throw new Error("EACCES: private path");
+  });
+  const error = await broken(
+    new Request("http://localhost/api/links?hash=test-links-key&format=json"),
+  );
+  assert.equal(error.status, 500);
+  assert.doesNotMatch(await error.text(), /EACCES|private path/);
 });

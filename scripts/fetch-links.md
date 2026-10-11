@@ -1,54 +1,48 @@
-# RSS article links
+# RSS article links API
 
-Run from the repository root with Node.js 22 or newer:
+All application operations are available over HTTP:
 
-```sh
-npm run fetch:links
-```
+- `GET /api/read?url=…&hash=…` — read an article.
+- `GET /api/save?url=…&hash=…` — read and save an article.
+- `GET /api/links?hash=…` — collect RSS article links, save a report, and return Markdown.
 
-The command reads `attachments/News site RSS feeds by section.md`, fetches the
-listed feeds, and writes `output/links/links_YYYY-MM-DD_HH-mm-ss.md`. Timestamps
-are UTC. Existing files are never overwritten. Each website is a level-one
-heading, each section is a level-two heading, and article URLs are bullet links.
-Each subsection includes at most **5 unique links** by default, keeping the order
-provided by the feed (usually newest first). Set `RSS_LINKS_PER_SECTION` in the
-root `.env` or environment to change this:
+`/api/links` also accepts POST with the same query parameters. Prefer POST when
+triggering a collection, since it creates a file. Every endpoint uses the
+`ACCESS_HASH` secret. Add `format=json` to return JSON. Links JSON includes the
+saved path, counts, Markdown, and website/section-grouped article URLs.
+`X-Saved-File` supplies the saved relative path in either format.
+
+Reports are stored in `output/links/links_YYYY-MM-DD_HH-mm-ss.md`. Timestamps are
+UTC. Existing files are never overwritten. Each website is a level-one heading
+and each section is a level-two heading.
+
+Set these in the root `.env` or server environment, then restart the server:
 
 ```env
+ACCESS_HASH=your-secret
 RSS_LINKS_PER_SECTION=5
+FETCH_RETRY_LIMIT=5
 ```
 
-Missing, invalid, or non-positive values default to 5. An explicit `--limit`
-overrides the environment value. The cap also applies when multiple feeds share
-the same subsection.
+The default is 5 unique links per subsection, preserving feed order. Invalid or
+non-positive limits default to 5. Retry limits count retries after the initial
+attempt; 0 disables retries. Existing environment variables override `.env`.
 
-The feed catalog includes the listed subsection filenames, path alternatives,
-The Hill's five business categories, Axios's three example cities, and CNBC's
-additional IDs. Generic templates, retired feeds, reference links, and sections
-explicitly marked as having no feed are excluded. If you edit the research,
-table rows are read on every run; abbreviated supplementary URLs are expanded
-in `scripts/rss-feed-catalog.mjs`.
+The research file `attachments/News site RSS feeds by section.md` is bundled
+into the server build. Changing it requires rebuilding/restarting production;
+the deployed server does not need the original source file at runtime.
+Concrete shorthand URLs are expanded in `src/lib/rss/catalog.ts`. Generic
+templates, retired feeds, reference links and sections with no feed are skipped.
 
-Up to six feeds are fetched concurrently, with a 15-second timeout per attempt.
-`FETCH_RETRY_LIMIT` in the environment or the root `.env` controls retries after
-the first attempt (default: 5; 0 disables retries). Existing environment values
-take precedence over `.env`. Failed feeds are marked in their section without
-discarding successful results. If every feed fails, a report is still saved and
-the command exits with code 1. Invalid input or a write failure also exits 1.
+Up to six feeds are fetched concurrently, with a 15-second per-attempt timeout.
+One collection can run per server process. An overlapping request returns 409.
+Collection runs only when requested; the server does not automatically poll.
+Large collections can take several minutes; clients and reverse proxies need
+appropriate request timeouts. Failed feeds are marked without discarding the
+others. If all feeds fail, the report is still saved and returned with HTTP 502.
+Write/configuration failures return HTTP 500, and invalid keys return HTTP 401.
 
-Optional overrides:
-
-```sh
-npm run fetch:links -- --retry-limit 0 --timeout-ms 6000
-npm run fetch:links -- --limit 10
-npm run fetch:links -- --input path/to/feeds.md --output-dir output/links
-```
-
-Custom input uses `## Website` headings and tables whose first two columns are
-section name and backtick-quoted feed URL, matching the supplied research file.
-
-Only links currently present in a feed are collected; this is not an archive
-of every article on the website. Duplicates are removed within each section,
-but an article can appear in multiple sections. Google News feeds retain their
-Google News article links as published in the feed; publisher URLs are not
-invented or decoded. No article bodies are fetched, and no access key is needed.
+Only current feed entries are collected, not historical article archives.
+Duplicates are removed within a section. Google News entries keep the article
+URLs published in those feeds. Article bodies are not fetched by `/api/links`.
+The npm `fetch:links` command and its CLI options have been removed.

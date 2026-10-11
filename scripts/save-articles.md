@@ -31,8 +31,8 @@ Google News links or opaque article URLs:
 
 This endpoint requires a writable filesystem on a persistent server, such as
 your Oracle Cloud VM. It does not provide durable storage on serverless hosts.
-The repository's current Nitro build preset is still `vercel`; switching that
-deployment target to a standalone Node server remains a separate change.
+The production build uses Nitro's `node-server` preset. See
+`deployment/README.md` for the Oracle Cloud persistent-server setup.
 
 Use a persistent disk and restrict access to these output directories on your
 server. The access key is never written into article files. Failed reads create

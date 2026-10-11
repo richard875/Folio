@@ -146,8 +146,9 @@ function authPopupPlugin(): Plugin {
 // The dev server starts once `src/router.tsx` and `src/routes/` exist — see
 // AGENTS.md § "First scaffold".
 export default defineConfig(({ command, isPreview, mode }) => {
-  const env = loadEnv(mode, process.cwd(), ["ACCESS_HASH", "FETCH_RETRY_LIMIT"]);
-  for (const key of ["ACCESS_HASH", "FETCH_RETRY_LIMIT"]) {
+  const serverEnvKeys = ["ACCESS_HASH", "FETCH_RETRY_LIMIT", "RSS_LINKS_PER_SECTION"];
+  const env = loadEnv(mode, process.cwd(), serverEnvKeys);
+  for (const key of serverEnvKeys) {
     if (process.env[key] === undefined && env[key] !== undefined) {
       process.env[key] = env[key];
     }
@@ -177,7 +178,7 @@ export default defineConfig(({ command, isPreview, mode }) => {
       ...(command === "build" || isPreview
         ? [
             nitro({
-              preset: "vercel",
+              preset: "node-server",
               // Auto-registers server/middleware/* (the PWA install page +
               // manifest + head-tag middleware). Nitro v3 defaults serverDir to
               // false, so removing this silently unwires /?install=1 on deploys.
