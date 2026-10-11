@@ -1,14 +1,13 @@
 import { hashMatches } from "./auth.ts";
-import { isSubstantial, looksLikeShell, parseArticleHtml, toMarkdown, userAgentFor } from "./extract.ts";
+import { isSubstantial, looksLikeShell, parseArticleHtml, toMarkdown } from "./extract.ts";
+import { fetchHtml } from "./fetch.ts";
 import { assertPublicHttpUrl, probeList } from "./targets.ts";
 import type { ArticleResult, Attempt } from "./types.ts";
 
 const CACHE = new Map<string, { at: number; result: ArticleResult }>();
 const CACHE_MS = 30 * 60 * 1000;
 const MAX_CACHE = 40;
-const ATTEMPT_MS = 12_000;
 const BUDGET_MS = 48_000;
-const MAX_BYTES = 1_800_000;
 
 const HITS: number[] = [];
 
@@ -18,24 +17,6 @@ function rateOk(): boolean {
   if (HITS.length >= 24) return false;
   HITS.push(now);
   return true;
-}
-
-async function pull(url: string, method: string): Promise<string> {
-  const res = await fetch(url, {
-    redirect: "follow",
-    signal: AbortSignal.timeout(ATTEMPT_MS),
-    headers: {
-      "user-agent": userAgentFor(method),
-      accept: "text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.8",
-      "accept-language": "en-US,en;q=0.9",
-    },
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const type = res.headers.get("content-type") || "";
-  if (type && !/html|text|json|xml/i.test(type)) throw new Error(`Unsupported type ${type}`);
-  const buf = await res.arrayBuffer();
-  if (buf.byteLength > MAX_BYTES) throw new Error("Response too large");
-  return new TextDecoder("utf-8", { fatal: false }).decode(buf);
 }
 
 export async function readArticle(rawUrl: string, hash: string | null): Promise<ArticleResult> {
@@ -74,7 +55,11 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
       }
       try {
         assertPublicHttpUrl(probe.url);
-        const html = await pull(probe.url, probe.method);
+        const html = await fetchHtml(
+          probe.url,
+          probe.method,
+          Math.min(passStarted + passBudget, started + BUDGET_MS),
+        );
         const parsed = parseArticleHtml(html, probe.url);
         if (!parsed || looksLikeShell(parsed.title, parsed.text)) {
           attempts.push({ method: probe.method, url: probe.url, ok: false, note: parsed ? "service shell" : "no article text" });

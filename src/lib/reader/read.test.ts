@@ -1,20 +1,25 @@
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, describe, it } from "node:test";
 import { hashMatches } from "./auth.ts";
+import { fetchHtml } from "./fetch.ts";
 import { readArticle } from "./read.ts";
 
 const originalFetch = globalThis.fetch;
 const originalAccessHash = process.env.ACCESS_HASH;
+const originalRetryLimit = process.env.FETCH_RETRY_LIMIT;
 const ACCESS_HASH = "test-reader-access-hash";
 
 beforeEach(() => {
   process.env.ACCESS_HASH = ACCESS_HASH;
+  delete process.env.FETCH_RETRY_LIMIT;
 });
 
 afterEach(() => {
   globalThis.fetch = originalFetch;
   if (originalAccessHash === undefined) delete process.env.ACCESS_HASH;
   else process.env.ACCESS_HASH = originalAccessHash;
+  if (originalRetryLimit === undefined) delete process.env.FETCH_RETRY_LIMIT;
+  else process.env.FETCH_RETRY_LIMIT = originalRetryLimit;
 });
 
 describe("reader access hash", () => {
@@ -48,7 +53,112 @@ function articleResponse(): Response {
   });
 }
 
+describe("fetch retries", () => {
+  it("retries network failures and stops immediately on success", async () => {
+    let calls = 0;
+    globalThis.fetch = async () => {
+      if (++calls < 3) throw new Error("fetch failed");
+      return new Response("article");
+    };
+    assert.equal(await fetchHtml("https://example.com", "direct", Date.now() + 1000), "article");
+    assert.equal(calls, 3);
+  });
+
+  it("defaults to five retries after the initial request", async () => {
+    let calls = 0;
+    globalThis.fetch = async () => {
+      calls++;
+      throw new Error("fetch failed");
+    };
+    await assert.rejects(fetchHtml("https://example.com", "direct", Date.now() + 1000), /fetch failed/);
+    assert.equal(calls, 6);
+  });
+
+  it("honors the configured limit for unsuccessful HTTP responses", async () => {
+    process.env.FETCH_RETRY_LIMIT = "2";
+    let calls = 0;
+    globalThis.fetch = async () => {
+      calls++;
+      return new Response("unavailable", { status: 503 });
+    };
+    await assert.rejects(fetchHtml("https://example.com", "direct", Date.now() + 1000), /HTTP 503/);
+    assert.equal(calls, 3);
+  });
+
+  it("allows retries to be disabled", async () => {
+    process.env.FETCH_RETRY_LIMIT = "0";
+    let calls = 0;
+    globalThis.fetch = async () => {
+      calls++;
+      throw new Error("fetch failed");
+    };
+    await assert.rejects(fetchHtml("https://example.com", "direct", Date.now() + 1000), /fetch failed/);
+    assert.equal(calls, 1);
+  });
+
+  it("falls back to five retries for invalid settings", async () => {
+    for (const value of ["", "invalid", "-1", "1.5", "Infinity", "9007199254740992"]) {
+      process.env.FETCH_RETRY_LIMIT = value;
+      let calls = 0;
+      globalThis.fetch = async () => {
+        calls++;
+        throw new Error("fetch failed");
+      };
+      await assert.rejects(fetchHtml("https://example.com", "direct", Date.now() + 1000), /fetch failed/);
+      assert.equal(calls, 6, value);
+    }
+  });
+
+  it("does not fetch after the overall deadline", async () => {
+    let calls = 0;
+    globalThis.fetch = async () => {
+      calls++;
+      return new Response("article");
+    };
+    await assert.rejects(fetchHtml("https://example.com", "direct", Date.now() - 1), /time budget/);
+    assert.equal(calls, 0);
+  });
+
+  it("does not retry a successfully fetched unsupported payload", async () => {
+    let calls = 0;
+    globalThis.fetch = async () => {
+      calls++;
+      return new Response("image", { headers: { "content-type": "image/png" } });
+    };
+    await assert.rejects(fetchHtml("https://example.com", "direct", Date.now() + 1000), /Unsupported type/);
+    assert.equal(calls, 1);
+  });
+
+  it("retries response-body read failures", async () => {
+    let calls = 0;
+    globalThis.fetch = async () => {
+      calls++;
+      if (calls === 1) {
+        return new Response(new ReadableStream({
+          start(controller) { controller.error(new Error("connection lost")); },
+        }));
+      }
+      return new Response("article");
+    };
+    assert.equal(await fetchHtml("https://example.com", "direct", Date.now() + 1000), "article");
+    assert.equal(calls, 2);
+  });
+});
+
 describe("readArticle URL query handling", () => {
+  it("recovers from a failed fetch before moving to another extraction method", async () => {
+    const requested: string[] = [];
+    globalThis.fetch = async (input) => {
+      requested.push(String(input));
+      if (requested.length === 1) throw new Error("fetch failed");
+      return articleResponse();
+    };
+    const url = "https://example.com/transient-story";
+    const result = await readArticle(url, ACCESS_HASH);
+    assert.equal(result.originalUrl, url);
+    assert.deepEqual(requested, [url, url]);
+  });
+
   it("tries the URL without search parameters first", async () => {
     const requested: string[] = [];
     globalThis.fetch = async (input) => {
