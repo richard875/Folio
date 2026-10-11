@@ -22,6 +22,12 @@ node_modules/
 /screenshots/*
 !/screenshots/.gitkeep
 
+# Outputs
+/output/articles/*
+!/output/articles/.gitkeep
+/output/links/*
+!/output/links/.gitkeep
+
 # Logs and OS files
 *.log
 npm-debug.log*
