@@ -31,8 +31,12 @@ attempt; 0 disables retries. Existing environment variables override `.env`.
 The research file `attachments/News site RSS feeds by section.md` is bundled
 into the server build. Changing it requires rebuilding/restarting production;
 the deployed server does not need the original source file at runtime.
-Concrete shorthand URLs are expanded in `src/lib/rss/catalog.ts`. Generic
-templates, retired feeds, reference links and sections with no feed are skipped.
+Only explicit URLs in the table's feed column are fetched. URLs in notes,
+reference links, templates, and formerly configured subsection feeds are not
+included. The current attachment lists 12 websites with one feed each; each
+website uses a `Main feed` subsection, so a limit of 1 yields at most 12 links.
+Removing table rows reduces that maximum. Website-heading/section-table inputs
+are also supported, but no shorthand URLs are expanded automatically.
 
 Up to six feeds are fetched concurrently, with a 15-second per-attempt timeout.
 One collection can run per server process. An overlapping request returns 409.

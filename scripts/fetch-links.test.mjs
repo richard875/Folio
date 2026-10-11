@@ -28,26 +28,23 @@ const rss = `<?xml version="1.0"?><rss version="2.0"><channel><title>News</title
 <item><title>Only ID</title><guid isPermaLink="false">internal-id</guid></item>
 </channel></rss>`;
 
-test("catalog includes all twelve websites and expands concrete shorthand", async () => {
+test("catalog uses exactly the twelve primary feed URLs in the replacement attachment", async () => {
   const source = await readFile(
     new URL("../attachments/News site RSS feeds by section.md", import.meta.url),
     "utf8",
   );
   const feeds = parseFeedCatalog(source);
+  assert.equal(feeds.length, 12);
   assert.equal(new Set(feeds.map((item) => item.site)).size, 12);
   const urls = new Set(feeds.map((item) => item.url));
-  for (const url of [
-    "https://rss.nytimes.com/services/xml/rss/nyt/Books/Review.xml",
-    "https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml",
-    "https://thehill.com/business/economy/feed/",
-    "https://thehill.com/business/trade/feed/",
-    "https://api.axios.com/feed/audience/denver",
-    "https://feeds.washingtonpost.com/rss/world/europe",
-    "https://www.ft.com/artificial-intelligence?format=rss",
-    "https://www.nytimes.com/athletic/rss/nfl/",
-  ])
-    assert.ok(urls.has(url), url);
-  assert.ok(feeds.some((item) => item.section === "Make It" && item.site === "CNBC"));
+  assert.ok(urls.has("https://thehill.com/news/feed/"));
+  assert.ok(urls.has("https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"));
+  assert.ok(feeds.every((item) => item.section === "Main feed"));
+  assert.ok(
+    !urls.has("https://www.ft.com/rss/home/international"),
+    "Ignore alternate URLs in notes",
+  );
+  assert.ok(!urls.has("https://api.axios.com/feed/audience/denver"), "Do not add historical feeds");
   assert.ok(feeds.every((item) => !/[<>]|\.\.\./.test(item.url)));
   assert.ok(feeds.every((item) => !/feeder\.co|feedspot\.com/.test(item.url)));
   assert.ok(feeds.every((item) => item.site !== "At a glance" && item.site !== "Sources"));
@@ -60,7 +57,47 @@ test("catalog ignores dead/prose links and supports CRLF and escaped table pipes
   );
   assert.deepEqual(
     feeds.map((item) => item.url),
-    ["https://example.com/feed", "https://example.com/one/feed", "https://example.com/two/feed"],
+    ["https://example.com/feed"],
+  );
+});
+
+test("a smaller site table fetches only its explicit URLs and yields at most one article per row", async () => {
+  const source =
+    "# Feeds\n| Site | Feed URL | Notes |\n| --- | --- | --- |\n| Axios | `https://example.com/axios` | Alternate: `https://example.com/alternate` |\n| NY Times | `https://example.com/nyt` | |\n\n## Sources\n| Site | Feed URL |\n| --- | --- |\n| Reference | `https://example.com/reference` |\n";
+  const feeds = parseFeedCatalog(source);
+  const requested = [];
+  const results = await collectFeeds(feeds, {
+    limit: 1,
+    fetchImpl: async (url) => {
+      requested.push(url);
+      return new Response(rss);
+    },
+  });
+  assert.deepEqual(requested, ["https://example.com/axios", "https://example.com/nyt"]);
+  assert.equal(
+    results.reduce((sum, result) => sum + result.urls.length, 0),
+    2,
+  );
+});
+
+test("limit one with the current attachment returns no more than twelve links", async () => {
+  const source = await readFile(
+    new URL("../attachments/News site RSS feeds by section.md", import.meta.url),
+    "utf8",
+  );
+  const feeds = parseFeedCatalog(source);
+  let requests = 0;
+  const results = await collectFeeds(feeds, {
+    limit: 1,
+    fetchImpl: async () => {
+      requests++;
+      return new Response(rss);
+    },
+  });
+  assert.equal(requests, 12);
+  assert.equal(
+    results.reduce((sum, result) => sum + result.urls.length, 0),
+    12,
   );
 });
 
