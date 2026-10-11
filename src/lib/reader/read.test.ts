@@ -1,12 +1,38 @@
 import assert from "node:assert/strict";
-import { afterEach, describe, it } from "node:test";
-import { ACCESS_HASH } from "./auth.ts";
+import { afterEach, beforeEach, describe, it } from "node:test";
+import { hashMatches } from "./auth.ts";
 import { readArticle } from "./read.ts";
 
 const originalFetch = globalThis.fetch;
+const originalAccessHash = process.env.ACCESS_HASH;
+const ACCESS_HASH = "test-reader-access-hash";
+
+beforeEach(() => {
+  process.env.ACCESS_HASH = ACCESS_HASH;
+});
 
 afterEach(() => {
   globalThis.fetch = originalFetch;
+  if (originalAccessHash === undefined) delete process.env.ACCESS_HASH;
+  else process.env.ACCESS_HASH = originalAccessHash;
+});
+
+describe("reader access hash", () => {
+  it("accepts only the configured environment value", () => {
+    assert.equal(hashMatches(ACCESS_HASH), true);
+    assert.equal(hashMatches("x".repeat(ACCESS_HASH.length)), false);
+    assert.equal(hashMatches("wrong"), false);
+    assert.equal(hashMatches(null), false);
+    assert.equal(hashMatches(undefined), false);
+    assert.equal(hashMatches(""), false);
+  });
+
+  it("rejects access when the environment value is missing or empty", () => {
+    delete process.env.ACCESS_HASH;
+    assert.equal(hashMatches(ACCESS_HASH), false);
+    process.env.ACCESS_HASH = "";
+    assert.equal(hashMatches(ACCESS_HASH), false);
+  });
 });
 
 function articleResponse(): Response {
