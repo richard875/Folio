@@ -1,11 +1,15 @@
 import { readArticle, statusOf } from "./read.ts";
 import { saveArticle } from "./save.ts";
-import { validCallId } from "../batch/jobs.ts";
+import { jobManager, validCallId } from "../batch/jobs.ts";
 
 /** Dependencies are injectable so auth, write failures and responses are testable. */
 export async function handleSaveRequest(
   request: Request,
-  { read = readArticle, save = saveArticle } = {},
+  {
+    read = readArticle,
+    save = saveArticle,
+    getJob = (callId: string): Promise<{ startedAt: string } | null> => jobManager.get(callId),
+  } = {},
 ): Promise<Response> {
   const url = new URL(request.url);
   const format = (url.searchParams.get("format") || "markdown").toLowerCase();
@@ -18,10 +22,21 @@ export async function handleSaveRequest(
         { status: 400, headers: { "cache-control": "no-store" } },
       );
     }
+    const job = callId ? await getJob(callId) : null;
+    if (callId && !job) {
+      return Response.json(
+        { error: "Call not found." },
+        {
+          status: 404,
+          headers: { "cache-control": "no-store" },
+        },
+      );
+    }
     const savedFile = await save(article, {
       format,
       website: url.searchParams.get("website"),
       section: url.searchParams.get("section"),
+      jobStartedAt: job?.startedAt,
     });
     const headers: Record<string, string> = {
       "cache-control": "no-store",

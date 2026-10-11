@@ -8,6 +8,8 @@ export type SaveOptions = {
   website?: string | null;
   section?: string | null;
   outputDir?: string;
+  /** A batch's trusted start timestamp fixes its destination folder. */
+  jobStartedAt?: string;
   now?: () => Date;
   wait?: (milliseconds: number) => Promise<unknown>;
 };
@@ -75,9 +77,13 @@ export async function saveArticle(
   const title = safePart(article.title.trim().split(/\s+/).slice(0, 5).join(" "), "untitled", 100);
   const now = options.now ?? (() => new Date());
   const wait = options.wait ?? sleep;
+  const fixedFolderTimestamp = options.jobStartedAt
+    ? new Date(options.jobStartedAt).toISOString()
+    : null;
   for (;;) {
     const timestamp = now().toISOString();
-    const folder = `${timestamp.slice(0, 10)}_${timestamp.slice(11, 13)}`;
+    const folderTimestamp = fixedFolderTimestamp ?? timestamp;
+    const folder = `${folderTimestamp.slice(0, 10)}_${folderTimestamp.slice(11, 16).replace(":", "-")}`;
     const time = timestamp.slice(11, 19).replace(/:/g, "-");
     const filename = `${names.website}_${names.section}_${title}_${time}.${extension}`;
     const directory = resolve(root, folder);

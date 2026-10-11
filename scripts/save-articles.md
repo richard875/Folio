@@ -11,14 +11,20 @@ The `X-Saved-File` response header identifies its relative path.
 Files are stored beneath the server's project directory:
 
 ```text
-output/articles/YYYY-MM-DD_HH/website_section_first_five_title_words_HH-mm-ss.md
+output/articles/YYYY-MM-DD_HH-mm/website_section_first_five_title_words_HH-mm-ss.md
 ```
 
-Dates and times are UTC; `HH` is the 24-hour clock. Missing directories are
+Dates and times are UTC; `HH` is the 24-hour clock and `mm` is the minute. Missing directories are
 created automatically and existing directories are reused. Existing files are
 never overwritten: a same-name collision waits for the next second, including
-across hour/day boundaries. Filenames are filesystem-safe, lowercase, and
+across minute/hour/day boundaries. Filenames are filesystem-safe, lowercase, and
 underscore-separated; overly long parts are truncated.
+
+When a save includes a known batch `callId`, the folder uses that job's start
+date, hour and minute for every article, even if saves finish later or after
+midnight. The timestamp is read from the server's job record, not supplied by
+the caller. Filenames still use each save's actual time. A standalone save with
+no call ID uses its current date/hour/minute. An unknown call ID returns 404.
 
 The website name comes from the original URL's hostname. The section is
 inferred from the URL path where possible, otherwise `general`. Override either

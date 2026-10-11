@@ -34,7 +34,7 @@ test("infers website and section names and handles date paths and opaque URLs", 
   });
 });
 
-test("creates hourly directories, saves Markdown and adds files without overwriting", async (t) => {
+test("creates minute directories, saves Markdown and adds files without overwriting", async (t) => {
   const dir = await mkdtemp(join(tmpdir(), "folio-articles-"));
   t.after(() => rm(dir, { recursive: true, force: true }));
   let date = new Date("2026-10-11T23:59:59Z");
@@ -42,9 +42,9 @@ test("creates hourly directories, saves Markdown and adds files without overwrit
   const first = await saveArticle(article, options);
   assert.equal(
     first,
-    "output/articles/2026-10-11_23/reuters_world_one_two_three_four_five_23-59-59.md",
+    "output/articles/2026-10-11_23-59/reuters_world_one_two_three_four_five_23-59-59.md",
   );
-  const original = await readFile(join(dir, "2026-10-11_23", first.split("/").at(-1)!), "utf8");
+  const original = await readFile(join(dir, "2026-10-11_23-59", first.split("/").at(-1)!), "utf8");
   assert.equal(original, article.markdown);
   const second = await saveArticle(article, {
     ...options,
@@ -54,14 +54,14 @@ test("creates hourly directories, saves Markdown and adds files without overwrit
   });
   assert.equal(
     second,
-    "output/articles/2026-10-12_00/reuters_world_one_two_three_four_five_00-00-00.md",
+    "output/articles/2026-10-12_00-00/reuters_world_one_two_three_four_five_00-00-00.md",
   );
   assert.equal(
-    await readFile(join(dir, "2026-10-11_23", first.split("/").at(-1)!), "utf8"),
+    await readFile(join(dir, "2026-10-11_23-59", first.split("/").at(-1)!), "utf8"),
     original,
   );
   await saveArticle({ ...article, title: "Another article" }, options);
-  assert.equal((await readdir(join(dir, "2026-10-12_00"))).length, 2);
+  assert.equal((await readdir(join(dir, "2026-10-12_00-00"))).length, 2);
 });
 
 test("saves JSON with sanitized names and no internal fetching fields", async (t) => {
@@ -76,11 +76,65 @@ test("saves JSON with sanitized names and no internal fetching fields", async (t
   });
   assert.equal(
     path,
-    "output/articles/2026-10-11_14/my_news_markets_finance_one_two_three_four_five_14-23-45.json",
+    "output/articles/2026-10-11_14-23/my_news_markets_finance_one_two_three_four_five_14-23-45.json",
   );
-  const content = await readFile(join(dir, "2026-10-11_14", path.split("/").at(-1)!), "utf8");
+  const content = await readFile(join(dir, "2026-10-11_14-23", path.split("/").at(-1)!), "utf8");
   assert.deepEqual(JSON.parse(content), article);
   assert.doesNotMatch(content, /methodUrl|bypass|ACCESS_HASH/);
+});
+
+test("batch saves keep the start minute folder across days and collision retries", async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), "folio-fixed-folder-"));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  let current = new Date("2026-10-12T00:00:59Z");
+  const options = {
+    outputDir: dir,
+    jobStartedAt: "2026-10-11T14:23:00Z",
+    now: () => current,
+    wait: async () => {
+      current = new Date(current.getTime() + 1000);
+    },
+  };
+  const first = await saveArticle(article, options);
+  const second = await saveArticle(article, options);
+  const json = await saveArticle(article, { ...options, format: "json" });
+  for (const path of [first, second, json])
+    assert.ok(path.startsWith("output/articles/2026-10-11_14-23/"));
+  assert.ok(first.endsWith("00-00-59.md"));
+  assert.ok(second.endsWith("00-01-00.md"));
+  assert.deepEqual(await readdir(dir), ["2026-10-11_14-23"]);
+  assert.equal((await readdir(join(dir, "2026-10-11_14-23"))).length, 3);
+});
+
+test("save API uses the server job's start time, not caller-supplied timestamps", async () => {
+  const callId = "01234567-89ab-4cde-8012-3456789abcde";
+  const response = await handleSaveRequest(
+    new Request(`http://localhost/api/save?callId=${callId}&jobStartedAt=2099-01-01T00:00:00Z`),
+    {
+      read: async () => article,
+      getJob: async (id) => {
+        assert.equal(id, callId);
+        return { startedAt: "2026-10-11T14:23:00Z" };
+      },
+      save: async (_, options) => {
+        assert.equal(options?.jobStartedAt, "2026-10-11T14:23:00Z");
+        return "output/articles/2026-10-11_14-23/test.md";
+      },
+    },
+  );
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("x-call-id"), callId);
+  const unknown = await handleSaveRequest(
+    new Request(`http://localhost/api/save?callId=${callId}`),
+    {
+      read: async () => article,
+      getJob: async () => null,
+      save: async () => {
+        assert.fail("Do not save under an unknown job");
+      },
+    },
+  );
+  assert.equal(unknown.status, 404);
 });
 
 test("API saves before returning the article and supplies the relative path header", async () => {

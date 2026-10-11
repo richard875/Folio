@@ -14,7 +14,9 @@ In the background, the server calls `/api/links`, reads the Markdown file that
 request generated, and calls `/api/save` for each article. Each save receives
 the original website/section headings, URL, access hash, and `callId`.
 Article output paths remain unchanged. Add `format=json` to the start request
-to save articles as JSON rather than the default Markdown. The start and status
+to save articles as JSON rather than the default Markdown. All batch articles
+use the folder for the job's UTC start date/hour/minute, regardless of when
+individual saves finish. Filenames retain their actual save times. The start and status
 responses are always JSON, regardless of article file format.
 
 Before calling `/api/save`, Google News article links are resolved to their

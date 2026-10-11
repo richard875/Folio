@@ -276,6 +276,7 @@ test("batch save passes callId through the real save handler and writes the arti
       const url = new URL(String(input));
       if (url.pathname === "/api/links") return Response.json({ savedFile: linksFile });
       const response = await handleSaveRequest(new Request(url), {
+        getJob: (callId) => manager.get(callId),
         read: async () => ({
           title: "An example article",
           author: "",
@@ -287,7 +288,11 @@ test("batch save passes callId through the real save handler and writes the arti
           partial: false,
         }),
         save: (article, options) =>
-          saveArticle(article, { ...options, outputDir: join(root, "output/articles") }),
+          saveArticle(article, {
+            ...options,
+            outputDir: join(root, "output/articles"),
+            now: () => new Date("2099-12-31T23:59:59Z"),
+          }),
       });
       assert.equal(response.headers.get("x-call-id"), url.searchParams.get("callId"));
       return response;
@@ -300,6 +305,10 @@ test("batch save passes callId through the real save handler and writes the arti
   assert.match(result.results[0].savedFile || "", /example_news_world_news_an_example_article/);
   const dirs = await readdir(join(root, "output/articles"));
   assert.equal(dirs.length, 1);
+  assert.equal(
+    dirs[0],
+    `${job.startedAt.slice(0, 10)}_${job.startedAt.slice(11, 16).replace(":", "-")}`,
+  );
 });
 
 test("real start/status handlers return while links are pending and expose collection errors", async (t) => {

@@ -55,10 +55,12 @@ export function ApiDocumentation() {
                 <p>
                   Files are saved to{" "}
                   <code className="break-all text-ink">
-                    output/articles/YYYY-MM-DD_HH/website_section_first_5_title_words_HH-mm-ss.md
+                    output/articles/YYYY-MM-DD_HH-mm/website_section_first_5_title_words_HH-mm-ss.md
                   </code>{" "}
                   (or <code className="text-ink">.json</code>). Timestamps use UTC and the 24-hour
                   clock. Folders are created automatically; existing files are never overwritten.
+                  Batch saves all use the folder for the job's start date, hour and minute;
+                  standalone saves use the current time.
                 </p>
                 <p>
                   Website and section names are inferred from the article URL. Add{" "}
@@ -101,6 +103,21 @@ export function ApiDocumentation() {
                   . Returns saved/failed counts and a status of completed, in progress, not found,
                   or error. Completed progress survives restarts; interrupted jobs are marked as
                   errors.
+                </p>
+              </section>
+              <section className="space-y-2">
+                <h3 className="text-base font-semibold text-ink">External AI agent</h3>
+                <p>
+                  Start at <code className="break-all text-ink">GET /api/agent/latest</code> with{" "}
+                  <code className="break-all text-ink">Authorization: Bearer YOUR_ACCESS_HASH</code>{" "}
+                  (or add your hash query parameter). It lists every article in the latest finished
+                  folder and supplies reading instructions. Follow each article's read URL and all
+                  subsequent chunks until the end marker, then verify its checksum.
+                </p>
+                <p>
+                  Folder snapshots prevent mixing old and new collections. Running collections are
+                  excluded; failed saves and partial articles are reported. Only claim completion
+                  when every listed file has been fully retrieved and verified.
                 </p>
               </section>
             </div>

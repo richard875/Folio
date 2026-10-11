@@ -14,6 +14,8 @@ import { Route as ApiCollectRouteImport } from './routes/api/collect'
 import { Route as ApiLinksRouteImport } from './routes/api/links'
 import { Route as ApiReadRouteImport } from './routes/api/read'
 import { Route as ApiSaveRouteImport } from './routes/api/save'
+import { Route as ApiAgentLatestRouteImport } from './routes/api/agent/latest'
+import { Route as ApiAgentReadRouteImport } from './routes/api/agent/read'
 import { Route as ApiCollectStatusRouteImport } from './routes/api/collect/status'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +43,16 @@ const ApiSaveRoute = ApiSaveRouteImport.update({
   path: '/api/save',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAgentLatestRoute = ApiAgentLatestRouteImport.update({
+  id: '/api/agent/latest',
+  path: '/api/agent/latest',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAgentReadRoute = ApiAgentReadRouteImport.update({
+  id: '/api/agent/read',
+  path: '/api/agent/read',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCollectStatusRoute = ApiCollectStatusRouteImport.update({
   id: '/status',
   path: '/status',
@@ -53,6 +65,8 @@ export interface FileRoutesByFullPath {
   '/api/links': typeof ApiLinksRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
+  '/api/agent/latest': typeof ApiAgentLatestRoute
+  '/api/agent/read': typeof ApiAgentReadRoute
   '/api/collect/status': typeof ApiCollectStatusRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +75,8 @@ export interface FileRoutesByTo {
   '/api/links': typeof ApiLinksRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
+  '/api/agent/latest': typeof ApiAgentLatestRoute
+  '/api/agent/read': typeof ApiAgentReadRoute
   '/api/collect/status': typeof ApiCollectStatusRoute
 }
 export interface FileRoutesById {
@@ -70,6 +86,8 @@ export interface FileRoutesById {
   '/api/links': typeof ApiLinksRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
+  '/api/agent/latest': typeof ApiAgentLatestRoute
+  '/api/agent/read': typeof ApiAgentReadRoute
   '/api/collect/status': typeof ApiCollectStatusRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +98,8 @@ export interface FileRouteTypes {
     | '/api/links'
     | '/api/read'
     | '/api/save'
+    | '/api/agent/latest'
+    | '/api/agent/read'
     | '/api/collect/status'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +108,8 @@ export interface FileRouteTypes {
     | '/api/links'
     | '/api/read'
     | '/api/save'
+    | '/api/agent/latest'
+    | '/api/agent/read'
     | '/api/collect/status'
   id:
     | '__root__'
@@ -96,6 +118,8 @@ export interface FileRouteTypes {
     | '/api/links'
     | '/api/read'
     | '/api/save'
+    | '/api/agent/latest'
+    | '/api/agent/read'
     | '/api/collect/status'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +129,8 @@ export interface RootRouteChildren {
   ApiLinksRoute: typeof ApiLinksRoute
   ApiReadRoute: typeof ApiReadRoute
   ApiSaveRoute: typeof ApiSaveRoute
+  ApiAgentLatestRoute: typeof ApiAgentLatestRoute
+  ApiAgentReadRoute: typeof ApiAgentReadRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -144,6 +170,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSaveRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/agent/latest': {
+      id: '/api/agent/latest'
+      path: '/api/agent/latest'
+      fullPath: '/api/agent/latest'
+      preLoaderRoute: typeof ApiAgentLatestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/agent/read': {
+      id: '/api/agent/read'
+      path: '/api/agent/read'
+      fullPath: '/api/agent/read'
+      preLoaderRoute: typeof ApiAgentReadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/collect/status': {
       id: '/api/collect/status'
       path: '/status'
@@ -172,6 +212,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiLinksRoute: ApiLinksRoute,
   ApiReadRoute: ApiReadRoute,
   ApiSaveRoute: ApiSaveRoute,
+  ApiAgentLatestRoute: ApiAgentLatestRoute,
+  ApiAgentReadRoute: ApiAgentReadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
