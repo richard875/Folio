@@ -1,7 +1,7 @@
-import { hashMatches } from "./auth";
-import { isSubstantial, looksLikeShell, parseArticleHtml, toMarkdown, userAgentFor } from "./extract";
-import { assertPublicHttpUrl, probeList } from "./targets";
-import type { ArticleResult, Attempt } from "./types";
+import { hashMatches } from "./auth.ts";
+import { isSubstantial, looksLikeShell, parseArticleHtml, toMarkdown, userAgentFor } from "./extract.ts";
+import { assertPublicHttpUrl, probeList } from "./targets.ts";
+import type { ArticleResult, Attempt } from "./types.ts";
 
 const CACHE = new Map<string, { at: number; result: ArticleResult }>();
 const CACHE_MS = 30 * 60 * 1000;
@@ -58,44 +58,58 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
   const attempts: Attempt[] = [];
   let best: ArticleResult | null = null;
 
-  for (const probe of probeList(original)) {
-    if (Date.now() - started > BUDGET_MS) {
-      attempts.push({ method: probe.method, url: probe.url, ok: false, note: "time budget" });
-      break;
-    }
-    try {
-      assertPublicHttpUrl(probe.url);
-      const html = await pull(probe.url, probe.method);
-      const parsed = parseArticleHtml(html, probe.url);
-      if (!parsed || looksLikeShell(parsed.title, parsed.text)) {
-        attempts.push({ method: probe.method, url: probe.url, ok: false, note: parsed ? "service shell" : "no article text" });
-        continue;
+  const withoutSearch = new URL(original);
+  withoutSearch.search = "";
+  const sourceUrls = withoutSearch.href === original ? [original] : [withoutSearch.href, original];
+  const passBudget = BUDGET_MS / sourceUrls.length;
+
+  for (const sourceUrl of sourceUrls) {
+    if (best && !best.partial) break;
+    const passStarted = Date.now();
+
+    for (const probe of probeList(sourceUrl)) {
+      if (Date.now() - passStarted > passBudget || Date.now() - started > BUDGET_MS) {
+        attempts.push({ method: probe.method, url: probe.url, ok: false, note: "time budget" });
+        break;
       }
-      const partial = !isSubstantial(parsed.text);
-      const draft: ArticleResult = {
-        title: parsed.title,
-        author: parsed.author,
-        published: parsed.published,
-        originalUrl: original,
-        method: probe.method,
-        methodUrl: probe.url,
-        text: parsed.text,
-        images: parsed.images,
-        partial,
-        markdown: "",
-      };
-      draft.markdown = toMarkdown(draft);
-      attempts.push({
-        method: probe.method,
-        url: probe.url,
-        ok: !partial,
-        note: partial ? `${parsed.text.length} chars, short` : `${parsed.text.length} chars`,
-      });
-      if (!best || parsed.text.length > best.text.length) best = draft;
-      if (!partial) break;
-    } catch (error) {
-      const note = error instanceof Error ? error.message : "failed";
-      attempts.push({ method: probe.method, url: probe.url, ok: false, note });
+      try {
+        assertPublicHttpUrl(probe.url);
+        const html = await pull(probe.url, probe.method);
+        const parsed = parseArticleHtml(html, probe.url);
+        if (!parsed || looksLikeShell(parsed.title, parsed.text)) {
+          attempts.push({ method: probe.method, url: probe.url, ok: false, note: parsed ? "service shell" : "no article text" });
+          continue;
+        }
+        const partial = !isSubstantial(parsed.text);
+        const draft: ArticleResult = {
+          title: parsed.title,
+          author: parsed.author,
+          published: parsed.published,
+          originalUrl: original,
+          method: probe.method,
+          methodUrl: probe.url,
+          text: parsed.text,
+          images: parsed.images,
+          partial,
+          markdown: "",
+        };
+        draft.markdown = toMarkdown(draft);
+        attempts.push({
+          method: probe.method,
+          url: probe.url,
+          ok: !partial,
+          note: partial ? `${parsed.text.length} chars, short` : `${parsed.text.length} chars`,
+        });
+        if (!best || parsed.text.length > best.text.length) best = draft;
+        if (!partial) break;
+      } catch (error) {
+        const note = error instanceof Error ? error.message : "failed";
+        attempts.push({ method: probe.method, url: probe.url, ok: false, note });
+      }
+    }
+
+    if (Date.now() - started > BUDGET_MS) {
+      break;
     }
   }
 
