@@ -47,6 +47,9 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
     if (best && !best.partial) break;
     const passStarted = Date.now();
 
+    // Track probes that failed with 429 for a second pass
+    const rateLimitedProbes: Array<{ probe: Probe; finalUrl: string }> = [];
+
     for (const probe of probeList(sourceUrl)) {
       if (Date.now() - passStarted > passBudget || Date.now() - started > BUDGET_MS) {
         break;
@@ -86,14 +89,66 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
           images: parsed.images,
           partial,
           markdown: "",
-          // Track the actual source URL used for fetching (e.g., resolved archive URL)
           sourceUrl: finalUrl,
         };
         draft.markdown = toMarkdown(draft);
         if (!best || parsed.text.length > best.text.length) best = draft;
         if (!partial) break;
-      } catch {
+      } catch (error) {
+        // Track 429 errors for second pass
+        if (error instanceof Error && error.message.includes("HTTP 429")) {
+          rateLimitedProbes.push({ probe, finalUrl: probe.url });
+        }
         // Continue without exposing internal request details to the caller.
+      }
+    }
+
+    // Second pass: retry rate-limited probes after a brief wait
+    if (rateLimitedProbes.length > 0 && !best) {
+      // Wait a moment for rate limit to clear
+      await new Promise((r) => setTimeout(r, 2000));
+
+      for (const { probe, finalUrl } of rateLimitedProbes) {
+        if (Date.now() - started > BUDGET_MS) break;
+        try {
+          assertPublicHttpUrl(probe.url);
+          let html: string;
+          let retryFinalUrl = finalUrl;
+
+          if (probe.method === "archive.is-newest") {
+            const result = await fetchHtmlWithRedirects(
+              probe.url,
+              probe.method,
+              started + BUDGET_MS,
+            );
+            html = result.html;
+            retryFinalUrl = result.finalUrl;
+          } else {
+            html = await fetchHtml(probe.url, probe.method, started + BUDGET_MS);
+          }
+
+          const parsed = parseArticleHtml(html, retryFinalUrl);
+          if (!parsed || looksLikeShell(parsed.title, parsed.text)) {
+            continue;
+          }
+          const partial = !isSubstantial(parsed.text);
+          const draft: ArticleResult = {
+            title: parsed.title,
+            author: parsed.author,
+            published: parsed.published,
+            originalUrl: original,
+            text: parsed.text,
+            images: parsed.images,
+            partial,
+            markdown: "",
+            sourceUrl: retryFinalUrl,
+          };
+          draft.markdown = toMarkdown(draft);
+          if (!best || parsed.text.length > best.text.length) best = draft;
+          if (!partial) break;
+        } catch {
+          // Ignore second-pass failures
+        }
       }
     }
 
