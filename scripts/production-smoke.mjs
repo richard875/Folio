@@ -43,9 +43,14 @@ try {
     callId, status: "in progress", startedAt: new Date().toISOString(), finishedAt: null,
     active: 2, saved: 12, failed: 0, results: [],
   }));
-  const env = { ...process.env, ACCESS_HASH: hash, HOST: "127.0.0.1", PORT: port };
+  const env = { ...process.env, ACCESS_HASH: hash, HOST: "0.0.0.0", PORT: port, READ_CONCURRENCY: "1", SAVE_CONCURRENCY: "1", FEED_CONCURRENCY: "2", FETCH_RETRY_LIMIT: "2", NITRO_SHUTDOWN_TIMEOUT: "45000" };
   for (const key of ["NODE_OPTIONS", "DATABASE_URL", "NITRO_HOST", "NITRO_PORT", "NITRO_UNIX_SOCKET", "NITRO_SSL_CERT", "NITRO_SSL_KEY"]) delete env[key];
-  child = spawn(process.execPath, ["--max-old-space-size=2048", join(project, "scripts/start-production.mjs")], {
+  // Test-only publisher transport, never deployed: exercise real HTTP extraction
+  // and DOM parsing without issuing third-party article requests or saving real data.
+  const fixtureHtml = `<html><head><title>Memory fixture</title></head><body><article><h1>Memory fixture</h1>${("<p>Folio reports on the changing economic situation and explains the evidence in detail for its readers. This is a synthetic memory-test paragraph.</p>").repeat(1200)}</article></body></html>`;
+  const preload = join(root, "fixture-transport.mjs");
+  await writeFile(preload, `const original = globalThis.fetch; const html = ${JSON.stringify(fixtureHtml)}; globalThis.fetch = (input, init) => String(input).includes("fixture.folio.example") ? Promise.resolve(new Response(html, {headers:{"content-type":"text/html"}})) : original(input, init);`);
+  child = spawn(process.execPath, ["--max-old-space-size=256", "--max-semi-space-size=16", "--import", preload, join(project, "scripts/start-production.mjs")], {
     cwd: root, env, stdio: ["ignore", "pipe", "pipe"],
   });
   child.stdout.on("data", (data) => { logs += data.toString(); });
@@ -57,6 +62,10 @@ try {
     await sleep(100);
   }
   assert.ok(ready, "Production server did not become ready.");
+  assert.equal((await get("/healthz", false)).status, 200);
+  const idleMemory = (await (await get("/api/health")).json()).memoryBytes.rss;
+  peakRss = idleMemory;
+  assert.equal((await get("/api/import", false, { method: "POST" })).status, 401);
   assert.equal(JSON.parse(await readFile(join(root, "output/jobs", `${callId}.json`), "utf8")).status, "error");
 
   for (const path of ["/api/read", "/api/save", "/api/links", "/api/collect", "/api/collect/status", "/api/agent/latest", "/api/agent/read", "/api/health", "/api/docs", "/api/openapi", "/api/docs/assets", "/api/purge"]) {
@@ -111,13 +120,31 @@ try {
     const data = await (await get("/api/health")).json();
     peakRss = Math.max(peakRss, data.memoryBytes.rss);
   }
-  assert.ok(peakRss < 4 * 1024 ** 3, "Sampled memory exceeded the production service ceiling.");
+  assert.ok(peakRss < 512 * 1024 ** 2, "Sampled memory exceeded Render's free service ceiling.");
+  let extracted = 0;
+  for (let round = 0; round < 4; round++) {
+    await Promise.all(Array.from({ length: 3 }, async (_, index) => {
+      const response = await get(`/api/read?${new URLSearchParams({ hash, format: "json", url: `https://fixture.folio.example/article-${round}-${index}` })}`, false);
+      assert.ok([200, 429].includes(response.status));
+      const result = await response.json();
+      if (response.ok) { assert.ok(result.text.length > 100000); extracted++; }
+    }));
+    peakRss = Math.max(peakRss, (await (await get("/api/health")).json()).memoryBytes.rss);
+  }
+  assert.ok(extracted >= 4, "Synthetic extraction load did not exercise the parser.");
+  assert.ok(peakRss < 512 * 1024 ** 2, "Extraction RSS exceeded Render's free limit.");
+  const archive = join(root, "archive");
+  await mkdir(join(archive, "articles", "2000-01-01_00-00"), { recursive: true });
+  await writeFile(join(archive, "articles/2000-01-01_00-00/fixture.md"), "# Imported fixture\n");
+  const importer = spawn(process.execPath, [join(project, "scripts/import-output.mjs"), archive, origin], { env, stdio: "ignore" });
+  assert.equal(await new Promise((resolve) => importer.once("exit", resolve)), 0);
+  assert.equal(await readFile(join(root, "output/articles/2000-01-01_00-00/fixture.md"), "utf8"), "# Imported fixture\n");
   const query = new URLSearchParams({ hash });
   assert.equal((await get(`/api/purge?${query}`, false)).status, 405);
   await writeFile(join(root, "output/jobs", `${callId}.json`), JSON.stringify({ callId, status: "in progress" }));
   assert.equal((await get(`/api/purge?${query}`, false, { method: "POST" })).status, 409);
   assert.deepEqual((await readdir(join(root, "output/articles", folder))).sort(), [...articles.keys()].sort());
-  const duplicate = spawn(process.execPath, ["--max-old-space-size=2048", join(project, "scripts/start-production.mjs")], { cwd: root, env, stdio: "ignore" });
+  const duplicate = spawn(process.execPath, ["--max-old-space-size=256", "--max-semi-space-size=16", join(project, "scripts/start-production.mjs")], { cwd: root, env, stdio: "ignore" });
   assert.equal(await new Promise((resolve) => duplicate.once("exit", resolve)), 1);
   assert.equal(JSON.parse(await readFile(join(root, "output/jobs", `${callId}.json`), "utf8")).status, "in progress", "A duplicate startup modified active job records.");
 
@@ -147,8 +174,8 @@ try {
   // Render checks use the same real standalone process and disposable data.
   const compareDev = process.env.PRODUCTION_SMOKE_COMPARE_DEV === "1";
   const renders = [
-    ...(compareDev ? [["oracle-dev", "http://127.0.0.1:8080/", null]] : []),
-    ["oracle-production", `${origin}/`, compareDev ? join(project, "screenshots/oracle-dev.json") : null],
+    ...(compareDev ? [["render-dev", "http://127.0.0.1:8080/", null]] : []),
+    ["render-production", `${origin}/`, compareDev ? join(project, "screenshots/render-dev.json") : null],
   ];
   for (const [name, url, baseline] of renders) {
     const args = [join(project, "scripts/browser-smoke.mjs"), url, join(project, `screenshots/${name}.png`)];
@@ -157,13 +184,18 @@ try {
     const code = await new Promise((resolve) => smoke.once("exit", resolve));
     assert.equal(code, 0, `${name} render check failed`);
   }
-  console.info(JSON.stringify({ productionSmoke: "passed", verifiedFiles: manifest.length, verifiedChunks: chunks, sampledPeakRssMiB: Math.round(peakRss / 1024 ** 2), storage: "disposable fixtures only" }));
+  console.info(JSON.stringify({ productionSmoke: "passed", verifiedFiles: manifest.length, verifiedChunks: chunks, syntheticExtractions: extracted, idleRssMiB: Math.round(idleMemory / 1024 ** 2), sampledPeakRssMiB: Math.round(peakRss / 1024 ** 2), storage: "disposable fixtures only" }));
+} catch (error) {
+  console.error(logs.replaceAll(hash, "[redacted]"));
+  throw error;
 } finally {
   if (child && child.exitCode === null) {
     child.kill("SIGTERM");
-    const timeout = setTimeout(() => child.kill("SIGKILL"), 10000);
-    await new Promise((resolve) => child.once("exit", resolve));
+    const timeout = setTimeout(() => child.kill("SIGKILL"), 55000);
+    const exit = await new Promise((resolve) => child.once("exit", (code, signal) => resolve({ code, signal })));
     clearTimeout(timeout);
+    assert.equal(exit.signal, null, "Server required forced termination instead of graceful SIGTERM shutdown.");
+    assert.equal(exit.code, 0);
   }
   assert.ok(!logs.includes(hash), "Production logs exposed the access hash.");
   await rm(root, { recursive: true, force: true });

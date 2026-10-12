@@ -36,6 +36,11 @@ export function ApiDocumentation({ accessHash = "" }: { accessHash?: string }) {
               </Dialog.Close>
             </div>
             <div className="space-y-6 text-sm leading-relaxed text-muted">
+              <p className="rounded-lg border border-line bg-bg p-3 text-ink">
+                Render Free uses temporary storage. Saved articles, reports, imported history,
+                and job statuses disappear on sleep, restart, or redeployment. Keep important
+                output in a separate archive.
+              </p>
               <section className="space-y-2">
                 <h3 className="text-base font-semibold text-ink">Swagger UI</h3>
                 <p>
@@ -124,8 +129,9 @@ export function ApiDocumentation({ accessHash = "" }: { accessHash?: string }) {
                     GET /api/collect/status?callId=…&hash=…
                   </code>
                   . Returns saved/failed counts and a status of completed, in progress, not found,
-                  or error. Completed progress survives restarts; interrupted jobs are marked as
-                  errors.
+                  or error. Poll externally while a job is active. Interrupted jobs are marked
+                  as errors only if their temporary records survive; after storage loss, status
+                  returns not found. Start a new collection explicitly.
                 </p>
               </section>
               <section className="space-y-2">

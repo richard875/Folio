@@ -119,11 +119,21 @@ export const openApiDocument = {
     { name: "Operations" },
   ],
   paths: {
+    "/api/import": {
+      post: {
+        tags: ["Operations"], summary: "Import one archived output file into temporary storage", operationId: "importOutput",
+        security: agentAuth,
+        description: "Explicit restoration only. Never overwrites a different file or executes imported jobs. Imported history is lost on Render sleep, restart or redeploy. Use scripts/import-output.mjs from your local archive.",
+        parameters: [parameter("path", "Logical output/articles, output/links or output/jobs file path.", true), { name: "X-Folio-Sha256", in: "header", required: true, schema: { type: "string", pattern: "^[a-f0-9]{64}$" } }],
+        requestBody: { required: true, content: { "application/octet-stream": { schema: { type: "string", format: "binary" } } } },
+        responses: { "200": response("Verified file imported or identical file already present.", { type: "object" }), "400": error("Invalid path, checksum or record."), "409": error("Different destination file exists or collection is active."), "413": error("File exceeds size limit."), "429": error("Another import is running."), ...commonErrors },
+      },
+    },
     "/api/health": {
       get: {
         tags: ["Operations"], summary: "Check production readiness", operationId: "health",
         security: agentAuth,
-        description: "Authenticated process memory/uptime and writable-storage check. Returns 503 below the 1 GiB disk reserve. Does not run article collection.",
+        description: "Authenticated process memory/uptime and temporary-storage check. Returns 503 below a 64 MiB reserve. Render Free wipes output on sleep, restart or redeploy. Does not run collection.",
         responses: {
           "200": response("Ready; memoryBytes, uptimeSeconds and storageAvailableBytes.", { type: "object" }),
           "503": error("Storage unavailable, unwritable or nearly full."),
@@ -196,7 +206,7 @@ export const openApiDocument = {
             ...error("Rate limited. Retry after the supplied delay."),
             headers: { "Retry-After": { schema: string } },
           },
-          "507": error("Less than 1 GiB of storage remains; free space before saving."),
+          "507": error("Less than 64 MiB of temporary storage remains."),
           ...commonErrors,
         },
       },
