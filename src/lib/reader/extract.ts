@@ -133,7 +133,7 @@ export function parseArticleHtml(html: string, pageUrl: string): ParsedPage | nu
 }
 
 const SHELL =
-  /paste a link and read|no link handy|type removepaywall|12ft ladder|this page is a placeholder|search the archive|wayback machine has not archived|enter a url to remove/i;
+  /paste a link and read|no link handy|type removepaywall|12ft ladder|this page is a placeholder|search the archive|wayback machine has not archived|enter a url to remove|article not found|404.{0,20}article|couldn't find the article|we couldn't find|freedium - freedium|enable javascript to view|please enable javascript|access denied|subscription required|subscribe to read|subscribe to continue|sign up to read|create an account to read|this article is for subscribers/i;
 
 export function looksLikeShell(title: string, text: string): boolean {
   return SHELL.test(`${title}\n${text.slice(0, 900)}`);

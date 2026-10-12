@@ -50,7 +50,7 @@ const PREMIUM_DOMAINS = new Set([
   "www.ft.com",
 ]);
 
-// Domains that work best with archive.is/newest (tried immediately after direct fetch)
+// Domains that work best with archive.is/newest (tried first)
 const ARCHIVE_NEWEST_DOMAINS = new Set([
   "wsj.com",
   "www.wsj.com",
@@ -58,6 +58,12 @@ const ARCHIVE_NEWEST_DOMAINS = new Set([
   "www.axios.com",
   "thehill.com",
   "www.thehill.com",
+  "foreignpolicy.com",
+  "www.foreignpolicy.com",
+  "cnbc.com",
+  "www.cnbc.com",
+  "businessinsider.com",
+  "www.businessinsider.com",
 ]);
 
 function isPremiumDomain(url: string): boolean {
@@ -96,12 +102,14 @@ export function probeList(original: string): Probe[] {
   }
 
   if (premium) {
-    // For premium domains, try Freedium and Freedium-mirror first (both raw and encoded)
+    // For premium domains, try Freedium first, then archive.is/newest, then other bypass services
     raw.push(
       { method: "freedium", url: `https://freedium.cfd/${original}` },
       { method: "freedium-encoded", url: `https://freedium.cfd/${enc}` },
       { method: "freedium-mirror", url: `https://freedium-mirror.cfd/${original}` },
       { method: "freedium-mirror-encoded", url: `https://freedium-mirror.cfd/${enc}` },
+      // archive.is/newest early for premium domains too
+      { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
     );
   }
 
@@ -111,13 +119,13 @@ export function probeList(original: string): Probe[] {
     { method: "freedium-encoded", url: `https://freedium.cfd/${enc}` },
     { method: "freedium-mirror", url: `https://freedium-mirror.cfd/${original}` },
     { method: "freedium-mirror-encoded", url: `https://freedium-mirror.cfd/${enc}` },
+    // archive.is/newest early for regular domains too
+    { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
     { method: "removepaywalls", url: `https://removepaywalls.com/${original}` },
     { method: "removepaywall", url: `https://removepaywall.com/${original}` },
     { method: "removepaywall-co", url: `https://removepaywall.co/${original}` },
     { method: "smry", url: `https://smry.ai/${original}` },
     { method: "12ft", url: `https://12ft.io/${original}` },
-    // archive.is/newest comes first among archive services (if not already added for archiveNewest domains)
-    { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
     { method: "archive.today", url: `https://archive.today/latest/${original}` },
     { method: "archive.ph", url: `https://archive.ph/${original}` },
     { method: "archive.is", url: `https://archive.is/${original}` },
