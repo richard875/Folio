@@ -77,7 +77,7 @@ const linksOperation = {
   summary: "Collect RSS links and save their report",
   operationId: "collectLinks",
   description:
-    "Fetches only configured feed URLs and saves a timestamped Markdown report. RSS_LINKS_PER_SECTION defaults to 5. This request waits for collection to finish; use /api/collect for a non-blocking workflow. Creates a file; POST is preferred.",
+    "Fetches only configured RSS/Atom/news-sitemap sources, filters non-articles before the limit, preserves editor order for curated sources, and uses publication time plus cross-publisher headline support for unranked sources. Google News selections are resolved to publisher URLs and filtered before saving the report. RSS_LINKS_PER_SECTION defaults to 5. This request waits for collection to finish; use /api/collect for a non-blocking workflow. Creates a file; POST is preferred.",
   parameters: [format],
   responses: {
     "200": {

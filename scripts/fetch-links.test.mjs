@@ -39,6 +39,16 @@ test("catalog uses exactly the twelve primary feed URLs in the replacement attac
   const urls = new Set(feeds.map((item) => item.url));
   assert.ok(urls.has("https://thehill.com/news/feed/"));
   assert.ok(urls.has("https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"));
+  assert.ok(urls.has("https://flipboard.com/@WSJ.rss"));
+  assert.ok(urls.has("https://www.bloomberg.com/sitemaps/news/latest.xml"));
+  assert.ok(urls.has("https://www.businessinsider.com/sitemap/google-news.xml"));
+  assert.equal(feeds.find((item) => item.site === "Bloomberg").format, "news-sitemap");
+  assert.equal(feeds.find((item) => item.site === "NY Times").ordering, "editorial");
+  assert.equal(feeds.find((item) => item.site === "Axios").homepageScore, 10);
+  assert.match(
+    feeds.find((item) => item.site === "Washington Post").description,
+    /Associated Press/,
+  );
   assert.ok(feeds.every((item) => item.section === "Main feed"));
   assert.ok(
     !urls.has("https://www.ft.com/rss/home/international"),
@@ -63,7 +73,7 @@ test("catalog ignores dead/prose links and supports CRLF and escaped table pipes
 
 test("a smaller site table fetches only its explicit URLs and yields at most one article per row", async () => {
   const source =
-    "# Feeds\n| Site | Feed URL | Notes |\n| --- | --- | --- |\n| Axios | `https://example.com/axios` | Alternate: `https://example.com/alternate` |\n| NY Times | `https://example.com/nyt` | |\n\n## Sources\n| Site | Feed URL |\n| --- | --- |\n| Reference | `https://example.com/reference` |\n";
+    "# Feeds\n| Site | Feed URL | Notes |\n| --- | --- | --- |\n| Example One | `https://example.com/axios` | Alternate: `https://example.com/alternate` |\n| Example Two | `https://example.com/nyt` | |\n\n## Sources\n| Site | Feed URL |\n| --- | --- | --- |\n| Reference | `https://example.com/reference` |\n";
   const feeds = parseFeedCatalog(source);
   const requested = [];
   const results = await collectFeeds(feeds, {
@@ -89,9 +99,29 @@ test("limit one with the current attachment returns no more than twelve links", 
   let requests = 0;
   const results = await collectFeeds(feeds, {
     limit: 1,
-    fetchImpl: async () => {
+    fetchImpl: async (input) => {
       requests++;
-      return new Response(rss);
+      const entry = feeds.find((item) => item.url === String(input));
+      const domains = {
+        WSJ: "wsj.com",
+        "NY Times": "nytimes.com",
+        "Washington Post": "washingtonpost.com",
+        Bloomberg: "bloomberg.com",
+        "The Economist": "economist.com",
+        "The Hill": "thehill.com",
+        Axios: "axios.com",
+        "Financial Times": "ft.com",
+        "Foreign Policy": "foreignpolicy.com",
+        CNBC: "cnbc.com",
+        Reuters: "reuters.com",
+        "Business Insider": "businessinsider.com",
+      };
+      const url = `https://www.${domains[entry.site]}/news/story`;
+      return new Response(
+        entry.format === "news-sitemap"
+          ? `<urlset xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"><url><loc>${url}</loc><news:news><news:title>Example article</news:title></news:news></url></urlset>`
+          : `<rss version="2.0"><channel><title>News</title><item><title>Example article</title><link>${url}</link></item></channel></rss>`,
+      );
     },
   });
   assert.equal(requests, 12);

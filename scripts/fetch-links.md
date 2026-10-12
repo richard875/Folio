@@ -24,7 +24,7 @@ RSS_LINKS_PER_SECTION=5
 FETCH_RETRY_LIMIT=5
 ```
 
-The default is 5 unique links per subsection, preserving feed order. Invalid or
+The default is 5 unique article links per subsection, after filtering and ranking. Invalid or
 non-positive limits default to 5. Retry limits count retries after the initial
 attempt; 0 disables retries. Existing environment variables override `.env`.
 
@@ -46,9 +46,13 @@ appropriate request timeouts. Failed feeds are marked without discarding the
 others. If all feeds fail, the report is still saved and returned with HTTP 502.
 Write/configuration failures return HTTP 500, and invalid keys return HTTP 401.
 
-Only current feed entries are collected, not historical article archives.
-Duplicates are removed within a section. Google News entries keep the article
-URLs published in those feeds. Article bodies are not fetched by `/api/links`.
-The background `/api/collect` workflow resolves Google News article links to
-publisher URLs before saving; `/api/links` itself still returns the feed links.
+RSS, Atom and Google News sitemap XML are supported. The source descriptions,
+scores and editions in the attachment are read by column name. Each publisher's
+media/non-article cleanup is applied before the limit. Curated feeds preserve
+editor order; unranked feeds use publication time and cross-publisher headline
+coverage. See `scripts/feed-selection.md` for the complete policy and limitations.
+Google News candidates are resolved to publisher URLs during selection so
+videos/quotes can be excluded and replaced with the next eligible article.
+Article bodies and publisher homepages are not fetched by `/api/links`.
+The background save resolver remains compatible with older Google-wrapper reports.
 The npm `fetch:links` command and its CLI options have been removed.

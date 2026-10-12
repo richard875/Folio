@@ -1,13 +1,13 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
-import Parser from "rss-parser";
 import { parseFeedCatalog, type Feed } from "./catalog.ts";
+import { articleUrl, parseCandidates, rankCandidates, type Candidate } from "./selection.ts";
+import { isGoogleNewsArticle, resolveGoogleNewsUrl } from "./google-news.ts";
 
-const parser = new Parser();
 const USER_AGENT = "Mozilla/5.0 (compatible; FolioRSS/1.0)";
 
-export type FeedResult = Feed & { urls: string[]; ok: boolean };
+export type FeedResult = Feed & { urls: string[]; ok: boolean; candidates?: Candidate[] };
 export type FetchOptions = {
   fetchImpl?: typeof fetch;
   retryLimit?: number;
@@ -15,6 +15,7 @@ export type FetchOptions = {
   limit?: number;
   concurrency?: number;
   onProgress?: (result: FeedResult, index: number) => void;
+  now?: () => number;
 };
 export type SaveLinksOptions = {
   now?: () => Date;
@@ -38,27 +39,21 @@ export async function parseArticleLinks(
   feedUrl: string,
   limit = 5,
 ): Promise<string[]> {
-  const feed = await parser.parseString(xml);
-  const urls = new Set<string>();
-  for (const item of feed.items || []) {
-    // GUIDs are identifiers, not necessarily article URLs.
-    if (!item.link?.trim()) continue;
-    try {
-      const url = new URL(item.link.trim(), feedUrl);
-      if (!["http:", "https:"].includes(url.protocol) || url.username || url.password) continue;
-      url.hash = "";
-      urls.add(url.href);
-      if (urls.size >= limit) break;
-    } catch {
-      /* Ignore invalid article links. */
-    }
-  }
-  return [...urls];
+  const feed = { site: "", section: "", url: feedUrl };
+  return rankCandidates(parseCandidates(xml, feed))
+    .slice(0, limit)
+    .map((candidate) => candidate.url);
 }
 
 export async function fetchFeed(
   feed: Feed,
-  { fetchImpl = fetch, retryLimit = 5, timeoutMs = 15000, limit = 5 }: FetchOptions = {},
+  {
+    fetchImpl = fetch,
+    retryLimit = 5,
+    timeoutMs = 15000,
+    limit = 5,
+    now = Date.now,
+  }: FetchOptions = {},
 ): Promise<FeedResult> {
   for (let attempt = 0; ; attempt++) {
     try {
@@ -73,9 +68,14 @@ export async function fetchFeed(
         await response.body?.cancel();
         throw new Error(`HTTP ${response.status}`);
       }
+      const xml = await response.text();
+      const candidates = parseCandidates(xml, { ...feed, url: response.url || feed.url }, now());
       return {
         ...feed,
-        urls: await parseArticleLinks(await response.text(), response.url || feed.url, limit),
+        urls: rankCandidates(candidates, candidates, now())
+          .slice(0, limit)
+          .map((candidate) => candidate.url),
+        candidates,
         ok: true,
       };
     } catch {
@@ -97,7 +97,57 @@ export async function collectFeeds(
       while (next < feeds.length) {
         const index = next++;
         results[index] = await fetchFeed(feeds[index], options);
-        options.onProgress?.(results[index], index);
+      }
+    }),
+  );
+  const pool = results.flatMap((result) => result.candidates || []);
+  let selectionIndex = 0;
+  const resolvedGoogle = new Map<string, Promise<string>>();
+  await Promise.all(
+    Array.from({ length: Math.min(concurrency, feeds.length) }, async () => {
+      while (selectionIndex < results.length) {
+        const index = selectionIndex++;
+        const result = results[index];
+        if (!result.ok) {
+          options.onProgress?.(result, index);
+          continue;
+        }
+        const ranked = rankCandidates(result.candidates || [], pool, options.now?.() ?? Date.now());
+        const selected = new Set<string>();
+        const deadline = AbortSignal.timeout(60000);
+        let resolutionFailed = false;
+        for (const candidate of ranked) {
+          if (selected.size >= (options.limit ?? 5)) break;
+          let url = candidate.url;
+          if (new URL(result.url).hostname === "news.google.com" && isGoogleNewsArticle(url)) {
+            if (deadline.aborted) {
+              resolutionFailed = true;
+              break;
+            }
+            let pending = resolvedGoogle.get(url);
+            if (!pending) {
+              const fetchImpl = options.fetchImpl ?? fetch;
+              pending = resolveGoogleNewsUrl(url, (input, init) =>
+                fetchImpl(input, {
+                  ...init,
+                  signal: init?.signal ? AbortSignal.any([deadline, init.signal]) : deadline,
+                }),
+              );
+              resolvedGoogle.set(url, pending);
+            }
+            try {
+              url = await pending;
+            } catch {
+              resolutionFailed = true;
+              continue;
+            }
+          }
+          const canonical = articleUrl(url, result);
+          if (canonical) selected.add(canonical);
+        }
+        result.urls = [...selected];
+        if (!result.urls.length && resolutionFailed) result.ok = false;
+        options.onProgress?.(result, index);
       }
     }),
   );
