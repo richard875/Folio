@@ -8,7 +8,7 @@ export function productionConfig(env) {
     throw new Error("ACCESS_HASH must contain at least 32 characters. Generate a random secret before starting production.");
   }
   if (env.DATABASE_URL?.trim()) throw new Error("This file-backed Folio deployment does not use DATABASE_URL. Remove it.");
-  if (env.NITRO_UNIX_SOCKET || env.NITRO_SSL_CERT || env.NITRO_SSL_KEY) throw new Error("Use the configured loopback HTTP listener behind Caddy, not Nitro socket/TLS overrides.");
+  if (env.NITRO_UNIX_SOCKET || env.NITRO_SSL_CERT || env.NITRO_SSL_KEY) throw new Error("Render terminates HTTPS; use the HTTP listener on HOST/PORT, not Nitro socket/TLS overrides.");
   const host = env.HOST || "0.0.0.0";
   if (!["0.0.0.0", "127.0.0.1"].includes(host)) throw new Error("Unsupported HOST.");
   const port = env.PORT || "3000";
