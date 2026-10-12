@@ -5,7 +5,7 @@ import { getHeapStatistics } from "node:v8";
 let reservation;
 try {
   const config = productionConfig(process.env);
-  if (getHeapStatistics().heap_size_limit > 2300 * 1024 * 1024) throw new Error("Start Folio with --max-old-space-size=2048 (use npm start or the supplied service).");
+  if (getHeapStatistics().heap_size_limit > 330 * 1024 * 1024) throw new Error("Start Folio with the documented old-space and semi-space limits (use npm start).");
   // Refuse a duplicate launch before touching another process's active job records.
   // Reject probes during preflight rather than retaining sockets that would
   // prevent reservation.close() from finishing when the real server starts.
@@ -21,7 +21,7 @@ try {
   console.info(JSON.stringify({ event: "folio_start", recoveredJobs: recovered, heapLimitBytes: getHeapStatistics().heap_size_limit }));
   await new Promise((resolve, reject) => reservation.close((error) => error ? reject(error) : resolve()));
   reservation = undefined;
-  // The CLI applies the 2 GiB heap limit before this script runs.
+  // A 256 MiB heap leaves headroom for native allocations within Render's 512 MB.
   await import("../.output/server/index.mjs");
 } catch (error) {
   if (reservation?.listening) reservation.close();

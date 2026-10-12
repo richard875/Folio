@@ -183,7 +183,14 @@ export default defineConfig(({ command, isPreview, mode }) => {
       ...(command === "build" || isPreview
         ? [
             nitro({
-              preset: "node-server",
+               preset: "node-server",
+               routeRules: {
+                 "/**": { headers: {
+                   "referrer-policy": "no-referrer",
+                   "x-content-type-options": "nosniff",
+                   "strict-transport-security": "max-age=31536000",
+                 } },
+               },
               // Auto-registers server/middleware/* (the PWA install page +
               // manifest + head-tag middleware). Nitro v3 defaults serverDir to
               // false, so removing this silently unwires /?install=1 on deploys.

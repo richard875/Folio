@@ -5,16 +5,17 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { productionConfig, prepareProduction } from "./production-config.mjs";
 
-test("production fails closed on weak credentials, public binding, database and invalid budgets", () => {
+test("production fails closed on weak credentials, unsupported binding, database and invalid budgets", () => {
   const valid = { ACCESS_HASH: "a".repeat(64) };
-  assert.deepEqual(productionConfig(valid), { host: "127.0.0.1", port: "3000" });
+  assert.deepEqual(productionConfig(valid), { host: "0.0.0.0", port: "3000" });
   for (const change of [
-    { ACCESS_HASH: "weak" }, { HOST: "0.0.0.0" }, { NITRO_HOST: "0.0.0.0" },
+    { ACCESS_HASH: "weak" }, { HOST: "example.com" },
     { PORT: "80" }, { PORT: "65536" }, { DATABASE_URL: "postgres://example" },
     { NODE_OPTIONS: "--max-old-space-size=999999" }, { SAVE_CONCURRENCY: "50" },
     { READ_CONCURRENCY: "11" }, { FETCH_RETRY_LIMIT: "999" }, { RSS_LINKS_PER_SECTION: "101" },
   ]) assert.throws(() => productionConfig({ ...valid, ...change }));
   assert.equal(productionConfig({ ...valid, FETCH_RETRY_LIMIT: "0" }).port, "3000");
+  assert.equal(productionConfig({ ...valid, HOST: "0.0.0.0", PORT: "8765", NITRO_PORT: "9999", NODE_OPTIONS: "--max-old-space-size=256 --max-semi-space-size=16" }).port, "8765");
 });
 
 test("production recovers all interrupted jobs before serving, without changing finished jobs", async (t) => {

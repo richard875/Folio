@@ -13,7 +13,7 @@ export async function handleHealth(request: Request, root = process.cwd()): Prom
     const directory = resolve(root, "output/jobs");
     const disk = await statfs(directory, { bigint: true });
     const available = disk.bavail * disk.bsize;
-    if (available < 1_073_741_824n) throw new Error("storage");
+    if (available < 67_108_864n) throw new Error("storage");
     const path = resolve(directory, `.folio-${randomUUID()}.tmp`);
     const handle = await open(path, "wx", 0o600);
     try { await handle.writeFile("health"); } finally { await handle.close(); await unlink(path); }
@@ -24,6 +24,6 @@ export async function handleHealth(request: Request, root = process.cwd()): Prom
       storageAvailableBytes: Number(available),
     }, { headers });
   } catch {
-    return Response.json({ status: "unavailable", error: "Persistent storage is unavailable or nearly full." }, { status: 503, headers });
+    return Response.json({ status: "unavailable", error: "Temporary storage is unavailable or nearly full." }, { status: 503, headers });
   }
 }

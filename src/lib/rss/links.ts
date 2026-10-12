@@ -6,6 +6,7 @@ import { articleUrl, parseCandidates, rankCandidates, type Candidate } from "./s
 import { isGoogleNewsArticle, resolveGoogleNewsUrl } from "./google-news.ts";
 import { boundedBytes, publicFetch, publicFetchRedirects } from "../runtime/network.ts";
 import { writeNewFile } from "../runtime/storage.ts";
+import { boundedInteger } from "../runtime/limits.ts";
 
 const USER_AGENT = "Mozilla/5.0 (compatible; FolioRSS/1.0)";
 
@@ -95,7 +96,7 @@ export async function collectFeeds(
 ): Promise<FeedResult[]> {
   const results = new Array<FeedResult>(feeds.length);
   let next = 0;
-  const concurrency = options.concurrency ?? 6;
+  const concurrency = options.concurrency ?? boundedInteger(process.env.FEED_CONCURRENCY, 2, 6);
   await Promise.all(
     Array.from({ length: Math.min(concurrency, feeds.length) }, async () => {
       while (next < feeds.length) {

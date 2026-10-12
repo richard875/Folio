@@ -5,7 +5,7 @@ import { assertPublicHttpUrl, probeList, type Probe } from "./targets.ts";
 import type { ArticleResult } from "./types.ts";
 import { BoundedCache, extractionLimit } from "../runtime/limits.ts";
 
-const CACHE = new BoundedCache<ArticleResult>(40, 32 * 1024 * 1024, 30 * 60 * 1000);
+const CACHE = new BoundedCache<ArticleResult>(10, 8 * 1024 * 1024, 30 * 60 * 1000);
 const BUDGET_MS = 48_000;
 
 // Cache for resolved archive.is/newest URLs -> direct archive.is/... URLs

@@ -9,19 +9,20 @@ export function productionConfig(env) {
   }
   if (env.DATABASE_URL?.trim()) throw new Error("This file-backed Folio deployment does not use DATABASE_URL. Remove it.");
   if (env.NITRO_UNIX_SOCKET || env.NITRO_SSL_CERT || env.NITRO_SSL_KEY) throw new Error("Use the configured loopback HTTP listener behind Caddy, not Nitro socket/TLS overrides.");
-  const host = env.NITRO_HOST || env.HOST || "127.0.0.1";
-  if (host !== "127.0.0.1") throw new Error("Production must bind to 127.0.0.1 behind the HTTPS proxy.");
-  const port = env.NITRO_PORT || env.PORT || "3000";
+  const host = env.HOST || "0.0.0.0";
+  if (!["0.0.0.0", "127.0.0.1"].includes(host)) throw new Error("Unsupported HOST.");
+  const port = env.PORT || "3000";
   if (!/^\d+$/.test(port) || Number(port) < 1024 || Number(port) > 65535) throw new Error("Use an unprivileged valid PORT (default 3000).");
   for (const [key, minimum, maximum] of [
     ["READ_CONCURRENCY", 1, 10], ["SAVE_CONCURRENCY", 1, 10],
     ["FETCH_RETRY_LIMIT", 0, 10], ["RSS_LINKS_PER_SECTION", 1, 100],
+    ["FEED_CONCURRENCY", 1, 6],
   ]) {
     if (env[key] !== undefined && (!/^\d+$/.test(env[key]) || Number(env[key]) < minimum || Number(env[key]) > maximum)) {
       throw new Error(`${key} must be ${minimum}–${maximum}.`);
     }
   }
-  if (env.NODE_OPTIONS) throw new Error("NODE_OPTIONS must be unset; this deployment manages the Node heap limit in its start command.");
+  if (env.NODE_OPTIONS && env.NODE_OPTIONS !== "--max-old-space-size=256 --max-semi-space-size=16") throw new Error("Use the documented Render heap and semi-space limits in NODE_OPTIONS.");
   return { host, port };
 }
 
@@ -37,7 +38,7 @@ export async function prepareProduction(root) {
     finally { await handle.close(); await unlink(path); }
   }
   const disk = await statfs(resolve(root, "output"), { bigint: true });
-  if (disk.bavail * disk.bsize < 1_073_741_824n) throw new Error("Less than 1 GiB of storage is available. Free space before restarting Folio.");
+  if (disk.bavail * disk.bsize < 67_108_864n) throw new Error("Less than 64 MiB of temporary storage is available.");
   const directory = resolve(root, "output/jobs");
   let recovered = 0;
   for (const entry of await readdir(directory, { withFileTypes: true })) {

@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: folio
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: NODE_OPTIONS=--max-old-space-size=4096 sh -c 'npm ci --include=dev && npm run lint && npm test && npm run typecheck && npm run build'
+    startCommand: node --env-file-if-exists=.env scripts/start-production.mjs
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    maxShutdownDelaySeconds: 60
+    envVars:
+      - key: ACCESS_HASH
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=256 --max-semi-space-size=16
+      - key: HOST
+        value: 0.0.0.0
+      - key: VITE_AUTH_ENABLED
+        value: "false"
+      - key: READ_CONCURRENCY
+        value: "1"
+      - key: SAVE_CONCURRENCY
+        value: "1"
+      - key: FEED_CONCURRENCY
+        value: "2"
+      - key: RSS_LINKS_PER_SECTION
+        value: "5"
+      - key: FETCH_RETRY_LIMIT
+        value: "2"
+      - key: NITRO_SHUTDOWN_TIMEOUT
+        value: "45000"
