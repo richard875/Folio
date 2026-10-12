@@ -84,7 +84,7 @@ async function collections(root: string): Promise<CollectionRecord[]> {
     if (
       typeof record.callId !== "string" ||
       typeof record.startedAt !== "string" ||
-      !["in progress", "completed", "error"].includes(record.status)
+      !["in progress", "completed", "partial", "error"].includes(record.status)
     ) {
       throw new ArticleAccessError(503, "Unable to verify collection progress.");
     }

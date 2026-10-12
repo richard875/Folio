@@ -5,7 +5,8 @@ import { setTimeout as sleep } from "node:timers/promises";
 import { isGoogleNewsArticle, resolveGoogleNewsUrl } from "../rss/google-news.ts";
 
 export type ArticleTask = { website: string; section: string; url: string };
-export type JobStatus = "in progress" | "completed" | "error";
+export type JobStatus = "in progress" | "completed" | "partial" | "error";
+export type ArticleResultStatus = "saved" | "failed";
 export type Job = {
   callId: string;
   status: JobStatus;
@@ -23,7 +24,7 @@ export type Job = {
   linksFile: string | null;
   error: string | null;
   results: (ArticleTask & {
-    status: "saved" | "error";
+    status: ArticleResultStatus;
     savedFile?: string;
     partial?: boolean;
     error?: string;
@@ -229,10 +230,16 @@ export class JobManager {
       );
       if (workers.some((worker) => worker.status === "rejected"))
         throw new Error("Unable to persist progress.");
-      job.status = job.failed ? "error" : "completed";
-      job.error = job.failed
-        ? "Some articles could not be saved. See the results for details."
-        : null;
+      if (job.saved === 0 && job.failed > 0) {
+        job.status = "error";
+        job.error = "No articles could be saved. See the results for details.";
+      } else if (job.failed > 0) {
+        job.status = "partial";
+        job.error = null;
+      } else {
+        job.status = "completed";
+        job.error = null;
+      }
     } catch {
       job.status = "error";
       job.error = "The operation could not finish. Any articles already saved are retained.";
@@ -265,7 +272,7 @@ export class JobManager {
         articleUrl = await resolved;
       } catch {
         return {
-          status: "error" as const,
+          status: "failed" as const,
           error: "Unable to resolve this article's publisher URL.",
         };
       }
@@ -301,10 +308,10 @@ export class JobManager {
             savedFile,
             partial: response.status === 206,
           };
-        return { status: "error" as const, error: "Unable to save this article." };
+        return { status: "failed" as const, error: "Unable to save this article." };
       }
     } catch {
-      return { status: "error" as const, error: "Unable to save this article." };
+      return { status: "failed" as const, error: "Unable to save this article." };
     }
   }
 }

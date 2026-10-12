@@ -368,7 +368,7 @@ export const openApiDocument = {
           website: string,
           section: string,
           url: string,
-          status: { type: "string", enum: ["saved", "error"] },
+          status: { type: "string", enum: ["saved", "failed"] },
           savedFile: string,
           partial: { type: "boolean" },
           error: string,
@@ -389,7 +389,7 @@ export const openApiDocument = {
         type: "object",
         properties: {
           callId: string,
-          status: { type: "string", enum: ["in progress", "completed", "error"] },
+          status: { type: "string", enum: ["in progress", "completed", "partial", "error"] },
           phase: { type: "string", enum: ["collecting links", "saving articles", "finished"] },
           startedAt: { type: "string", format: "date-time" },
           updatedAt: { type: "string", format: "date-time" },

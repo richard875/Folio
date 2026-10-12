@@ -43,7 +43,7 @@ test("resolves only Google News wrappers before save and never saves an unresolv
   const job = await manager.start("test-key");
   assert.ok(job);
   const result = await finished(manager, job.callId);
-  assert.equal(result.status, "error");
+  assert.equal(result.status, "partial");
   assert.equal(result.saved, 2);
   assert.equal(result.failed, 1);
   assert.deepEqual(saves.map((url) => url.searchParams.get("url")).sort(), [
@@ -58,6 +58,8 @@ test("resolves only Google News wrappers before save and never saves an unresolv
     result.results.find((entry) => entry.website === "Reuters" && entry.status === "saved")?.url,
     "https://www.reuters.com/world/real-article/",
   );
+  const failedEntry = result.results.find((entry) => entry.status === "failed");
+  assert.ok(failedEntry, "Expected a failed entry for the unresolved Google News wrapper");
 });
 
 async function finished(manager: JobManager, callId: string): Promise<Job> {
@@ -185,12 +187,13 @@ test("retries rate limits, retains partial successes and continues past article 
   const job = await manager.start("test");
   assert.ok(job);
   const result = await finished(manager, job.callId);
-  assert.equal(result.status, "error");
+  assert.equal(result.status, "partial");
   assert.equal(result.saved, 1);
   assert.equal(result.failed, 1);
   assert.equal(result.processed, 2);
   assert.deepEqual(waits, [2000]);
   assert.equal(result.results.find((entry) => entry.status === "saved")?.partial, true);
+  assert.ok(result.results.find((entry) => entry.status === "failed"));
   assert.doesNotMatch(JSON.stringify(result), /internal service details/);
 });
 
