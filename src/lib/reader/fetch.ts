@@ -1,7 +1,7 @@
 import { userAgentFor } from "./extract.ts";
 
 const ATTEMPT_MS = 12_000;
-const MAX_BYTES = 1_800_000;
+const MAX_BYTES = 3_000_000;
 const DEFAULT_RETRY_LIMIT = 5;
 
 function retryLimit(): number {

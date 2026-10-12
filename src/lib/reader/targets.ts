@@ -85,13 +85,11 @@ export function probeList(original: string): Probe[] {
   const premium = isPremiumDomain(original);
   const archiveNewest = isArchiveNewestDomain(original);
 
-  // Build the cascade
-  const raw: Probe[] = [
-    { method: "direct", url: original },
-  ];
+  // Build the cascade (no direct fetch)
+  const raw: Probe[] = [];
 
   if (archiveNewest) {
-    // For WSJ and similar domains, try archive.is/newest first (after direct)
+    // For WSJ, Axios, The Hill, try archive.is/newest first
     raw.push(
       { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
     );
