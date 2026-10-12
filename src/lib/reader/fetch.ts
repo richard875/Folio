@@ -37,8 +37,8 @@ export async function fetchHtmlWithRedirects(
     const remainingMs = deadline - Date.now();
     if (remainingMs <= 0) throw new Error("time budget");
 
-    let type: string;
-    let buf: ArrayBuffer;
+    let type = "";
+    let buf = new ArrayBuffer(0);
     let finalUrl = currentUrl;
     let redirectCount = 0;
 

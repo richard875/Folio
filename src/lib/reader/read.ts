@@ -1,7 +1,7 @@
 import { hashMatches } from "./auth.ts";
 import { isSubstantial, looksLikeShell, parseArticleHtml, toMarkdown } from "./extract.ts";
 import { fetchHtml, fetchHtmlWithRedirects } from "./fetch.ts";
-import { assertPublicHttpUrl, probeList } from "./targets.ts";
+import { assertPublicHttpUrl, probeList, type Probe } from "./targets.ts";
 import type { ArticleResult } from "./types.ts";
 
 const CACHE = new Map<string, { at: number; result: ArticleResult }>();
