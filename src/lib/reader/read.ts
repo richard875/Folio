@@ -9,6 +9,12 @@ const CACHE_MS = 30 * 60 * 1000;
 const MAX_CACHE = 40;
 const BUDGET_MS = 48_000;
 
+// Cache for resolved archive.is/newest URLs -> direct archive.is/... URLs
+// Key: original article URL, Value: { finalUrl, at }
+const ARCHIVE_RESOLVE_CACHE = new Map<string, { finalUrl: string; at: number }>();
+const ARCHIVE_CACHE_MS = 24 * 60 * 60 * 1000; // 24 hours - archive snapshots are stable
+const MAX_ARCHIVE_CACHE = 500;
+
 const HITS: number[] = [];
 
 function rateOk(): boolean {
@@ -17,6 +23,24 @@ function rateOk(): boolean {
   if (HITS.length >= 24) return false;
   HITS.push(now);
   return true;
+}
+
+/** Get cached resolved archive URL if available and fresh. */
+function getCachedArchiveUrl(original: string): string | null {
+  const entry = ARCHIVE_RESOLVE_CACHE.get(original);
+  if (entry && Date.now() - entry.at < ARCHIVE_CACHE_MS) {
+    return entry.finalUrl;
+  }
+  return null;
+}
+
+/** Cache a resolved archive URL. */
+function setCachedArchiveUrl(original: string, finalUrl: string): void {
+  if (ARCHIVE_RESOLVE_CACHE.size >= MAX_ARCHIVE_CACHE) {
+    const oldest = [...ARCHIVE_RESOLVE_CACHE.entries()].sort((a, b) => a[1].at - b[1].at)[0];
+    if (oldest) ARCHIVE_RESOLVE_CACHE.delete(oldest[0]);
+  }
+  ARCHIVE_RESOLVE_CACHE.set(original, { finalUrl, at: Date.now() });
 }
 
 export async function readArticle(rawUrl: string, hash: string | null): Promise<ArticleResult> {
@@ -59,14 +83,30 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
         let html: string;
         let finalUrl = probe.url;
 
+        // For archive.is-newest, check if we have a cached resolved URL
         if (probe.method === "archive.is-newest") {
-          const result = await fetchHtmlWithRedirects(
-            probe.url,
-            probe.method,
-            Math.min(passStarted + passBudget, started + BUDGET_MS),
-          );
-          html = result.html;
-          finalUrl = result.finalUrl;
+          const cachedArchiveUrl = getCachedArchiveUrl(original);
+          if (cachedArchiveUrl) {
+            // Use cached direct archive URL instead of hitting /newest/
+            html = await fetchHtml(
+              cachedArchiveUrl,
+              probe.method,
+              Math.min(passStarted + passBudget, started + BUDGET_MS),
+            );
+            finalUrl = cachedArchiveUrl;
+          } else {
+            const result = await fetchHtmlWithRedirects(
+              probe.url,
+              probe.method,
+              Math.min(passStarted + passBudget, started + BUDGET_MS),
+            );
+            html = result.html;
+            finalUrl = result.finalUrl;
+            // Cache the resolved URL for future requests
+            if (finalUrl !== probe.url && finalUrl.includes("archive.is")) {
+              setCachedArchiveUrl(original, finalUrl);
+            }
+          }
         } else {
           html = await fetchHtml(
             probe.url,
@@ -123,6 +163,10 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
             );
             html = result.html;
             retryFinalUrl = result.finalUrl;
+            // Cache the resolved URL for future requests
+            if (retryFinalUrl !== probe.url && retryFinalUrl.includes("archive.is")) {
+              setCachedArchiveUrl(original, retryFinalUrl);
+            }
           } else {
             html = await fetchHtml(probe.url, probe.method, started + BUDGET_MS);
           }
