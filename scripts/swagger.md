@@ -18,9 +18,9 @@ Save/collection operations create files; run them only intentionally.
 Assets are bundled from `swagger-ui-dist`, served locally behind the same hash,
 and loaded using authenticated requests. No CDN or remote schema validator is
 used. API responses and documentation assets are non-cacheable. Swagger auth is
-not persisted in browser storage. The initial hash is removed from the browser
-address bar after the UI loads and referrers are disabled; the initial request
-may still appear in HTTP access logs. Do not share those logs or expose the key.
+not persisted in browser storage. The hash stays in the browser URL so refreshes
+remain authenticated. Referrers are disabled, but the key can appear in browser
+history, bookmarks and HTTP access logs. Do not share the URL or expose the key.
 Use HTTPS outside local development.
 
 Authentication is documented as the `AccessHash` API-key security scheme.

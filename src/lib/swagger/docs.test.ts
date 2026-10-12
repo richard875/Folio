@@ -39,7 +39,7 @@ test("UI is local, non-cacheable, preauthorized and does not persist browser cre
   assert.match(html, /preauthorizeApiKey/);
   assert.match(html, /persistAuthorization:false/);
   assert.match(html, /validatorUrl:null/);
-  assert.match(html, /searchParams.delete\('hash'\)/);
+  assert.doesNotMatch(html, /searchParams.delete\('hash'\)|history.replaceState/);
   assert.doesNotMatch(html, /cdn\.|localStorage|sessionStorage/);
 });
 

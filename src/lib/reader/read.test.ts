@@ -154,11 +154,15 @@ describe("article output", () => {
     };
     const result = await readArticle(url, ACCESS_HASH);
     assert.deepEqual(Object.keys(JSON.parse(JSON.stringify(result))).sort(), [
-      "author", "images", "markdown", "originalUrl", "partial", "published", "text", "title",
+      "author", "images", "markdown", "originalUrl", "partial", "published", "sourceUrl", "text", "title",
     ]);
     assert.match(result.markdown, /Example article/);
     assert.ok(result.markdown.includes(url));
-    assert.doesNotMatch(JSON.stringify(result), /method|freedium|bypass|Tried:/i);
+    // Ensure internal method identifiers aren't exposed as fields (sourceUrl may contain service domain)
+    const json = JSON.stringify(result);
+    assert.doesNotMatch(json, /"method"\s*:/i);
+    assert.doesNotMatch(json, /"bypass"\s*:/i);
+    assert.doesNotMatch(json, /Tried:/i);
   });
 
   it("does not expose internal request details in failure messages", async () => {

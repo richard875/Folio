@@ -1,6 +1,6 @@
 import { hashMatches } from "./auth.ts";
 import { isSubstantial, looksLikeShell, parseArticleHtml, toMarkdown } from "./extract.ts";
-import { fetchHtml } from "./fetch.ts";
+import { fetchHtml, fetchHtmlWithRedirects } from "./fetch.ts";
 import { assertPublicHttpUrl, probeList } from "./targets.ts";
 import type { ArticleResult } from "./types.ts";
 
@@ -53,12 +53,26 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
       }
       try {
         assertPublicHttpUrl(probe.url);
-        const html = await fetchHtml(
-          probe.url,
-          probe.method,
-          Math.min(passStarted + passBudget, started + BUDGET_MS),
-        );
-        const parsed = parseArticleHtml(html, probe.url);
+        let html: string;
+        let finalUrl = probe.url;
+
+        if (probe.method === "archive.is-newest") {
+          const result = await fetchHtmlWithRedirects(
+            probe.url,
+            probe.method,
+            Math.min(passStarted + passBudget, started + BUDGET_MS),
+          );
+          html = result.html;
+          finalUrl = result.finalUrl;
+        } else {
+          html = await fetchHtml(
+            probe.url,
+            probe.method,
+            Math.min(passStarted + passBudget, started + BUDGET_MS),
+          );
+        }
+
+        const parsed = parseArticleHtml(html, finalUrl);
         if (!parsed || looksLikeShell(parsed.title, parsed.text)) {
           continue;
         }
@@ -72,6 +86,8 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
           images: parsed.images,
           partial,
           markdown: "",
+          // Track the actual source URL used for fetching (e.g., resolved archive URL)
+          sourceUrl: finalUrl,
         };
         draft.markdown = toMarkdown(draft);
         if (!best || parsed.text.length > best.text.length) best = draft;

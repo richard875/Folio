@@ -59,7 +59,6 @@ export function handleSwaggerDocs(
 <script>
 (async function(){
   const key=${key};
-  const clean=new URL(location.href);clean.searchParams.delete('hash');history.replaceState(null,'',clean.pathname+clean.search+clean.hash);
   const get=async function(path){const res=await fetch(path,{headers:{Authorization:'Bearer '+key},cache:'no-store'});if(!res.ok)throw new Error('Unable to load protected API documentation.');return res;};
   try{
     const responses=await Promise.all([get('/api/docs/assets?file=css'),get('/api/docs/assets?file=js'),get('/api/openapi')]);

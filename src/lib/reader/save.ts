@@ -42,6 +42,11 @@ function safePart(value: string, fallback: string, maxLength: number): string {
   );
 }
 
+/** Extract the effective URL for saving: prefer sourceUrl (resolved archive URL) over originalUrl. */
+function effectiveUrl(article: { originalUrl: string; sourceUrl?: string }): string {
+  return article.sourceUrl || article.originalUrl;
+}
+
 export function articleNames(originalUrl: string, options: SaveOptions = {}) {
   const url = new URL(originalUrl);
   const host = url.hostname.replace(/^www\./, "");
@@ -73,7 +78,7 @@ export async function saveArticle(
   const format = options.format === "json" ? "json" : "markdown";
   const extension = format === "json" ? "json" : "md";
   const content = format === "json" ? `${JSON.stringify(article, null, 2)}\n` : article.markdown;
-  const names = articleNames(article.originalUrl, options);
+  const names = articleNames(effectiveUrl(article), options);
   const title = safePart(article.title.trim().split(/\s+/).slice(0, 5).join(" "), "untitled", 100);
   const now = options.now ?? (() => new Date());
   const wait = options.wait ?? sleep;

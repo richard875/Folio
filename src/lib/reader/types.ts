@@ -9,4 +9,6 @@ export type ArticleResult = {
   markdown: string;
   images: ArticleImage[];
   partial: boolean;
+  /** The actual URL that was fetched (may differ from originalUrl for redirected sources like archive.is/newest). */
+  sourceUrl?: string;
 };
