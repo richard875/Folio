@@ -65,6 +65,19 @@ test("specification and assets accept Bearer auth without revealing the secret",
   );
 });
 
+test("authorized Swagger HTML includes both inline favicon sizes without extra authenticated requests", async () => {
+  const favicons = { small: "data:image/png;base64,small", large: "data:image/png;base64,large" };
+  const response = handleSwaggerDocs(
+    new Request(`http://localhost/api/docs?hash=${KEY}`),
+    favicons,
+  );
+  const html = await response.text();
+  assert.match(html, /sizes="16x16" href="data:image\/png;base64,small"/);
+  assert.match(html, /sizes="32x32" href="data:image\/png;base64,large"/);
+  assert.doesNotMatch(html, /href="data:,"/);
+  assert.equal(handleSwaggerDocs(new Request("http://localhost/api/docs"), favicons).status, 401);
+});
+
 test("access hashes are safely escaped inside the HTML bootstrap", async () => {
   process.env.ACCESS_HASH = '</script><script>alert("secret")</script>';
   const response = handleSwaggerDocs(

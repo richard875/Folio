@@ -39,15 +39,21 @@ export function handleSwaggerAsset(
   });
 }
 
-export function handleSwaggerDocs(request: Request): Response {
+export function handleSwaggerDocs(
+  request: Request,
+  favicons?: { small: string; large: string },
+): Response {
   const hash = credential(request);
   if (!hash) return unauthorized();
   const key = JSON.stringify(hash).replace(
     /[<>&\u2028\u2029]/g,
     (character) => `\\u${character.charCodeAt(0).toString(16).padStart(4, "0")}`,
   );
+  const icons = favicons
+    ? `<link rel="icon" type="image/png" sizes="16x16" href="${favicons.small}"><link rel="icon" type="image/png" sizes="32x32" href="${favicons.large}">`
+    : '<link rel="icon" href="data:,">';
   const html = `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><link rel="icon" href="data:,"><title>Folio API — Swagger</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer">${icons}<title>Folio API — Swagger</title>
 <style>body{margin:0;background:#faf9f6;color:#24211c;font-family:system-ui,sans-serif}.notice{padding:16px 24px;border-bottom:1px solid #ddd5c8;font-size:14px}.notice a{color:#963512}#loading{padding:24px}#swagger-ui{padding-bottom:32px}</style></head>
 <body><div class="notice"><strong>Folio API</strong> · Hash-protected documentation. “Try it out” can save files or start jobs. <a href="/">Back to reader</a></div><div id="loading" role="status">Loading Swagger UI…</div><div id="swagger-ui"></div>
 <script>
