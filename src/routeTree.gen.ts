@@ -14,6 +14,7 @@ import { Route as ApiCollectRouteImport } from './routes/api/collect'
 import { Route as ApiDocsRouteImport } from './routes/api/docs'
 import { Route as ApiLinksRouteImport } from './routes/api/links'
 import { Route as ApiOpenapiRouteImport } from './routes/api/openapi'
+import { Route as ApiPurgeRouteImport } from './routes/api/purge'
 import { Route as ApiReadRouteImport } from './routes/api/read'
 import { Route as ApiSaveRouteImport } from './routes/api/save'
 import { Route as ApiAgentLatestRouteImport } from './routes/api/agent/latest'
@@ -44,6 +45,11 @@ const ApiLinksRoute = ApiLinksRouteImport.update({
 const ApiOpenapiRoute = ApiOpenapiRouteImport.update({
   id: '/api/openapi',
   path: '/api/openapi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPurgeRoute = ApiPurgeRouteImport.update({
+  id: '/api/purge',
+  path: '/api/purge',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiReadRoute = ApiReadRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/api/docs': typeof ApiDocsRouteWithChildren
   '/api/links': typeof ApiLinksRoute
   '/api/openapi': typeof ApiOpenapiRoute
+  '/api/purge': typeof ApiPurgeRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
   '/api/agent/latest': typeof ApiAgentLatestRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/api/docs': typeof ApiDocsRouteWithChildren
   '/api/links': typeof ApiLinksRoute
   '/api/openapi': typeof ApiOpenapiRoute
+  '/api/purge': typeof ApiPurgeRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
   '/api/agent/latest': typeof ApiAgentLatestRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/api/docs': typeof ApiDocsRouteWithChildren
   '/api/links': typeof ApiLinksRoute
   '/api/openapi': typeof ApiOpenapiRoute
+  '/api/purge': typeof ApiPurgeRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
   '/api/agent/latest': typeof ApiAgentLatestRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/api/docs'
     | '/api/links'
     | '/api/openapi'
+    | '/api/purge'
     | '/api/read'
     | '/api/save'
     | '/api/agent/latest'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/api/docs'
     | '/api/links'
     | '/api/openapi'
+    | '/api/purge'
     | '/api/read'
     | '/api/save'
     | '/api/agent/latest'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/api/docs'
     | '/api/links'
     | '/api/openapi'
+    | '/api/purge'
     | '/api/read'
     | '/api/save'
     | '/api/agent/latest'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   ApiDocsRoute: typeof ApiDocsRouteWithChildren
   ApiLinksRoute: typeof ApiLinksRoute
   ApiOpenapiRoute: typeof ApiOpenapiRoute
+  ApiPurgeRoute: typeof ApiPurgeRoute
   ApiReadRoute: typeof ApiReadRoute
   ApiSaveRoute: typeof ApiSaveRoute
   ApiAgentLatestRoute: typeof ApiAgentLatestRoute
@@ -206,6 +219,13 @@ declare module '@tanstack/react-router' {
       path: '/api/openapi'
       fullPath: '/api/openapi'
       preLoaderRoute: typeof ApiOpenapiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/purge': {
+      id: '/api/purge'
+      path: '/api/purge'
+      fullPath: '/api/purge'
+      preLoaderRoute: typeof ApiPurgeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/read': {
@@ -282,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiDocsRoute: ApiDocsRouteWithChildren,
   ApiLinksRoute: ApiLinksRoute,
   ApiOpenapiRoute: ApiOpenapiRoute,
+  ApiPurgeRoute: ApiPurgeRoute,
   ApiReadRoute: ApiReadRoute,
   ApiSaveRoute: ApiSaveRoute,
   ApiAgentLatestRoute: ApiAgentLatestRoute,
