@@ -1,5 +1,6 @@
 import { hashMatches } from "../reader/auth.ts";
 import { ArticleAccessError, articleStore, type ArticleStore } from "./articles.ts";
+import { agentLimit } from "../runtime/limits.ts";
 
 const headers = { "cache-control": "no-store", "x-content-type-options": "nosniff" };
 
@@ -13,14 +14,15 @@ function readUrl(folder: string, snapshot: string, file: string, offset = 0): st
 }
 
 function failure(error: unknown): Response {
+  const busy = (error as { status?: number })?.status === 429;
   return Response.json(
     {
       error:
-        error instanceof ArticleAccessError
+        busy ? "Server is busy. Please retry later." : error instanceof ArticleAccessError
           ? error.message
           : "Unable to read saved articles. No files were silently skipped.",
     },
-    { status: error instanceof ArticleAccessError ? error.status : 500, headers },
+    { status: error instanceof ArticleAccessError ? error.status : busy ? 429 : 500, headers: busy ? { ...headers, "retry-after": "5" } : headers },
   );
 }
 
@@ -54,9 +56,9 @@ export async function handleAgentLatest(
     );
   }
   try {
-    const snapshot = pinnedFolder
-      ? await store.snapshot(pinnedFolder, pinnedSnapshot!)
-      : await store.latest();
+    const snapshot = await agentLimit.run(() => pinnedFolder
+      ? store.snapshot(pinnedFolder, pinnedSnapshot!, { metadataOnly: true })
+      : store.latest(true));
     if (offset > snapshot.articles.length)
       throw new ArticleAccessError(416, "Offset exceeds the manifest's article count.");
     const totalBytes = snapshot.articles.reduce((sum, article) => sum + article.bytes, 0);
@@ -175,7 +177,7 @@ export async function handleAgentRead(
     );
   }
   try {
-    const snapshot = await store.snapshot(folder, snapshotId);
+    const snapshot = await agentLimit.run(() => store.snapshot(folder, snapshotId, { contentFile: filename }));
     const article = snapshot.articles.find((item) => item.filename === filename);
     if (!article) throw new ArticleAccessError(404, "Article file not found in this snapshot.");
     if (offset > article.characters)

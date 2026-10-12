@@ -35,7 +35,8 @@ function ldArticle(doc: Document): { body: string; headline: string; author: str
   return null;
 }
 
-function findArticleNode(node: unknown): { body: string; headline: string; author: string; date: string } | null {
+function findArticleNode(node: unknown, depth = 0): { body: string; headline: string; author: string; date: string } | null {
+  if (depth > 20) return null;
   if (!node || typeof node !== "object") return null;
   const rec = node as Record<string, unknown>;
   if (typeof rec.articleBody === "string" && rec.articleBody.trim().length > 200) {
@@ -56,7 +57,7 @@ function findArticleNode(node: unknown): { body: string; headline: string; autho
   }
   if (Array.isArray(rec["@graph"])) {
     for (const child of rec["@graph"]) {
-      const hit = findArticleNode(child);
+      const hit = findArticleNode(child, depth + 1);
       if (hit) return hit;
     }
   }
@@ -102,7 +103,7 @@ export function parseArticleHtml(html: string, pageUrl: string): ParsedPage | nu
 
   const { document } = parseHTML(html);
   const ld = ldArticle(document);
-  const readable = new Readability(document).parse();
+  const readable = new Readability(document, { maxElemsToParse: 50_000 }).parse();
 
   const title =
     readable?.title?.trim() ||

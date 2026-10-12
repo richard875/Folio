@@ -108,6 +108,8 @@ test("returns immediately, calls links then parallel saves, tracks progress and 
   let active = 0;
   let maximum = 0;
   const received: URL[] = [];
+  let releaseSaves!: () => void;
+  const savesReady = new Promise<void>((done) => { releaseSaves = done; });
   const manager = new JobManager({
     root,
     internalBase: () => "http://127.0.0.1:3000",
@@ -122,6 +124,9 @@ test("returns immediately, calls links then parallel saves, tracks progress and 
       received.push(url);
       active++;
       maximum = Math.max(maximum, active);
+      // Wait for all three workers: fsync speed must not make this a timing test.
+      if (received.length === 3) releaseSaves();
+      await savesReady;
       await delay(20);
       active--;
       return new Response("article", {
@@ -137,7 +142,7 @@ test("returns immediately, calls links then parallel saves, tracks progress and 
   assert.equal((await manager.get(initial.callId))?.status, "in progress");
   releaseLinks();
   const result = await finished(manager, initial.callId);
-  assert.equal(result.status, "completed");
+  assert.equal(result.status, "partial");
   assert.equal(result.total, 8);
   assert.equal(result.saved, 8);
   assert.equal(result.processed, 8);
@@ -151,7 +156,7 @@ test("returns immediately, calls links then parallel saves, tracks progress and 
   }
   const disk = await readFile(join(root, "output/jobs", `${initial.callId}.json`), "utf8");
   assert.doesNotMatch(disk, /never-store-this-secret|methodUrl|bypass/);
-  assert.equal((await new JobManager({ root }).get(initial.callId))?.status, "completed");
+  assert.equal((await new JobManager({ root }).get(initial.callId))?.status, "partial");
 });
 
 test("retries rate limits, retains partial successes and continues past article errors", async (t) => {

@@ -51,12 +51,16 @@ export function parseAppEnv(text) {
   return env;
 }
 
-/** The app env recorded under `root`, or `{}` when the file is absent. */
+/** Tracked project defaults under local app-env overrides; generic roots return `{}`. */
 export function readAppEnv(root) {
+  let defaults = {};
   try {
-    return parseAppEnv(readFileSync(join(root, APP_ENV_REL_PATH), "utf8"));
+    defaults = parseAppEnv(readFileSync(join(root, ".grok/app-env.defaults.json"), "utf8"));
+  } catch { /* Generic workspaces without project defaults remain unchanged. */ }
+  try {
+    return { ...defaults, ...parseAppEnv(readFileSync(join(root, APP_ENV_REL_PATH), "utf8")) };
   } catch {
-    return {};
+    return defaults;
   }
 }
 

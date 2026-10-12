@@ -1,5 +1,6 @@
 import { parseHTML } from "linkedom";
 import { assertPublicHttpUrl } from "../reader/targets.ts";
+import { boundedBytes, publicFetch } from "../runtime/network.ts";
 
 function articleId(raw: string): string | null {
   try {
@@ -63,7 +64,7 @@ function rpcPublisher(text: string): string | null {
 /** Resolve Google's article wrapper; direct publisher links cause no requests. */
 export async function resolveGoogleNewsUrl(
   raw: string,
-  fetchImpl: typeof fetch = fetch,
+  fetchImpl: typeof fetch = publicFetch,
 ): Promise<string> {
   const id = articleId(raw);
   if (!id) return raw;
@@ -90,7 +91,7 @@ export async function resolveGoogleNewsUrl(
       await response.body?.cancel();
       throw new Error("Unable to resolve the publisher URL.");
     }
-    html = await response.text();
+    html = new TextDecoder().decode(await boundedBytes(response, 3_000_000, signal));
     break;
   }
   // Recent Google News URLs use a browser-side redirect rather than HTTP
@@ -139,7 +140,7 @@ export async function resolveGoogleNewsUrl(
     await response.body?.cancel();
     throw new Error("Unable to resolve the publisher URL.");
   }
-  const destination = rpcPublisher(await response.text());
+  const destination = rpcPublisher(new TextDecoder().decode(await boundedBytes(response, 3_000_000, signal)));
   if (!destination) throw new Error("Unable to resolve the publisher URL.");
   return publisherUrl(destination);
 }

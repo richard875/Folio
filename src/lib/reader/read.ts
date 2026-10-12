@@ -3,10 +3,9 @@ import { isSubstantial, looksLikeShell, parseArticleHtml, toMarkdown } from "./e
 import { fetchHtml, fetchHtmlWithRedirects } from "./fetch.ts";
 import { assertPublicHttpUrl, probeList, type Probe } from "./targets.ts";
 import type { ArticleResult } from "./types.ts";
+import { BoundedCache, extractionLimit } from "../runtime/limits.ts";
 
-const CACHE = new Map<string, { at: number; result: ArticleResult }>();
-const CACHE_MS = 30 * 60 * 1000;
-const MAX_CACHE = 40;
+const CACHE = new BoundedCache<ArticleResult>(40, 32 * 1024 * 1024, 30 * 60 * 1000);
 const BUDGET_MS = 48_000;
 
 // Cache for resolved archive.is/newest URLs -> direct archive.is/... URLs
@@ -55,10 +54,15 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
     throw err;
   }
 
-  const original = assertPublicHttpUrl(rawUrl.trim()).href;
+  let original: string;
+  try { original = assertPublicHttpUrl(rawUrl.trim()).href; }
+  catch (error) { throw Object.assign(error as Error, { status: 400 }); }
   const cached = CACHE.get(original);
-  if (cached && Date.now() - cached.at < CACHE_MS) return cached.result;
+  if (cached) return cached;
+  return extractionLimit.run(() => extractArticle(original));
+}
 
+async function extractArticle(original: string): Promise<ArticleResult> {
   const started = Date.now();
   let best: ArticleResult | null = null;
 
@@ -207,11 +211,7 @@ export async function readArticle(rawUrl: string, hash: string | null): Promise<
     throw err;
   }
 
-  if (CACHE.size >= MAX_CACHE) {
-    const oldest = [...CACHE.entries()].sort((a, b) => a[1].at - b[1].at)[0];
-    if (oldest) CACHE.delete(oldest[0]);
-  }
-  CACHE.set(original, { at: Date.now(), result: best });
+  CACHE.set(original, best, JSON.stringify(best).length * 2 + original.length * 2);
   return best;
 }
 

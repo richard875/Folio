@@ -1,4 +1,5 @@
 import { userAgentFor } from "./extract.ts";
+import { boundedBytes, publicFetch, publicUrl } from "../runtime/network.ts";
 
 const ATTEMPT_MS = 12_000;
 const MAX_BYTES = 3_000_000;
@@ -8,7 +9,7 @@ function retryLimit(): number {
   const value = process.env.FETCH_RETRY_LIMIT?.trim();
   if (!value || !/^\d+$/.test(value)) return DEFAULT_RETRY_LIMIT;
   const limit = Number(value);
-  return Number.isSafeInteger(limit) ? limit : DEFAULT_RETRY_LIMIT;
+  return Number.isSafeInteger(limit) && limit <= 10 ? limit : DEFAULT_RETRY_LIMIT;
 }
 
 /** Result of a fetch that may have followed redirects. */
@@ -38,28 +39,30 @@ export async function fetchHtmlWithRedirects(
     if (remainingMs <= 0) throw new Error("time budget");
 
     let type = "";
-    let buf = new ArrayBuffer(0);
+    let buf: Uint8Array = new Uint8Array();
     let finalUrl = currentUrl;
     let redirectCount = 0;
 
     try {
       // Follow redirects manually to capture the final URL
       while (redirectCount < maxRedirects) {
-        const res = await fetch(currentUrl, {
+        publicUrl(currentUrl);
+        const signal = AbortSignal.timeout(Math.max(1, Math.min(ATTEMPT_MS, deadline - Date.now())));
+        const res = await publicFetch(currentUrl, {
           redirect: "manual",
-          signal: AbortSignal.timeout(Math.min(ATTEMPT_MS, remainingMs)),
+          signal,
           headers: {
             "user-agent": userAgentFor(method),
             accept: "text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.8",
             "accept-language": "en-US,en;q=0.9",
           },
-        });
+        }, MAX_BYTES);
 
         if ([301, 302, 303, 307, 308].includes(res.status)) {
           const location = res.headers.get("location");
           await res.body?.cancel();
-          if (!location) break;
-          currentUrl = new URL(location, currentUrl).href;
+          if (!location) throw new Error("Missing redirect destination.");
+          currentUrl = publicUrl(new URL(location, currentUrl).href).href;
           finalUrl = currentUrl;
           redirectCount++;
           continue;
@@ -77,10 +80,16 @@ export async function fetchHtmlWithRedirects(
         }
 
         type = res.headers.get("content-type") || "";
-        buf = await res.arrayBuffer();
+        if (type && !/html|text|json|xml/i.test(type)) {
+          await res.body?.cancel();
+          throw new Error(`Unsupported type ${type}`);
+        }
+        buf = await boundedBytes(res, MAX_BYTES, signal);
         break;
       }
+      if (redirectCount >= maxRedirects) throw new Error("Too many redirects.");
     } catch (error) {
+      if (error instanceof Error && /Response too large|Unsupported type|Private network|URL credentials|HTTP 429/.test(error.message)) throw error;
       if (attempt >= limit || Date.now() >= deadline) throw error;
       continue;
     }

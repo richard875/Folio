@@ -1,8 +1,10 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { mkdir, open, readFile, rename, unlink } from "node:fs/promises";
 import { resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { isGoogleNewsArticle, resolveGoogleNewsUrl } from "../rss/google-news.ts";
+import { publicFetch } from "../runtime/network.ts";
+import { syncDirectory } from "../runtime/storage.ts";
 
 export type ArticleTask = { website: string; section: string; url: string };
 export type JobStatus = "in progress" | "completed" | "partial" | "error";
@@ -38,7 +40,7 @@ export function validCallId(value: string): boolean {
 export function saveConcurrency(value: string | undefined): number {
   if (!value || !/^\d+$/.test(value.trim())) return 5;
   const number = Number(value);
-  return Number.isInteger(number) && number >= 1 && number <= 50 ? number : 5;
+  return Number.isInteger(number) && number >= 1 && number <= 10 ? number : 5;
 }
 
 /** Read only the generated report's website/section headings and article links. */
@@ -77,6 +79,7 @@ type ManagerOptions = {
   fetchImpl?: typeof fetch;
   internalBase?: () => string;
   wait?: (milliseconds: number) => Promise<unknown>;
+  timeoutMs?: number;
 };
 
 export class JobManager {
@@ -84,15 +87,19 @@ export class JobManager {
   private readonly fetchImpl: typeof fetch;
   private readonly internalBase: () => string;
   private readonly wait: (milliseconds: number) => Promise<unknown>;
+  private readonly timeoutMs: number;
   private readonly jobs = new Map<string, Job>();
   private running: string | null = null;
   private writes: Promise<unknown> = Promise.resolve();
   private readonly googleUrls = new Map<string, Promise<string>>();
 
+  get isRunning(): boolean { return this.running !== null; }
+
   constructor(options: ManagerOptions = {}) {
     this.root = resolve(options.root ?? process.cwd());
     this.fetchImpl = options.fetchImpl ?? fetch;
     this.wait = options.wait ?? sleep;
+    this.timeoutMs = options.timeoutMs ?? 3_600_000;
     // Never derive internal destinations from client-supplied Host headers.
     this.internalBase =
       options.internalBase ??
@@ -114,8 +121,13 @@ export class JobManager {
       .then(async () => {
         await mkdir(dir, { recursive: true });
         const temporary = `${path}.${randomUUID()}.tmp`;
-        await writeFile(temporary, content, { flag: "wx", mode: 0o600 });
-        await rename(temporary, path);
+        try {
+          const handle = await open(temporary, "wx", 0o600);
+          try { await handle.writeFile(content); await handle.sync(); }
+          finally { await handle.close(); }
+          await rename(temporary, path);
+          await syncDirectory(dir);
+        } finally { await unlink(temporary).catch((error: NodeJS.ErrnoException) => { if (error.code !== "ENOENT") throw error; }); }
       });
     return this.writes;
   }
@@ -167,7 +179,13 @@ export class JobManager {
   async get(callId: string): Promise<Job | null> {
     if (!validCallId(callId)) return null;
     const current = this.jobs.get(callId);
-    if (current) return structuredClone(current);
+    if (current) {
+      // A terminal in-memory status must not race its final disk publication.
+      // Otherwise readers can report completion while the agent still sees an
+      // unfinished folder, or restart recovery can mistake that record for stale work.
+      if (current.status !== "in progress") await this.writes.catch(() => {});
+      return structuredClone(current);
+    }
     let job: Job;
     try {
       job = JSON.parse(
@@ -189,11 +207,12 @@ export class JobManager {
   }
 
   private async run(job: Job, hash: string, format: string): Promise<void> {
+    const deadline = AbortSignal.timeout(this.timeoutMs);
     try {
       const query = new URLSearchParams({ hash, format: "json" });
       const response = await this.fetchImpl(`${this.internalBase()}/api/links?${query}`, {
         method: "POST",
-        signal: AbortSignal.timeout(4_000_000),
+        signal: AbortSignal.any([deadline, AbortSignal.timeout(600_000)]),
       });
       const report = (await response.json()) as { savedFile?: string; failedFeedCount?: number };
       if (
@@ -211,12 +230,12 @@ export class JobManager {
       let next = 0;
       const workers = await Promise.allSettled(
         Array.from({ length: Math.min(job.concurrency, tasks.length) }, async () => {
-          while (next < tasks.length) {
+          while (next < tasks.length && !deadline.aborted) {
             const task = tasks[next++];
             job.active++;
             try {
               await this.update(job);
-              const result = await this.saveTask(job.callId, task, hash, format);
+              const result = await this.saveTask(job.callId, task, hash, format, deadline);
               job.results.push({ ...task, ...result });
               if (result.status === "saved") job.saved++;
               else job.failed++;
@@ -230,10 +249,11 @@ export class JobManager {
       );
       if (workers.some((worker) => worker.status === "rejected"))
         throw new Error("Unable to persist progress.");
+      deadline.throwIfAborted();
       if (job.saved === 0 && job.failed > 0) {
         job.status = "error";
         job.error = "No articles could be saved. See the results for details.";
-      } else if (job.failed > 0) {
+      } else if (job.failed > 0 || job.failedFeeds > 0) {
         job.status = "partial";
         job.error = null;
       } else {
@@ -250,22 +270,28 @@ export class JobManager {
       job.active = 0;
       try {
         await this.update(job);
+        this.jobs.delete(job.callId);
       } catch {
         /* Keep error status queryable in memory if the disk fails. */
+        console.warn(JSON.stringify({ event: "job_persistence_failed", callId: job.callId }));
+        if (this.jobs.size > 1) this.jobs.delete(this.jobs.keys().next().value!);
       }
       this.running = null;
       // Bound memory retention; older statuses remain available on disk.
+      console.info(JSON.stringify({ event: "collection_finished", callId: job.callId, status: job.status, saved: job.saved, failed: job.failed, failedFeeds: job.failedFeeds }));
       this.googleUrls.clear();
-      if (this.jobs.size > 100) this.jobs.delete(this.jobs.keys().next().value!);
     }
   }
 
-  private async saveTask(callId: string, task: ArticleTask, hash: string, format: string) {
+  private async saveTask(callId: string, task: ArticleTask, hash: string, format: string, deadline: AbortSignal) {
     let articleUrl = task.url;
     if (isGoogleNewsArticle(task.url)) {
       let resolved = this.googleUrls.get(task.url);
       if (!resolved) {
-        resolved = resolveGoogleNewsUrl(task.url, this.fetchImpl);
+        const transport = this.fetchImpl === fetch ? publicFetch : this.fetchImpl;
+        resolved = resolveGoogleNewsUrl(task.url, (input, init) => transport(input, {
+          ...init, signal: init?.signal ? AbortSignal.any([deadline, init.signal]) : deadline,
+        }));
         this.googleUrls.set(task.url, resolved);
       }
       try {
@@ -287,9 +313,10 @@ export class JobManager {
         format,
       });
       for (let rateRetries = 0; ; rateRetries++) {
+        deadline.throwIfAborted();
         const response = await this.fetchImpl(`${this.internalBase()}/api/save?${query}`, {
           method: "GET",
-          signal: AbortSignal.timeout(180_000),
+          signal: AbortSignal.any([deadline, AbortSignal.timeout(180_000)]),
         });
         if (response.status === 429 && rateRetries < 10) {
           const seconds = Number(response.headers.get("retry-after") || 60);

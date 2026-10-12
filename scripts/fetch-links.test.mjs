@@ -306,7 +306,8 @@ test("collection generates a saved report, keeps successful feeds and honors env
   const origin = `http://127.0.0.1:${server.address().port}`;
   const output = join(dir, "links");
   const research = `## Local News\n| Section | Feed |\n| --- | --- |\n| World | \`${origin}/rss\` |\n| Tech | \`${origin}/slow\` |\n`;
-  const options = { outputDir: output, retryLimit: 0, timeoutMs: 100, limit: 5 };
+  // Explicit fixture transport: production's default deliberately rejects loopback feeds.
+  const options = { outputDir: output, retryLimit: 0, timeoutMs: 100, limit: 5, fetchImpl: fetch };
   const result = await generateLinks(research, options);
   assert.equal(result.linkCount, 2);
   assert.equal(result.failedFeedCount, 1);

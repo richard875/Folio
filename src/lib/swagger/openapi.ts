@@ -63,7 +63,7 @@ const collectOperation = {
   summary: "Start background collection",
   operationId: "startCollection",
   description:
-    "Returns 202 without waiting. Calls /api/links and then /api/save with SAVE_CONCURRENCY parallel saves (default 5). Job progress is persisted; interrupted jobs become errors after a restart. Creates files; POST is preferred.",
+    "Returns 202 without waiting. Calls /api/links and then /api/save with SAVE_CONCURRENCY parallel saves (default 5). Job progress is persisted; interrupted jobs become errors after a restart. A one-hour overall budget bounds background work. Creates files; POST is preferred.",
   parameters: [format],
   responses: {
     "202": response("Job accepted; use callId to check progress.", ref("JobAccepted")),
@@ -116,8 +116,32 @@ export const openApiDocument = {
     { name: "Background jobs" },
     { name: "Agent reading" },
     { name: "Documentation" },
+    { name: "Operations" },
   ],
   paths: {
+    "/api/health": {
+      get: {
+        tags: ["Operations"], summary: "Check production readiness", operationId: "health",
+        security: agentAuth,
+        description: "Authenticated process memory/uptime and writable-storage check. Returns 503 below the 1 GiB disk reserve. Does not run article collection.",
+        responses: {
+          "200": response("Ready; memoryBytes, uptimeSeconds and storageAvailableBytes.", { type: "object" }),
+          "503": error("Storage unavailable, unwritable or nearly full."),
+          ...commonErrors,
+        },
+      },
+    },
+    "/api/purge": {
+      post: {
+        tags: ["Operations"], summary: "Delete article folders older than today (UTC)", operationId: "purgeArticles",
+        description: "Destructive: removes all article folders older than the current UTC day. Does not remove job history or link reports. Refuses unfinished collections. GET is not supported.",
+        responses: {
+          "200": response("Deleted/kept folders and per-folder errors.", { type: "object" }),
+          "409": error("A collection is running or interrupted progress exists."),
+          ...commonErrors,
+        },
+      },
+    },
     "/api/read": {
       get: {
         tags: ["Articles"],
@@ -130,6 +154,7 @@ export const openApiDocument = {
         responses: {
           "200": articleResponse,
           "206": partialResponse,
+          "400": error("Invalid or prohibited article URL."),
           "422": error("No readable article was found."),
           "429": error("Article rate limit reached; wait one minute."),
           ...commonErrors,
@@ -171,6 +196,7 @@ export const openApiDocument = {
             ...error("Rate limited. Retry after the supplied delay."),
             headers: { "Retry-After": { schema: string } },
           },
+          "507": error("Less than 1 GiB of storage remains; free space before saving."),
           ...commonErrors,
         },
       },
@@ -225,6 +251,8 @@ export const openApiDocument = {
           "404": error("No saved article folder available."),
           "409": error("Folder is being written or snapshot changed."),
           "416": error("Manifest offset exceeds its length."),
+          "413": error("Article folder exceeds a safety size/file-count limit; nothing is silently skipped."),
+          "429": error("Too many simultaneous agent reads; retry after the supplied delay."),
           "503": error("Unable to verify collection progress."),
           ...commonErrors,
         },
@@ -256,6 +284,8 @@ export const openApiDocument = {
           "404": error("Folder/file not found."),
           "409": error("Snapshot changed or folder is being written; restart the reading session."),
           "416": error("Offset exceeds article length."),
+          "413": error("Article folder exceeds a safety size/file-count limit; nothing is silently skipped."),
+          "429": error("Too many simultaneous agent reads; retry after the supplied delay."),
           "503": error("Unable to verify collection progress."),
           ...commonErrors,
         },

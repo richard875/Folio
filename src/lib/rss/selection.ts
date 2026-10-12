@@ -148,6 +148,7 @@ export function parseCandidates(xml: string, feed: Feed, now = Date.now()): Cand
     sitemap = true;
   } else if (document.RDF) items = list(node(document.RDF).item);
   else throw new Error("Not an RSS, Atom or news sitemap document");
+  if (items.length > 2000) throw new Error("Feed exceeds the 2000-entry safety limit");
   const ordering = orderingFor(feed);
   const seen = new Set<string>();
   const candidates: Candidate[] = [];
@@ -265,15 +266,30 @@ export function rankCandidates(
   now = Date.now(),
 ): Candidate[] {
   const tokenized = pool.map((candidate) => ({ candidate, words: tokens(candidate.title) }));
+  const index = new Map<string, number[]>();
+  for (const [position, { words }] of tokenized.entries()) {
+    for (const word of words) {
+      const positions = index.get(word) || [];
+      positions.push(position);
+      index.set(word, positions);
+    }
+  }
   const score = (candidate: Candidate) => {
+    if (candidate.ordering === "editorial" || candidate.ordering === "feed") return 0;
     if (candidate.publishedAt === null) return 5 / (1 + candidate.index);
     const ageHours = Math.max(0, (now - candidate.publishedAt) / 3600000);
     const words = tokens(candidate.title);
     const corroboration = new Map<string, number>();
-    if (words.size >= 2)
-      for (const { candidate: other, words: otherWords } of tokenized) {
+    const overlaps = new Map<number, number>();
+    if (words.size >= 2) {
+      for (const word of words) {
+        for (const position of index.get(word) || []) overlaps.set(position, (overlaps.get(position) || 0) + 1);
+      }
+      // Preserve source iteration order so scoring remains deterministic.
+      for (const position of [...overlaps.keys()].sort((a, b) => a - b)) {
+        const { candidate: other, words: otherWords } = tokenized[position];
         if (other.source === candidate.source || otherWords.size < 2) continue;
-        const overlap = [...words].filter((word) => otherWords.has(word)).length;
+        const overlap = overlaps.get(position)!;
         const similarity = overlap / (words.size + otherWords.size - overlap);
         if (overlap < 2 || similarity < 0.22) continue;
         const prominence =
@@ -281,6 +297,7 @@ export function rankCandidates(
         const strength = similarity * prominence * other.sourceWeight;
         corroboration.set(other.source, Math.max(corroboration.get(other.source) || 0, strength));
       }
+    }
     const coverage = Math.min(
       30,
       [...corroboration.values()].reduce((sum, value) => sum + value * 40, 0),

@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { constants } from "node:fs";
-import { lstat, open, readdir, readFile, realpath } from "node:fs/promises";
+import { lstat, open, readdir, realpath } from "node:fs/promises";
 import { basename, resolve, sep } from "node:path";
 
 export class ArticleAccessError extends Error {
@@ -65,7 +65,7 @@ function isUnfinished(record: CollectionRecord): boolean {
   return record.status === "in progress" || !record.finishedAt;
 }
 
-async function collections(root: string): Promise<CollectionRecord[]> {
+async function collections(root: string, folder?: string): Promise<CollectionRecord[]> {
   let entries;
   try {
     entries = await readdir(resolve(root, "output/jobs"), { withFileTypes: true });
@@ -78,9 +78,12 @@ async function collections(root: string): Promise<CollectionRecord[]> {
     if (!entry.name.endsWith(".json")) continue;
     if (!entry.isFile() || entry.isSymbolicLink())
       throw new ArticleAccessError(503, "Unable to verify collection progress.");
-    const record = JSON.parse(
-      await readFile(resolve(root, "output/jobs", entry.name), "utf8"),
-    ) as CollectionRecord;
+    const handle = await open(resolve(root, "output/jobs", entry.name), constants.O_RDONLY | constants.O_NOFOLLOW);
+    let record: CollectionRecord;
+    try {
+      if ((await handle.stat()).size > 4_000_000) throw new ArticleAccessError(503, "Collection progress exceeds its safety size limit.");
+      record = JSON.parse(await handle.readFile("utf8")) as CollectionRecord;
+    } finally { await handle.close(); }
     if (
       typeof record.callId !== "string" ||
       typeof record.startedAt !== "string" ||
@@ -88,7 +91,8 @@ async function collections(root: string): Promise<CollectionRecord[]> {
     ) {
       throw new ArticleAccessError(503, "Unable to verify collection progress.");
     }
-    records.push(record);
+    // Historical completed jobs must not all accumulate in memory on every request.
+    if (isUnfinished(record) || folder && foldersFor(record).has(folder)) records.push(record);
   }
   return records;
 }
@@ -115,7 +119,7 @@ export class ArticleStore {
     this.root = resolve(root);
   }
 
-  async latest(): Promise<ArticleSnapshot> {
+  async latest(metadataOnly = false): Promise<ArticleSnapshot> {
     const records = await collections(this.root);
     let entries;
     try {
@@ -135,7 +139,7 @@ export class ArticleStore {
     for (const folder of candidates) {
       if (records.some((record) => isUnfinished(record) && foldersFor(record).has(folder)))
         continue;
-      const snapshot = await this.snapshot(folder);
+      const snapshot = await this.snapshot(folder, undefined, { metadataOnly });
       if (snapshot.articles.length) return snapshot;
     }
     throw new ArticleAccessError(
@@ -144,9 +148,9 @@ export class ArticleStore {
     );
   }
 
-  async snapshot(folder: string, expectedSnapshot?: string): Promise<ArticleSnapshot> {
+  async snapshot(folder: string, expectedSnapshot?: string, options: { metadataOnly?: boolean; contentFile?: string } = {}): Promise<ArticleSnapshot> {
     if (!validArticleFolder(folder)) throw new ArticleAccessError(400, "Invalid article folder.");
-    const records = await collections(this.root);
+    const records = await collections(this.root, folder);
     if (records.some((record) => isUnfinished(record) && foldersFor(record).has(folder))) {
       throw new ArticleAccessError(
         409,
@@ -168,6 +172,7 @@ export class ArticleStore {
       throw error;
     }
     const names = await articleNames(directory);
+    if (names.length > 2000) throw new ArticleAccessError(413, "Article folder exceeds the 2000-file safety limit.");
     const relevant = records.filter((record) => foldersFor(record).has(folder));
     const partialFiles = new Set(
       relevant.flatMap((record) =>
@@ -177,6 +182,7 @@ export class ArticleStore {
       ),
     );
     const articles: StoredArticle[] = [];
+    let totalBytes = 0;
     for (const filename of names) {
       const handle = await open(
         resolve(directory, filename),
@@ -184,6 +190,10 @@ export class ArticleStore {
       );
       try {
         const before = await handle.stat();
+        totalBytes += before.size;
+        if (before.size > 8_000_000 || totalBytes > 64_000_000) {
+          throw new ArticleAccessError(413, "Article snapshot exceeds its safety size limit. No files were silently skipped.");
+        }
         if (!before.isFile())
           throw new ArticleAccessError(
             409,
@@ -225,17 +235,17 @@ export class ArticleStore {
               ? "text/plain"
               : "text/markdown",
           bytes: bytes.length,
-          characters: Array.from(content).length,
+          characters: characterCount(content),
           sha256: createHash("sha256").update(bytes).digest("hex"),
           partial,
-          content,
+          content: options.metadataOnly || options.contentFile && filename !== options.contentFile ? "" : content,
         });
       } finally {
         await handle.close();
       }
     }
     const afterNames = await articleNames(directory);
-    const afterRecords = await collections(this.root);
+    const afterRecords = await collections(this.root, folder);
     if (
       JSON.stringify(names) !== JSON.stringify(afterNames) ||
       afterRecords.some((record) => isUnfinished(record) && foldersFor(record).has(folder))
@@ -262,6 +272,12 @@ export class ArticleStore {
       pendingCollections: afterRecords.filter(isUnfinished).length,
     };
   }
+}
+
+function characterCount(content: string): number {
+  let count = 0;
+  for (const character of content) { if (character) count++; }
+  return count;
 }
 
 export const articleStore = new ArticleStore();

@@ -1,9 +1,11 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import { basename, resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { parseFeedCatalog, type Feed } from "./catalog.ts";
 import { articleUrl, parseCandidates, rankCandidates, type Candidate } from "./selection.ts";
 import { isGoogleNewsArticle, resolveGoogleNewsUrl } from "./google-news.ts";
+import { boundedBytes, publicFetch, publicFetchRedirects } from "../runtime/network.ts";
+import { writeNewFile } from "../runtime/storage.ts";
 
 const USER_AGENT = "Mozilla/5.0 (compatible; FolioRSS/1.0)";
 
@@ -26,12 +28,13 @@ export type SaveLinksOptions = {
 export function configuredRetryLimit(value: string | undefined): number {
   if (!value?.trim() || !/^\d+$/.test(value.trim())) return 5;
   const number = Number(value);
-  return Number.isSafeInteger(number) ? number : 5;
+  return Number.isSafeInteger(number) && number <= 10 ? number : 5;
 }
 
 export function configuredLinkLimit(value: string | undefined): number {
-  const number = configuredRetryLimit(value);
-  return number > 0 ? number : 5;
+  if (!value?.trim() || !/^\d+$/.test(value.trim())) return 5;
+  const number = Number(value);
+  return Number.isSafeInteger(number) && number > 0 && number <= 100 ? number : 5;
 }
 
 export async function parseArticleLinks(
@@ -48,7 +51,7 @@ export async function parseArticleLinks(
 export async function fetchFeed(
   feed: Feed,
   {
-    fetchImpl = fetch,
+    fetchImpl = publicFetchRedirects,
     retryLimit = 5,
     timeoutMs = 15000,
     limit = 5,
@@ -57,8 +60,9 @@ export async function fetchFeed(
 ): Promise<FeedResult> {
   for (let attempt = 0; ; attempt++) {
     try {
+      const signal = AbortSignal.timeout(timeoutMs);
       const response = await fetchImpl(feed.url, {
-        signal: AbortSignal.timeout(timeoutMs),
+        signal,
         headers: {
           "user-agent": USER_AGENT,
           accept: "application/rss+xml, application/atom+xml, application/xml, text/xml",
@@ -68,7 +72,7 @@ export async function fetchFeed(
         await response.body?.cancel();
         throw new Error(`HTTP ${response.status}`);
       }
-      const xml = await response.text();
+      const xml = new TextDecoder().decode(await boundedBytes(response, 8_000_000, signal));
       const candidates = parseCandidates(xml, { ...feed, url: response.url || feed.url }, now());
       return {
         ...feed,
@@ -126,7 +130,7 @@ export async function collectFeeds(
             }
             let pending = resolvedGoogle.get(url);
             if (!pending) {
-              const fetchImpl = options.fetchImpl ?? fetch;
+              const fetchImpl = options.fetchImpl ?? publicFetch;
               pending = resolveGoogleNewsUrl(url, (input, init) =>
                 fetchImpl(input, {
                   ...init,
@@ -208,7 +212,7 @@ export async function saveLinks(
     const generatedAt = now();
     const path = resolve(outputDir, linksFilename(generatedAt));
     try {
-      await writeFile(path, renderLinksMarkdown(results, generatedAt, limit), { flag: "wx" });
+      await writeNewFile(path, renderLinksMarkdown(results, generatedAt, limit));
       return path;
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;

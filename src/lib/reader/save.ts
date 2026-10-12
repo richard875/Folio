@@ -1,7 +1,8 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import type { ArticleResult } from "./types.ts";
+import { writeNewFile } from "../runtime/storage.ts";
 
 export type SaveOptions = {
   format?: string;
@@ -94,7 +95,7 @@ export async function saveArticle(
     const directory = resolve(root, folder);
     await mkdir(directory, { recursive: true });
     try {
-      await writeFile(resolve(directory, filename), content, { flag: "wx" });
+      await writeNewFile(resolve(directory, filename), content);
       return `output/articles/${folder}/${filename}`;
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;

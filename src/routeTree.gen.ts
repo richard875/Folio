@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiCollectRouteImport } from './routes/api/collect'
 import { Route as ApiDocsRouteImport } from './routes/api/docs'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as ApiLinksRouteImport } from './routes/api/links'
 import { Route as ApiOpenapiRouteImport } from './routes/api/openapi'
 import { Route as ApiPurgeRouteImport } from './routes/api/purge'
@@ -35,6 +36,11 @@ const ApiCollectRoute = ApiCollectRouteImport.update({
 const ApiDocsRoute = ApiDocsRouteImport.update({
   id: '/api/docs',
   path: '/api/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiLinksRoute = ApiLinksRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/collect': typeof ApiCollectRouteWithChildren
   '/api/docs': typeof ApiDocsRouteWithChildren
+  '/api/health': typeof ApiHealthRoute
   '/api/links': typeof ApiLinksRoute
   '/api/openapi': typeof ApiOpenapiRoute
   '/api/purge': typeof ApiPurgeRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/collect': typeof ApiCollectRouteWithChildren
   '/api/docs': typeof ApiDocsRouteWithChildren
+  '/api/health': typeof ApiHealthRoute
   '/api/links': typeof ApiLinksRoute
   '/api/openapi': typeof ApiOpenapiRoute
   '/api/purge': typeof ApiPurgeRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/api/collect': typeof ApiCollectRouteWithChildren
   '/api/docs': typeof ApiDocsRouteWithChildren
+  '/api/health': typeof ApiHealthRoute
   '/api/links': typeof ApiLinksRoute
   '/api/openapi': typeof ApiOpenapiRoute
   '/api/purge': typeof ApiPurgeRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/collect'
     | '/api/docs'
+    | '/api/health'
     | '/api/links'
     | '/api/openapi'
     | '/api/purge'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/collect'
     | '/api/docs'
+    | '/api/health'
     | '/api/links'
     | '/api/openapi'
     | '/api/purge'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/collect'
     | '/api/docs'
+    | '/api/health'
     | '/api/links'
     | '/api/openapi'
     | '/api/purge'
@@ -175,6 +187,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiCollectRoute: typeof ApiCollectRouteWithChildren
   ApiDocsRoute: typeof ApiDocsRouteWithChildren
+  ApiHealthRoute: typeof ApiHealthRoute
   ApiLinksRoute: typeof ApiLinksRoute
   ApiOpenapiRoute: typeof ApiOpenapiRoute
   ApiPurgeRoute: typeof ApiPurgeRoute
@@ -205,6 +218,13 @@ declare module '@tanstack/react-router' {
       path: '/api/docs'
       fullPath: '/api/docs'
       preLoaderRoute: typeof ApiDocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/links': {
@@ -300,6 +320,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiCollectRoute: ApiCollectRouteWithChildren,
   ApiDocsRoute: ApiDocsRouteWithChildren,
+  ApiHealthRoute: ApiHealthRoute,
   ApiLinksRoute: ApiLinksRoute,
   ApiOpenapiRoute: ApiOpenapiRoute,
   ApiPurgeRoute: ApiPurgeRoute,
