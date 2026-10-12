@@ -95,14 +95,17 @@ export function probeList(original: string): Probe[] {
   const raw: Probe[] = [];
 
   if (archiveNewest) {
-    // For WSJ, Axios, The Hill, try archive.is/newest first
+    // For WSJ, Axios, The Hill, try archive.is/newest first, then other archive services quickly
     raw.push(
       { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
+      { method: "archive.today", url: `https://archive.today/latest/${original}` },
+      { method: "archive.ph", url: `https://archive.ph/${original}` },
+      { method: "archive.is", url: `https://archive.is/${original}` },
     );
   }
 
   if (premium) {
-    // For premium domains, try Freedium first, then archive.is/newest, then other bypass services
+    // For premium domains, try Freedium first, then archive.is/newest, then other archive services
     raw.push(
       { method: "freedium", url: `https://freedium.cfd/${original}` },
       { method: "freedium-encoded", url: `https://freedium.cfd/${enc}` },
@@ -110,6 +113,9 @@ export function probeList(original: string): Probe[] {
       { method: "freedium-mirror-encoded", url: `https://freedium-mirror.cfd/${enc}` },
       // archive.is/newest early for premium domains too
       { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
+      { method: "archive.today", url: `https://archive.today/latest/${original}` },
+      { method: "archive.ph", url: `https://archive.ph/${original}` },
+      { method: "archive.is", url: `https://archive.is/${original}` },
     );
   }
 
@@ -121,14 +127,14 @@ export function probeList(original: string): Probe[] {
     { method: "freedium-mirror-encoded", url: `https://freedium-mirror.cfd/${enc}` },
     // archive.is/newest early for regular domains too
     { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
+    { method: "archive.today", url: `https://archive.today/latest/${original}` },
+    { method: "archive.ph", url: `https://archive.ph/${original}` },
+    { method: "archive.is", url: `https://archive.is/${original}` },
     { method: "removepaywalls", url: `https://removepaywalls.com/${original}` },
     { method: "removepaywall", url: `https://removepaywall.com/${original}` },
     { method: "removepaywall-co", url: `https://removepaywall.co/${original}` },
     { method: "smry", url: `https://smry.ai/${original}` },
     { method: "12ft", url: `https://12ft.io/${original}` },
-    { method: "archive.today", url: `https://archive.today/latest/${original}` },
-    { method: "archive.ph", url: `https://archive.ph/${original}` },
-    { method: "archive.is", url: `https://archive.is/${original}` },
     { method: "wayback", url: `https://web.archive.org/web/${original}` },
     { method: "wayback-id", url: `https://web.archive.org/web/id_/${original}` },
     { method: "googlebot", url: original },

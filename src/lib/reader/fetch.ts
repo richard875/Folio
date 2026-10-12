@@ -65,14 +65,10 @@ export async function fetchHtmlWithRedirects(
           continue;
         }
 
-        // Handle 429 (rate limited) - retry the same URL
+        // Handle 429 (rate limited) - don't retry within this function, let the cascade try other methods
         if (res.status === 429) {
           await res.body?.cancel();
-          if (attempt >= limit || Date.now() >= deadline) throw new Error(`HTTP 429`);
-          // Wait a bit before retrying (exponential backoff)
-          const waitMs = Math.min(1000 * Math.pow(2, attempt), 8000);
-          await new Promise((r) => setTimeout(r, waitMs));
-          continue;
+          throw new Error(`HTTP 429`);
         }
 
         if (!res.ok) {
