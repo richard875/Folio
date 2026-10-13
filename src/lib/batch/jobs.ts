@@ -335,10 +335,14 @@ export class JobManager {
             savedFile,
             partial: response.status === 206,
           };
-        return { status: "failed" as const, error: "Unable to save this article." };
+        // Log the actual error from save API for debugging
+        const errorText = await response.text().catch(() => "");
+        console.error("[job] save failed:", { url: articleUrl, status: response.status, statusText: response.statusText, error: errorText });
+        return { status: "failed" as const, error: `Save failed (${response.status}): ${errorText || "Unable to save this article."}` };
       }
-    } catch {
-      return { status: "failed" as const, error: "Unable to save this article." };
+    } catch (error) {
+      console.error("[job] save exception:", { url: articleUrl, error: error instanceof Error ? error.message : error });
+      return { status: "failed" as const, error: error instanceof Error ? error.message : "Unable to save this article." };
     }
   }
 }

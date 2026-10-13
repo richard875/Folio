@@ -57,6 +57,8 @@ export async function handleSaveRequest(
         : error instanceof Error
           ? error.message
           : "Failed";
+    // Log actual error for debugging (Render logs)
+    console.error("[save-api] error:", { status, message, url: url.searchParams.get("url"), error: error instanceof Error ? error.stack : error });
     const headers: Record<string, string> = { "cache-control": "no-store" };
     if (status === 429) headers["retry-after"] = "60";
     if (format === "json" || (request.headers.get("accept") || "").includes("application/json")) {

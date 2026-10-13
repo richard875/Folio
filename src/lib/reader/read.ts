@@ -143,6 +143,8 @@ async function extractArticle(original: string): Promise<ArticleResult> {
         if (error instanceof Error && error.message.includes("HTTP 429")) {
           rateLimitedProbes.push({ probe, finalUrl: probe.url });
         }
+        // DEBUG: Log fetch failures to understand what's blocking
+        console.error("[read] probe failed:", { url: original, probe: probe.method, probeUrl: probe.url, error: error instanceof Error ? error.message : String(error) });
         // Continue without exposing internal request details to the caller.
       }
     }
@@ -194,8 +196,9 @@ async function extractArticle(original: string): Promise<ArticleResult> {
           draft.markdown = toMarkdown(draft);
           if (!best || parsed.text.length > best.text.length) best = draft;
           if (!partial) break;
-        } catch {
+        } catch (error) {
           // Ignore second-pass failures
+          console.error("[read] second-pass failed:", { url: original, probe: probe.method, error: error instanceof Error ? error.message : String(error) });
         }
       }
     }
@@ -206,11 +209,13 @@ async function extractArticle(original: string): Promise<ArticleResult> {
   }
 
   if (!best) {
+    console.error("[read] all probes failed:", { url: original });
     const err = new Error("Could not extract an article. Please try again later.");
     (err as Error & { status: number }).status = 422;
     throw err;
   }
 
+  console.info("[read] extracted:", { url: original, sourceUrl: best.sourceUrl, partial: best.partial, textLength: best.text.length });
   CACHE.set(original, best, JSON.stringify(best).length * 2 + original.length * 2);
   return best;
 }
