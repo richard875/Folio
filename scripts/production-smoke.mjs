@@ -43,7 +43,7 @@ try {
     callId, status: "in progress", startedAt: new Date().toISOString(), finishedAt: null,
     active: 2, saved: 12, failed: 0, results: [],
   }));
-  const env = { ...process.env, ACCESS_HASH: hash, HOST: "0.0.0.0", PORT: port, READ_CONCURRENCY: "1", SAVE_CONCURRENCY: "1", FEED_CONCURRENCY: "2", FETCH_RETRY_LIMIT: "2", NITRO_SHUTDOWN_TIMEOUT: "45000" };
+  const env = { ...process.env, ACCESS_HASH: hash, HOST: "0.0.0.0", PORT: port, READ_CONCURRENCY: "1", SAVE_CONCURRENCY: "1", FEED_CONCURRENCY: "2", FETCH_RETRY_LIMIT: "2", NITRO_SHUTDOWN_TIMEOUT: "20000" };
   for (const key of ["NODE_OPTIONS", "DATABASE_URL", "NITRO_HOST", "NITRO_PORT", "NITRO_UNIX_SOCKET", "NITRO_SSL_CERT", "NITRO_SSL_KEY"]) delete env[key];
   // Test-only publisher transport, never deployed: exercise real HTTP extraction
   // and DOM parsing without issuing third-party article requests or saving real data.
@@ -191,7 +191,7 @@ try {
 } finally {
   if (child && child.exitCode === null) {
     child.kill("SIGTERM");
-    const timeout = setTimeout(() => child.kill("SIGKILL"), 55000);
+    const timeout = setTimeout(() => child.kill("SIGKILL"), 29000);
     const exit = await new Promise((resolve) => child.once("exit", (code, signal) => resolve({ code, signal })));
     clearTimeout(timeout);
     assert.equal(exit.signal, null, "Server required forced termination instead of graceful SIGTERM shutdown.");

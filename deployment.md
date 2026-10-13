@@ -70,8 +70,9 @@ Do not raise concurrency on Free without measuring RSS.
 
 Builds explicitly include dev dependencies and run lint/tests/typecheck before
 building. All build-time commands get a scoped 4096 MiB heap on Render's 8 GB builder;
-the runtime stays at 256 MiB. Nitro handles SIGTERM; its 45-second drain fits
-inside Render's configured 60-second termination delay. Jobs may still be cut short.
+the runtime stays at 256 MiB. Nitro handles SIGTERM with a 20-second drain,
+below Render's default 30-second termination delay. Free services cannot configure
+`maxShutdownDelaySeconds`; the Blueprint deliberately omits it. Jobs may still be cut short.
 There is no Express server or Express trust-proxy setting. Render forwards traffic
 to Nitro; internal API destinations are derived from PORT, never a client Host.
 

@@ -8,7 +8,6 @@ services:
     startCommand: node --env-file-if-exists=.env scripts/start-production.mjs
     healthCheckPath: /healthz
     autoDeployTrigger: commit
-    maxShutdownDelaySeconds: 60
     envVars:
       - key: ACCESS_HASH
         sync: false
@@ -31,4 +30,4 @@ services:
       - key: FETCH_RETRY_LIMIT
         value: "2"
       - key: NITRO_SHUTDOWN_TIMEOUT
-        value: "45000"
+        value: "20000"
