@@ -3,7 +3,7 @@ import { boundedBytes, publicFetch, publicUrl } from "../runtime/network.ts";
 
 const ATTEMPT_MS = 12_000;
 const MAX_BYTES = 3_000_000;
-const DEFAULT_RETRY_LIMIT = 5;
+const DEFAULT_RETRY_LIMIT = 8;
 
 function retryLimit(): number {
   const value = process.env.FETCH_RETRY_LIMIT?.trim();

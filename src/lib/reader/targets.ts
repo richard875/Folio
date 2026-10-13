@@ -32,6 +32,18 @@ const ARCHIVE_NEWEST_DOMAINS = new Set([
   "www.businessinsider.com",
 ]);
 
+// Domains that block cloud IPs heavily - need text extraction services first
+const CLOUD_BLOCKED_DOMAINS = new Set([
+  "wsj.com",
+  "www.wsj.com",
+  "axios.com",
+  "www.axios.com",
+  "thehill.com",
+  "www.thehill.com",
+  "cnbc.com",
+  "www.cnbc.com",
+]);
+
 function isPremiumDomain(url: string): boolean {
   try {
     const host = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
@@ -50,18 +62,71 @@ function isArchiveNewestDomain(url: string): boolean {
   }
 }
 
+function isCloudBlockedDomain(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
+    return CLOUD_BLOCKED_DOMAINS.has(host) || CLOUD_BLOCKED_DOMAINS.has(`www.${host}`);
+  } catch {
+    return false;
+  }
+}
+
 export type Probe = { method: string; url: string };
+
+/** Build text-extraction service URLs (work from cloud IPs when archives are blocked) */
+function textExtractionProbes(original: string, enc: string): Probe[] {
+  const httpUrl = original.replace(/^https:/, "http:");
+  const httpsUrl = original.replace(/^http:/, "https:");
+  return [
+    // Jina AI Reader - works well from cloud IPs, returns clean text
+    { method: "jina-http", url: `https://r.jina.ai/http://${httpUrl.replace(/^https?:\/\//, "")}` },
+    { method: "jina-https", url: `https://r.jina.ai/https://${httpsUrl.replace(/^https?:\/\//, "")}` },
+    // Jina AI with encoded URL
+    { method: "jina-enc", url: `https://r.jina.ai/http://${enc}` },
+  ];
+}
+
+/** Build archive service URLs (heavily rate-limited on cloud IPs) */
+function archiveProbes(original: string, enc: string): Probe[] {
+  return [
+    { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
+    { method: "archive.today", url: `https://archive.today/latest/${original}` },
+    { method: "archive.ph", url: `https://archive.ph/${original}` },
+    { method: "archive.is", url: `https://archive.is/${original}` },
+    { method: "removepaywalls", url: `https://removepaywalls.com/${original}` },
+    { method: "removepaywall", url: `https://removepaywall.com/${original}` },
+    { method: "removepaywall-co", url: `https://removepaywall.co/${original}` },
+    { method: "wayback", url: `https://web.archive.org/web/${original}` },
+    { method: "wayback-id", url: `https://web.archive.org/web/id_/${original}` },
+  ];
+}
+
+/** Build Freedium service URLs (often blocked on cloud) */
+function freediumProbes(original: string, enc: string): Probe[] {
+  return [
+    { method: "freedium", url: `https://freedium.cfd/${original}` },
+    { method: "freedium-encoded", url: `https://freedium.cfd/${enc}` },
+    { method: "freedium-mirror", url: `https://freedium-mirror.cfd/${original}` },
+    { method: "freedium-mirror-encoded", url: `https://freedium-mirror.cfd/${enc}` },
+  ];
+}
 
 export function probeList(original: string): Probe[] {
   const enc = encodeURIComponent(original);
   const premium = isPremiumDomain(original);
   const archiveNewest = isArchiveNewestDomain(original);
+  const cloudBlocked = isCloudBlockedDomain(original);
 
-  // Build the cascade (no direct fetch)
+  // Build the cascade: text extraction FIRST (cloud-friendly), then freedium, then archives
   const raw: Probe[] = [];
 
+  // For cloud-blocked domains (WSJ, Axios, The Hill, CNBC), try text extraction FIRST
+  if (cloudBlocked) {
+    raw.push(...textExtractionProbes(original, enc));
+  }
+
   if (archiveNewest) {
-    // For WSJ, Axios, The Hill, try archive.is/newest first, then other archive services quickly
+    // For WSJ, Axios, The Hill - still try archive.is/newest early but after text extraction
     raw.push(
       { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
       { method: "archive.today", url: `https://archive.today/latest/${original}` },
@@ -71,13 +136,10 @@ export function probeList(original: string): Probe[] {
   }
 
   if (premium) {
-    // For premium domains, try Freedium first, then archive.is/newest, then other archive services
+    // For premium domains, try Freedium first
+    raw.push(...freediumProbes(original, enc));
+    // archive.is/newest early for premium domains too
     raw.push(
-      { method: "freedium", url: `https://freedium.cfd/${original}` },
-      { method: "freedium-encoded", url: `https://freedium.cfd/${enc}` },
-      { method: "freedium-mirror", url: `https://freedium-mirror.cfd/${original}` },
-      { method: "freedium-mirror-encoded", url: `https://freedium-mirror.cfd/${enc}` },
-      // archive.is/newest early for premium domains too
       { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
       { method: "archive.today", url: `https://archive.today/latest/${original}` },
       { method: "archive.ph", url: `https://archive.ph/${original}` },
@@ -86,23 +148,19 @@ export function probeList(original: string): Probe[] {
   }
 
   // Standard cascade for all domains
+  // Try freedium for non-premium too
+  raw.push(...freediumProbes(original, enc));
+
+  // Text extraction for all domains (fallback when archives fail)
+  raw.push(...textExtractionProbes(original, enc));
+
+  // Archive services (heavily rate-limited on cloud)
+  raw.push(...archiveProbes(original, enc));
+
+  // Other services
   raw.push(
-    { method: "freedium", url: `https://freedium.cfd/${original}` },
-    { method: "freedium-encoded", url: `https://freedium.cfd/${enc}` },
-    { method: "freedium-mirror", url: `https://freedium-mirror.cfd/${original}` },
-    { method: "freedium-mirror-encoded", url: `https://freedium-mirror.cfd/${enc}` },
-    // archive.is/newest early for regular domains too
-    { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
-    { method: "archive.today", url: `https://archive.today/latest/${original}` },
-    { method: "archive.ph", url: `https://archive.ph/${original}` },
-    { method: "archive.is", url: `https://archive.is/${original}` },
-    { method: "removepaywalls", url: `https://removepaywalls.com/${original}` },
-    { method: "removepaywall", url: `https://removepaywall.com/${original}` },
-    { method: "removepaywall-co", url: `https://removepaywall.co/${original}` },
     { method: "smry", url: `https://smry.ai/${original}` },
     { method: "12ft", url: `https://12ft.io/${original}` },
-    { method: "wayback", url: `https://web.archive.org/web/${original}` },
-    { method: "wayback-id", url: `https://web.archive.org/web/id_/${original}` },
     { method: "googlebot", url: original },
   );
 
