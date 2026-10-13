@@ -21,13 +21,17 @@ services:
         value: "false"
       - key: READ_CONCURRENCY
         value: "1"
+        sync: false
       - key: SAVE_CONCURRENCY
         value: "1"
+        sync: false
       - key: FEED_CONCURRENCY
         value: "2"
       - key: RSS_LINKS_PER_SECTION
         value: "5"
+        sync: false
       - key: FETCH_RETRY_LIMIT
         value: "2"
+        sync: false
       - key: NITRO_SHUTDOWN_TIMEOUT
         value: "20000"
