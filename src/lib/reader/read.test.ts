@@ -189,10 +189,10 @@ describe("readArticle URL query handling", () => {
     const url = "https://example.com/transient-story";
     const result = await readArticle(url, ACCESS_HASH);
     assert.equal(result.originalUrl, url);
-    // First probe is freedium (no direct fetch), so both attempts go through freedium
+    // First probe is freedium-mirror (no direct fetch), so both attempts go through freedium-mirror
     assert.deepEqual(requested, [
-      "https://freedium.cfd/https://example.com/transient-story",
-      "https://freedium.cfd/https://example.com/transient-story",
+      "https://freedium-mirror.cfd/https://example.com/transient-story",
+      "https://freedium-mirror.cfd/https://example.com/transient-story",
     ]);
   });
 
@@ -205,8 +205,8 @@ describe("readArticle URL query handling", () => {
 
     const result = await readArticle("https://example.com/story?mod=hp_lead_pos1", ACCESS_HASH);
 
-    // First probe uses clean URL via freedium
-    assert.equal(requested[0], "https://freedium.cfd/https://example.com/story");
+    // First probe uses clean URL via freedium-mirror
+    assert.equal(requested[0], "https://freedium-mirror.cfd/https://example.com/story");
     assert.equal(requested.length, 1);
     assert.equal(result.originalUrl, "https://example.com/story?mod=hp_lead_pos1");
   });
@@ -223,11 +223,11 @@ describe("readArticle URL query handling", () => {
 
     const result = await readArticle(originalUrl, ACCESS_HASH);
 
-    // First probe uses clean URL via freedium
-    assert.equal(requested[0], "https://freedium.cfd/https://example.com/retry-story");
-    // Second probe uses original URL with search params via freedium
-    assert.ok(requested.indexOf("https://freedium.cfd/https://example.com/retry-story?mod=hp_lead_pos1") > 0);
-    assert.ok(requested.includes("https://freedium.cfd/https://example.com/retry-story?mod=hp_lead_pos1"));
+    // First probe uses clean URL via freedium-mirror
+    assert.equal(requested[0], "https://freedium-mirror.cfd/https://example.com/retry-story");
+    // Second probe uses original URL with search params via freedium-mirror
+    assert.ok(requested.indexOf("https://freedium-mirror.cfd/https://example.com/retry-story?mod=hp_lead_pos1") > 0);
+    assert.ok(requested.includes("https://freedium-mirror.cfd/https://example.com/retry-story?mod=hp_lead_pos1"));
     assert.equal(result.originalUrl, originalUrl);
   });
 
@@ -240,7 +240,7 @@ describe("readArticle URL query handling", () => {
 
     await readArticle("https://example.com/plain-story", ACCESS_HASH);
 
-    // Only one probe via freedium
-    assert.deepEqual(requested, ["https://freedium.cfd/https://example.com/plain-story"]);
+    // Only one probe via freedium-mirror
+    assert.deepEqual(requested, ["https://freedium-mirror.cfd/https://example.com/plain-story"]);
   });
 });
