@@ -120,16 +120,24 @@ export function probeList(original: string): Probe[] {
   const archiveNewest = isArchiveNewestDomain(original);
   const cloudBlocked = isCloudBlockedDomain(original);
 
-  // Build the cascade: text extraction FIRST (cloud-friendly), then freedium, then archives
+  // Build the cascade: freedium & archive services FIRST (work locally), text extraction LAST
   const raw: Probe[] = [];
 
-  // For cloud-blocked domains (WSJ, Axios, The Hill, CNBC), try text extraction FIRST
   if (cloudBlocked) {
-    raw.push(...textExtractionProbes(original, enc));
+    // For cloud-blocked domains (WSJ, Axios, The Hill, CNBC):
+    // Try freedium first (worked well locally), then archive services, text extraction LAST
+    raw.push(...freediumProbes(original, enc));
+    // archive.is/newest early for cloud-blocked domains
+    raw.push(
+      { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
+      { method: "archive.today", url: `https://archive.today/latest/${original}` },
+      { method: "archive.ph", url: `https://archive.ph/${original}` },
+      { method: "archive.is", url: `https://archive.is/${original}` },
+    );
   }
 
-  if (archiveNewest) {
-    // For WSJ, Axios, The Hill - still try archive.is/newest early but after text extraction
+  if (archiveNewest && !cloudBlocked) {
+    // For other archiveNewest domains (foreignpolicy, businessinsider), try archive.is/newest
     raw.push(
       { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
       { method: "archive.today", url: `https://archive.today/latest/${original}` },
@@ -154,11 +162,11 @@ export function probeList(original: string): Probe[] {
   // Try freedium for non-premium too
   raw.push(...freediumProbes(original, enc));
 
-  // Text extraction for all domains (fallback when archives fail)
-  raw.push(...textExtractionProbes(original, enc));
-
   // Archive services (heavily rate-limited on cloud)
   raw.push(...archiveProbes(original, enc));
+
+  // Text extraction for all domains (fallback when archives fail) - LAST RESORT
+  raw.push(...textExtractionProbes(original, enc));
 
   // Other services
   raw.push(

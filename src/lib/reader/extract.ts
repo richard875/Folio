@@ -115,7 +115,17 @@ export function parseArticleHtml(html: string, pageUrl: string): ParsedPage | nu
   if (!html || html.length < 400) return null;
   if (CHALLENGE.test(html.slice(0, 4000)) && html.length < 20_000) return null;
 
+  // Skip non-HTML content (markdown, plain text, JSON from services like Jina AI)
+  const trimmed = html.trim();
+  if (!trimmed.startsWith("<") && !trimmed.startsWith("<")) {
+    // Not HTML - likely markdown/plain text from text extraction services
+    return null;
+  }
+
   const { document } = parseHTML(html);
+  if (!document || typeof document.querySelector !== "function") {
+    return null;
+  }
   const ld = ldArticle(document);
   const readable = new Readability(document, { maxElemsToParse: 50_000 }).parse();
 

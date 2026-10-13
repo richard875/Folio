@@ -1,7 +1,7 @@
 import { userAgentFor } from "./extract.ts";
 import { boundedBytes, publicFetch, publicUrl } from "../runtime/network.ts";
 
-const ATTEMPT_MS = 12_000;
+const ATTEMPT_MS = 25_000;
 const MAX_BYTES = 3_000_000;
 const DEFAULT_RETRY_LIMIT = 8;
 

@@ -77,13 +77,15 @@ async function extractArticle(original: string): Promise<ArticleResult> {
 
     // Track probes that failed with 429 for a second pass
     const rateLimitedProbes: Array<{ probe: Probe; finalUrl: string }> = [];
+    const probes = probeList(sourceUrl);
 
-    for (const probe of probeList(sourceUrl)) {
+    for (let i = 0; i < probes.length; i++) {
+      const probe = probes[i];
       if (Date.now() - passStarted > passBudget || Date.now() - started > BUDGET_MS) {
         break;
       }
       // Small delay between probes to avoid triggering rate limits
-      if (probe !== probeList(sourceUrl)[0]) {
+      if (i > 0) {
         await new Promise((r) => setTimeout(r, 300));
       }
       try {
