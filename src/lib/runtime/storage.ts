@@ -16,7 +16,8 @@ export async function writeNewFile(path: string, content: string): Promise<void>
   if (Buffer.byteLength(content) > 8_000_000) throw new Error("Saved file exceeds its safety size limit.");
   if (process.env.NODE_ENV === "production") {
     const disk = await statfs(dirname(path), { bigint: true });
-    if (disk.bavail * disk.bsize < 67_108_864n) {
+    // 10MB threshold for Render free tier (1GB disk with build artifacts)
+    if (disk.bavail * disk.bsize < 10_485_760n) {
       throw Object.assign(new Error("Storage is nearly full. Free space before saving more articles."), { status: 507 });
     }
   }
