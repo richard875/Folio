@@ -64,14 +64,14 @@ describe("fetch retries", () => {
     assert.equal(calls, 3);
   });
 
-  it("defaults to five retries after the initial request", async () => {
+  it("defaults to eight retries after the initial request", async () => {
     let calls = 0;
     globalThis.fetch = async () => {
       calls++;
       throw new Error("fetch failed");
     };
     await assert.rejects(fetchHtml("https://example.com", "direct", Date.now() + 1000), /fetch failed/);
-    assert.equal(calls, 6);
+    assert.equal(calls, 9);
   });
 
   it("honors the configured limit for unsuccessful HTTP responses", async () => {
@@ -96,7 +96,7 @@ describe("fetch retries", () => {
     assert.equal(calls, 1);
   });
 
-  it("falls back to five retries for invalid settings", async () => {
+  it("falls back to eight retries for invalid settings", async () => {
     for (const value of ["", "invalid", "-1", "1.5", "Infinity", "9007199254740992"]) {
       process.env.FETCH_RETRY_LIMIT = value;
       let calls = 0;
@@ -105,7 +105,7 @@ describe("fetch retries", () => {
         throw new Error("fetch failed");
       };
       await assert.rejects(fetchHtml("https://example.com", "direct", Date.now() + 1000), /fetch failed/);
-      assert.equal(calls, 6, value);
+      assert.equal(calls, 9, value);
     }
   });
 
