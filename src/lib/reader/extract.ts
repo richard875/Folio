@@ -6,9 +6,23 @@ const BROWSER_UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 
 export const GOOGLEBOT_UA = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)";
+export const BINGBOT_UA = "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)";
+export const FACEBOOK_UA = "Mozilla/5.0 (compatible; FacebookBot/1.0; +http://www.facebook.com/bot.html)";
+export const TWITTER_UA = "Twitterbot/1.0";
 
 export function userAgentFor(method: string): string {
-  return method === "googlebot" ? GOOGLEBOT_UA : BROWSER_UA;
+  switch (method) {
+    case "googlebot":
+      return GOOGLEBOT_UA;
+    case "direct-bingbot":
+      return BINGBOT_UA;
+    case "direct-facebook":
+      return FACEBOOK_UA;
+    case "direct-twitter":
+      return TWITTER_UA;
+    default:
+      return BROWSER_UA;
+  }
 }
 
 function meta(doc: Document, sel: string): string {

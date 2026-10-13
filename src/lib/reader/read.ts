@@ -82,6 +82,10 @@ async function extractArticle(original: string): Promise<ArticleResult> {
       if (Date.now() - passStarted > passBudget || Date.now() - started > BUDGET_MS) {
         break;
       }
+      // Small delay between probes to avoid triggering rate limits
+      if (probe !== probeList(sourceUrl)[0]) {
+        await new Promise((r) => setTimeout(r, 300));
+      }
       try {
         assertPublicHttpUrl(probe.url);
         let html: string;

@@ -75,14 +75,17 @@ export type Probe = { method: string; url: string };
 
 /** Build text-extraction service URLs (work from cloud IPs when archives are blocked) */
 function textExtractionProbes(original: string, enc: string): Probe[] {
-  const httpUrl = original.replace(/^https:/, "http:");
-  const httpsUrl = original.replace(/^http:/, "https:");
+  const noProto = original.replace(/^https?:\/\//, "");
   return [
     // Jina AI Reader - works well from cloud IPs, returns clean text
-    { method: "jina-http", url: `https://r.jina.ai/http://${httpUrl.replace(/^https?:\/\//, "")}` },
-    { method: "jina-https", url: `https://r.jina.ai/https://${httpsUrl.replace(/^https?:\/\//, "")}` },
+    { method: "jina-http", url: `https://r.jina.ai/http://${noProto}` },
+    { method: "jina-https", url: `https://r.jina.ai/https://${noProto}` },
     // Jina AI with encoded URL
     { method: "jina-enc", url: `https://r.jina.ai/http://${enc}` },
+    // textise dot iitty - lightweight text extraction (via r.jina.ai proxy)
+    { method: "textise-iitty", url: `https://r.jina.ai/http://r.jina.ai/http://${noProto}` },
+    // textise dot iitty alternative
+    { method: "textise-dot-iitty", url: `https://r.jina.ai/http://cc.bingj.com/cache.aspx?d=503-123&u=${enc}` },
   ];
 }
 
@@ -162,6 +165,10 @@ export function probeList(original: string): Probe[] {
     { method: "smry", url: `https://smry.ai/${original}` },
     { method: "12ft", url: `https://12ft.io/${original}` },
     { method: "googlebot", url: original },
+    // Direct fetch with different user agents (some sites allow specific crawlers)
+    { method: "direct-bingbot", url: original },
+    { method: "direct-facebook", url: original },
+    { method: "direct-twitter", url: original },
   );
 
   const seen = new Set<string>();
