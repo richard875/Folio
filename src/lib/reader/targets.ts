@@ -134,7 +134,8 @@ export function probeList(original: string): Probe[] {
 
   if (cloudBlocked) {
     // For cloud-blocked domains (WSJ, Axios, The Hill, CNBC):
-    // Try archive.is/newest early (they'll 429 on Render but work locally)
+    // Archive services return 429 on Render; text extraction doesn't work either.
+    // Try archive services anyway (work locally), then Jina AI as last resort.
     raw.push(
       { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
       { method: "archive.today", url: `https://archive.today/latest/${original}` },
