@@ -1,4 +1,4 @@
-import { describe, it } from "node:test";
+import { afterEach, beforeEach, describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { generateKeyPairSync, type KeyObject } from "node:crypto";
 import { SignJWT, exportJWK, type JWK } from "jose";
@@ -15,6 +15,19 @@ import {
 
 const ISSUER = "https://gate.app-builder-testing.com";
 const AUDIENCE = "app:proj-123";
+
+// These tests exercise both auth-on and auth-off modes independently of the
+// deployment environment (Render intentionally supplies auth-off).
+const environmentKeys = ["VITE_AUTH_ENABLED", "GROK_PROJECT_ID", "GROK_GATE_ORIGIN"] as const;
+const inheritedEnvironment = Object.fromEntries(environmentKeys.map((key) => [key, process.env[key]]));
+beforeEach(() => { for (const key of environmentKeys) delete process.env[key]; });
+afterEach(() => {
+  for (const key of environmentKeys) {
+    const value = inheritedEnvironment[key];
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
+  }
+});
 
 type TestKey = { privateKey: KeyObject; jwk: JWK; kid: string };
 

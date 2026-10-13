@@ -154,12 +154,16 @@ describe("callTool failure memo", () => {
 describe("callTool in the workspace preview vs deployed", () => {
   const options = { connectorType: ConnectorType.GoogleDrive };
   const savedEnvToken = process.env.GROK_CONNECTOR_ACCESS_TOKEN;
+  const savedNodeEnv = process.env.NODE_ENV;
 
   beforeEach(() => {
+    process.env.NODE_ENV = "development";
     delete process.env.GROK_CONNECTOR_ACCESS_TOKEN;
     delete process.env.GROK_PROJECT_ID;
   });
   afterEach(() => {
+    if (savedNodeEnv === undefined) delete process.env.NODE_ENV;
+    else process.env.NODE_ENV = savedNodeEnv;
     if (savedEnvToken === undefined) {
       delete process.env.GROK_CONNECTOR_ACCESS_TOKEN;
     } else {
