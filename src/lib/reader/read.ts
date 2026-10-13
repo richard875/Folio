@@ -86,7 +86,7 @@ async function extractArticle(original: string): Promise<ArticleResult> {
       }
       // Small delay between probes to avoid triggering rate limits
       if (i > 0) {
-        await new Promise((r) => setTimeout(r, 300));
+        await new Promise((r) => setTimeout(r, 100));
       }
       try {
         assertPublicHttpUrl(probe.url);

@@ -1,9 +1,22 @@
 import { userAgentFor } from "./extract.ts";
 import { boundedBytes, publicFetch, publicUrl } from "../runtime/network.ts";
 
-const ATTEMPT_MS = 25_000;
+const ATTEMPT_MS = 15_000;
+const TEXT_EXTRACTION_ATTEMPT_MS = 10_000;
 const MAX_BYTES = 3_000_000;
 const DEFAULT_RETRY_LIMIT = 8;
+
+const TEXT_EXTRACTION_METHODS = new Set([
+  "jina-http", "jina-https", "jina-enc", "textise-dot-iitty", "textise-iitty",
+]);
+
+function isTextExtractionMethod(method: string): boolean {
+  return TEXT_EXTRACTION_METHODS.has(method);
+}
+
+function attemptTimeout(method: string): number {
+  return isTextExtractionMethod(method) ? TEXT_EXTRACTION_ATTEMPT_MS : ATTEMPT_MS;
+}
 
 function retryLimit(): number {
   const value = process.env.FETCH_RETRY_LIMIT?.trim();
@@ -47,7 +60,7 @@ export async function fetchHtmlWithRedirects(
       // Follow redirects manually to capture the final URL
       while (redirectCount < maxRedirects) {
         publicUrl(currentUrl);
-        const signal = AbortSignal.timeout(Math.max(1, Math.min(ATTEMPT_MS, deadline - Date.now())));
+        const signal = AbortSignal.timeout(Math.max(1, Math.min(attemptTimeout(method), deadline - Date.now())));
         const res = await publicFetch(currentUrl, {
           redirect: "manual",
           signal,

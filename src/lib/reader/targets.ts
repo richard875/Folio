@@ -73,19 +73,19 @@ function isCloudBlockedDomain(url: string): boolean {
 
 export type Probe = { method: string; url: string };
 
-/** Build text-extraction service URLs (work from cloud IPs when archives are blocked) */
-function textExtractionProbes(original: string, enc: string): Probe[] {
-  const noProto = original.replace(/^https?:\/\//, "");
+/** Build Freedium Mirror URLs (WORKS on Render for many domains) */
+function freediumMirrorProbes(original: string, enc: string): Probe[] {
   return [
-    // Jina AI Reader - works well from cloud IPs, returns clean text
-    { method: "jina-http", url: `https://r.jina.ai/http://${noProto}` },
-    { method: "jina-https", url: `https://r.jina.ai/https://${noProto}` },
-    // Jina AI with encoded URL
-    { method: "jina-enc", url: `https://r.jina.ai/http://${enc}` },
-    // textise dot iitty - lightweight text extraction (via r.jina.ai proxy)
-    { method: "textise-iitty", url: `https://r.jina.ai/http://r.jina.ai/http://${noProto}` },
-    // textise dot iitty alternative
-    { method: "textise-dot-iitty", url: `https://r.jina.ai/http://cc.bingj.com/cache.aspx?d=503-123&u=${enc}` },
+    { method: "freedium-mirror", url: `https://freedium-mirror.cfd/${original}` },
+    { method: "freedium-mirror-encoded", url: `https://freedium-mirror.cfd/${enc}` },
+  ];
+}
+
+/** Build Freedium service URLs (fails on Render with "fetch failed") */
+function freediumProbes(original: string, enc: string): Probe[] {
+  return [
+    { method: "freedium", url: `https://freedium.cfd/${original}` },
+    { method: "freedium-encoded", url: `https://freedium.cfd/${enc}` },
   ];
 }
 
@@ -104,13 +104,16 @@ function archiveProbes(original: string, enc: string): Probe[] {
   ];
 }
 
-/** Build Freedium service URLs (often blocked on cloud) */
-function freediumProbes(original: string, enc: string): Probe[] {
+/** Build text-extraction service URLs (slow, timeout-prone on cloud) */
+function textExtractionProbes(original: string, enc: string): Probe[] {
+  const noProto = original.replace(/^https?:\/\//, "");
   return [
-    { method: "freedium", url: `https://freedium.cfd/${original}` },
-    { method: "freedium-encoded", url: `https://freedium.cfd/${enc}` },
-    { method: "freedium-mirror", url: `https://freedium-mirror.cfd/${original}` },
-    { method: "freedium-mirror-encoded", url: `https://freedium-mirror.cfd/${enc}` },
+    // Jina AI Reader - returns clean text but slow/times out on cloud
+    { method: "jina-http", url: `https://r.jina.ai/http://${noProto}` },
+    { method: "jina-https", url: `https://r.jina.ai/https://${noProto}` },
+    { method: "jina-enc", url: `https://r.jina.ai/http://${enc}` },
+    // Bing cache via Jina AI
+    { method: "textise-dot-iitty", url: `https://r.jina.ai/http://cc.bingj.com/cache.aspx?d=503-123&u=${enc}` },
   ];
 }
 
@@ -120,14 +123,18 @@ export function probeList(original: string): Probe[] {
   const archiveNewest = isArchiveNewestDomain(original);
   const cloudBlocked = isCloudBlockedDomain(original);
 
-  // Build the cascade: freedium & archive services FIRST (work locally), text extraction LAST
+  // Build cascade: FREEMIUM MIRROR FIRST (works on Render), then freedium, then archives, then text extraction
   const raw: Probe[] = [];
+
+  // ALWAYS try freedium-mirror FIRST for ALL domains - it's the only thing that works on Render
+  raw.push(...freediumMirrorProbes(original, enc));
+
+  // Then try regular freedium (works locally, fails on Render)
+  raw.push(...freediumProbes(original, enc));
 
   if (cloudBlocked) {
     // For cloud-blocked domains (WSJ, Axios, The Hill, CNBC):
-    // Try freedium first (worked well locally), then archive services, text extraction LAST
-    raw.push(...freediumProbes(original, enc));
-    // archive.is/newest early for cloud-blocked domains
+    // Try archive.is/newest early (they'll 429 on Render but work locally)
     raw.push(
       { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
       { method: "archive.today", url: `https://archive.today/latest/${original}` },
@@ -137,7 +144,7 @@ export function probeList(original: string): Probe[] {
   }
 
   if (archiveNewest && !cloudBlocked) {
-    // For other archiveNewest domains (foreignpolicy, businessinsider), try archive.is/newest
+    // For other archiveNewest domains (foreignpolicy, businessinsider)
     raw.push(
       { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
       { method: "archive.today", url: `https://archive.today/latest/${original}` },
@@ -147,9 +154,7 @@ export function probeList(original: string): Probe[] {
   }
 
   if (premium) {
-    // For premium domains, try Freedium first
-    raw.push(...freediumProbes(original, enc));
-    // archive.is/newest early for premium domains too
+    // For premium domains, archive.is/newest early too
     raw.push(
       { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
       { method: "archive.today", url: `https://archive.today/latest/${original}` },
@@ -158,14 +163,10 @@ export function probeList(original: string): Probe[] {
     );
   }
 
-  // Standard cascade for all domains
-  // Try freedium for non-premium too
-  raw.push(...freediumProbes(original, enc));
-
-  // Archive services (heavily rate-limited on cloud)
+  // Archive services for all domains
   raw.push(...archiveProbes(original, enc));
 
-  // Text extraction for all domains (fallback when archives fail) - LAST RESORT
+  // Text extraction LAST (slow, times out on cloud)
   raw.push(...textExtractionProbes(original, enc));
 
   // Other services
@@ -173,7 +174,6 @@ export function probeList(original: string): Probe[] {
     { method: "smry", url: `https://smry.ai/${original}` },
     { method: "12ft", url: `https://12ft.io/${original}` },
     { method: "googlebot", url: original },
-    // Direct fetch with different user agents (some sites allow specific crawlers)
     { method: "direct-bingbot", url: original },
     { method: "direct-facebook", url: original },
     { method: "direct-twitter", url: original },
