@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { handleSaveRequest } from "@/lib/reader/save-api";
+import { handleSaveRequest } from "@reader/save-api";
 
 export const Route = createFileRoute("/api/save")({
   server: {

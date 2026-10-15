@@ -1,4 +1,4 @@
-import { hashMatches } from "../reader/auth.ts";
+import { hashMatches } from "../../../reader/auth.ts";
 import { jobManager, type JobManager } from "./jobs.ts";
 
 const headers = { "cache-control": "no-store" };

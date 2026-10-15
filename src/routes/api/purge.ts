@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { hashMatches } from "@/lib/reader/auth";
+import { hashMatches } from "@reader/auth";
 import { rm, readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { jobManager } from "@/lib/batch/jobs";

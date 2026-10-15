@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { KeyRound, Link2, Loader2 } from "lucide-react";
 import { ApiDocumentation } from "@/components/api-documentation";
-import type { ArticleResult } from "@/lib/reader/types";
+import type { ArticleResult } from "@reader/types";
 
 export const Route = createFileRoute("/")({ component: Home });
 

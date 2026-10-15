@@ -1,4 +1,4 @@
-import { hashMatches } from "../reader/auth.ts";
+import { hashMatches } from "../../../reader/auth.ts";
 import { generateLinks } from "./links.ts";
 
 /** One collection at a time per Node process, to avoid duplicate feed storms. */

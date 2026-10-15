@@ -7,7 +7,7 @@ import { BoundedCache, WorkLimit, boundedInteger } from "./limits.ts";
 import { boundedBytes, publicAddress, publicFetch, publicLookup, publicUrl } from "./network.ts";
 import { writeNewFile } from "./storage.ts";
 import { handleHealth } from "./health.ts";
-import { fetchHtml } from "../reader/fetch.ts";
+import { fetchHtml } from "../../../reader/fetch.ts";
 
 test("work admission rejects overload without queueing and releases after failures", async () => {
   const limit = new WorkLimit(() => 1);

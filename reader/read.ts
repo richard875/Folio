@@ -3,7 +3,7 @@ import { isSubstantial, looksLikeShell, parseArticleHtml, toMarkdown } from "./e
 import { fetchHtml, fetchHtmlWithRedirects } from "./fetch.ts";
 import { assertPublicHttpUrl, probeList, type Probe } from "./targets.ts";
 import type { ArticleResult } from "./types.ts";
-import { BoundedCache, extractionLimit } from "../runtime/limits.ts";
+import { BoundedCache, extractionLimit } from "../src/lib/runtime/limits.ts";
 
 const CACHE = new BoundedCache<ArticleResult>(10, 8 * 1024 * 1024, 30 * 60 * 1000);
 const BUDGET_MS = 48_000;

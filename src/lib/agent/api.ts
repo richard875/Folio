@@ -1,4 +1,4 @@
-import { hashMatches } from "../reader/auth.ts";
+import { hashMatches } from "../../../reader/auth.ts";
 import { ArticleAccessError, articleStore, type ArticleStore } from "./articles.ts";
 import { agentLimit } from "../runtime/limits.ts";
 

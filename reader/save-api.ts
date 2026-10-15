@@ -1,6 +1,6 @@
 import { readArticle, statusOf } from "./read.ts";
 import { saveArticle } from "./save.ts";
-import { jobManager, validCallId } from "../batch/jobs.ts";
+import { jobManager, validCallId } from "../src/lib/batch/jobs.ts";
 
 /** Dependencies are injectable so auth, write failures and responses are testable. */
 export async function handleSaveRequest(

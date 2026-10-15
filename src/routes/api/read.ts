@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { readArticle, statusOf } from "@/lib/reader/read";
+import { readArticle, statusOf } from "@reader/read";
 
 async function handle(request: Request): Promise<Response> {
   const url = new URL(request.url);

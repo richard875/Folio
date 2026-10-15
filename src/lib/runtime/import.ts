@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { mkdir, lstat, readFile } from "node:fs/promises";
 import { dirname, resolve, relative, sep } from "node:path";
-import { hashMatches } from "../reader/auth.ts";
+import { hashMatches } from "../../../reader/auth.ts";
 import { validArticleFolder } from "../agent/articles.ts";
 import { jobManager, validCallId } from "../batch/jobs.ts";
 import { boundedBytes } from "./network.ts";

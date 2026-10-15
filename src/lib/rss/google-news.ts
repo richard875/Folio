@@ -1,5 +1,5 @@
 import { parseHTML } from "linkedom";
-import { assertPublicHttpUrl } from "../reader/targets.ts";
+import { assertPublicHttpUrl } from "../../../reader/targets.ts";
 import { boundedBytes, publicFetch } from "../runtime/network.ts";
 
 function articleId(raw: string): string | null {

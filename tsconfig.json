@@ -25,12 +25,16 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@reader/*": [
+        "./reader/*"
       ]
     },
     "allowImportingTsExtensions": true
   },
   "include": [
     "src",
-    "server"
+    "server",
+    "reader"
   ]
 }

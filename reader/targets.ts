@@ -1,4 +1,4 @@
-export { publicUrl as assertPublicHttpUrl } from "../runtime/network.ts";
+export { publicUrl as assertPublicHttpUrl } from "../src/lib/runtime/network.ts";
 
 // Premium news domains that benefit from Freedium-first approach
 const PREMIUM_DOMAINS = new Set([

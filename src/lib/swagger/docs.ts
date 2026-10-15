@@ -1,4 +1,4 @@
-import { hashMatches } from "../reader/auth.ts";
+import { hashMatches } from "../../../reader/auth.ts";
 import { openApiDocument } from "./openapi.ts";
 
 const headers = {

@@ -6,8 +6,8 @@ import { setTimeout as delay } from "node:timers/promises";
 import { test } from "node:test";
 import { handleCollectRequest, handleCollectStatus } from "./api.ts";
 import { JobManager, parseLinksFile, saveConcurrency, type Job } from "./jobs.ts";
-import { handleSaveRequest } from "../reader/save-api.ts";
-import { saveArticle } from "../reader/save.ts";
+import { handleSaveRequest } from "../../../reader/save-api.ts";
+import { saveArticle } from "../../../reader/save.ts";
 
 const CALL_ID = "01234567-89ab-4cde-8012-3456789abcde";
 

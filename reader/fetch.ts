@@ -1,5 +1,5 @@
 import { userAgentFor } from "./extract.ts";
-import { boundedBytes, publicFetch, publicUrl } from "../runtime/network.ts";
+import { boundedBytes, publicFetch, publicUrl } from "../src/lib/runtime/network.ts";
 
 const ATTEMPT_MS = 15_000;
 const TEXT_EXTRACTION_ATTEMPT_MS = 10_000;

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { open, statfs, unlink } from "node:fs/promises";
 import { resolve } from "node:path";
-import { hashMatches } from "../reader/auth.ts";
+import { hashMatches } from "../../../reader/auth.ts";
 
 export async function handleHealth(request: Request, root = process.cwd()): Promise<Response> {
   const headers = { "cache-control": "no-store", "referrer-policy": "no-referrer", "x-content-type-options": "nosniff" };
