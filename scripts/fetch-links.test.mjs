@@ -117,6 +117,24 @@ test("limit one with the current attachment returns no more than twelve links", 
         "Business Insider": "businessinsider.com",
       };
       const url = `https://www.${domains[entry.site]}/news/story`;
+      if (entry.site === "Reuters") {
+        return new Response(
+          JSON.stringify({
+            result: {
+              articles: [
+                {
+                  canonical_url: "/world/test-article-2026-10-15/",
+                  title: "Test Article",
+                  description: "Test summary",
+                  published_time: "2026-10-15T12:00:00Z",
+                  kicker: { names: ["World"] },
+                },
+              ],
+            },
+          }),
+          { headers: { "content-type": "application/json" } },
+        );
+      }
       return new Response(
         entry.format === "news-sitemap"
           ? `<urlset xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"><url><loc>${url}</loc><news:news><news:title>Example article</news:title></news:news></url></urlset>`
@@ -124,10 +142,13 @@ test("limit one with the current attachment returns no more than twelve links", 
       );
     },
   });
-  assert.equal(requests, 12);
+  // Debug: include in assertion message
+  const details = results.map((r, i) => `${feeds[i].site}: ${r.urls.length}`).join(", ");
+  assert.equal(requests, 12, `requests: ${details}`);
   assert.equal(
     results.reduce((sum, result) => sum + result.urls.length, 0),
     12,
+    `total urls: ${details}`,
   );
 });
 
