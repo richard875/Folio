@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { test } from "node:test";
 import { handleCollectRequest, handleCollectStatus } from "./api.ts";
-import { JobManager, parseLinksFile, saveConcurrency, type Job } from "./jobs.ts";
+import { JobManager, parseLinksFile, saveConcurrency, type Job, type SaveBatchJob } from "./jobs.ts";
 import { handleSaveRequest } from "../../../reader/save-api.ts";
 import { saveArticle } from "../../../reader/save.ts";
 
@@ -55,14 +55,14 @@ test("resolves only Google News wrappers before save and never saves an unresolv
   assert.equal(reuters.searchParams.get("callId"), job.callId);
   assert.equal(reuters.searchParams.get("hash"), "test-key");
   assert.equal(
-    result.results.find((entry) => entry.website === "Reuters" && entry.status === "saved")?.url,
+    result.results.find((entry: Job["results"][0]) => entry.website === "Reuters" && entry.status === "saved")?.url,
     "https://www.reuters.com/world/real-article/",
   );
-  const failedEntry = result.results.find((entry) => entry.status === "failed");
+  const failedEntry = result.results.find((entry: Job["results"][0]) => entry.status === "failed");
   assert.ok(failedEntry, "Expected a failed entry for the unresolved Google News wrapper");
 });
 
-async function finished(manager: JobManager, callId: string): Promise<Job> {
+async function finished(manager: JobManager, callId: string): Promise<Job | SaveBatchJob> {
   for (let attempt = 0; attempt < 400; attempt++) {
     const job = await manager.get(callId);
     if (job?.status !== "in progress" && job) return job;
@@ -147,7 +147,7 @@ test("returns immediately, calls links then parallel saves, tracks progress and 
   assert.equal(result.saved, 8);
   assert.equal(result.processed, 8);
   assert.equal(result.active, 0);
-  assert.equal(result.failedFeeds, 1);
+  assert.equal((result as Job).failedFeeds, 1);
   assert.equal(maximum, 3);
   for (const url of received) {
     assert.equal(url.searchParams.get("website"), "News Site");
@@ -197,8 +197,8 @@ test("retries rate limits, retains partial successes and continues past article 
   assert.equal(result.failed, 1);
   assert.equal(result.processed, 2);
   assert.deepEqual(waits, [2000]);
-  assert.equal(result.results.find((entry) => entry.status === "saved")?.partial, true);
-  assert.ok(result.results.find((entry) => entry.status === "failed"));
+  assert.equal(result.results.find((entry: Job["results"][0]) => entry.status === "saved")?.partial, true);
+  assert.ok(result.results.find((entry: Job["results"][0]) => entry.status === "failed"));
   assert.doesNotMatch(JSON.stringify(result), /internal service details/);
 });
 

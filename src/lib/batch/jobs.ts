@@ -9,10 +9,13 @@ import { syncDirectory } from "../runtime/storage.ts";
 export type ArticleTask = { website: string; section: string; url: string };
 export type JobStatus = "in progress" | "completed" | "partial" | "error";
 export type ArticleResultStatus = "saved" | "failed";
-export type Job = {
+export type JobPhase = "collecting links" | "saving articles" | "finished";
+
+/** Common base type for all job types. */
+type BaseJob = {
   callId: string;
   status: JobStatus;
-  phase: "collecting links" | "saving articles" | "finished";
+  phase: JobPhase;
   startedAt: string;
   updatedAt: string;
   finishedAt: string | null;
@@ -22,8 +25,6 @@ export type Job = {
   saved: number;
   failed: number;
   active: number;
-  failedFeeds: number;
-  linksFile: string | null;
   error: string | null;
   results: (ArticleTask & {
     status: ArticleResultStatus;
@@ -32,6 +33,17 @@ export type Job = {
     error?: string;
   })[];
 };
+
+export type Job = BaseJob & {
+  failedFeeds: number;
+  linksFile: string | null;
+};
+
+export type SaveBatchJob = BaseJob & {
+  phase: "saving articles" | "finished";
+};
+
+export type SaveBatchTask = ArticleTask & { callId?: string };
 
 export function validCallId(value: string): boolean {
   return /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value);
@@ -88,7 +100,7 @@ export class JobManager {
   private readonly internalBase: () => string;
   private readonly wait: (milliseconds: number) => Promise<unknown>;
   private readonly timeoutMs: number;
-  private readonly jobs = new Map<string, Job>();
+  private readonly jobs = new Map<string, Job | SaveBatchJob>();
   private running: string | null = null;
   private writes: Promise<unknown> = Promise.resolve();
   private readonly googleUrls = new Map<string, Promise<string>>();
@@ -112,7 +124,12 @@ export class JobManager {
       });
   }
 
-  private persist(job: Job): Promise<unknown> {
+  private async update(job: BaseJob) {
+    job.updatedAt = new Date().toISOString();
+    await this.persist(job);
+  }
+
+  private async persist(job: BaseJob): Promise<unknown> {
     const content = `${JSON.stringify(job, null, 2)}\n`;
     const dir = resolve(this.root, "output/jobs");
     const path = resolve(dir, `${job.callId}.json`);
@@ -130,11 +147,6 @@ export class JobManager {
         } finally { await unlink(temporary).catch((error: NodeJS.ErrnoException) => { if (error.code !== "ENOENT") throw error; }); }
       });
     return this.writes;
-  }
-
-  private async update(job: Job) {
-    job.updatedAt = new Date().toISOString();
-    await this.persist(job);
   }
 
   async start(hash: string, format = "markdown"): Promise<Job | null> {
@@ -176,21 +188,58 @@ export class JobManager {
     return structuredClone(job);
   }
 
-  async get(callId: string): Promise<Job | null> {
+  /** Start a save-batch job (only saves articles, no link collection). */
+  async startSaveBatch(tasks: SaveBatchTask[], hash: string, format = "markdown"): Promise<SaveBatchJob | null> {
+    if (this.running) return null;
+    const callId = randomUUID();
+    this.running = callId;
+    const timestamp = new Date().toISOString();
+    const job: SaveBatchJob = {
+      callId,
+      status: "in progress",
+      phase: "saving articles",
+      startedAt: timestamp,
+      updatedAt: timestamp,
+      finishedAt: null,
+      concurrency: saveConcurrency(process.env.SAVE_CONCURRENCY),
+      total: tasks.length,
+      processed: 0,
+      saved: 0,
+      failed: 0,
+      active: 0,
+      error: null,
+      results: tasks.map((task) => ({
+        ...task,
+        status: "failed" as ArticleResultStatus,
+        error: "pending",
+      })),
+    };
+    try {
+      await this.persist(job);
+      this.jobs.set(callId, job);
+    } catch (error) {
+      this.running = null;
+      this.googleUrls.clear();
+      throw error;
+    }
+    setImmediate(() => {
+      void this.runSaveBatch(job, hash, format);
+    });
+    return structuredClone(job);
+  }
+
+  async get(callId: string): Promise<Job | SaveBatchJob | null> {
     if (!validCallId(callId)) return null;
     const current = this.jobs.get(callId);
     if (current) {
-      // A terminal in-memory status must not race its final disk publication.
-      // Otherwise readers can report completion while the agent still sees an
-      // unfinished folder, or restart recovery can mistake that record for stale work.
       if (current.status !== "in progress") await this.writes.catch(() => {});
       return structuredClone(current);
     }
-    let job: Job;
+    let job: Job | SaveBatchJob;
     try {
       job = JSON.parse(
         await readFile(resolve(this.root, "output/jobs", `${callId}.json`), "utf8"),
-      ) as Job;
+      ) as Job | SaveBatchJob;
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
       throw error;
@@ -279,6 +328,69 @@ export class JobManager {
       this.running = null;
       // Bound memory retention; older statuses remain available on disk.
       console.info(JSON.stringify({ event: "collection_finished", callId: job.callId, status: job.status, saved: job.saved, failed: job.failed, failedFeeds: job.failedFeeds }));
+      this.googleUrls.clear();
+    }
+  }
+
+  /** Run a save-batch job (only saves articles, no link collection). */
+  private async runSaveBatch(job: SaveBatchJob, hash: string, format: string): Promise<void> {
+    const deadline = AbortSignal.timeout(this.timeoutMs);
+    try {
+      let next = 0;
+      const workers = await Promise.allSettled(
+        Array.from({ length: Math.min(job.concurrency, job.total) }, async () => {
+          while (next < job.total && !deadline.aborted) {
+            const task = job.results[next++];
+            job.active++;
+            try {
+              await this.update(job);
+              const result = await this.saveTask(job.callId, task, hash, format, deadline);
+              // Update the result in place
+              const idx = job.results.findIndex((r) => r.url === task.url && r.status === "failed" && r.error === "pending");
+              if (idx >= 0) {
+                job.results[idx] = { ...task, ...result };
+              } else {
+                job.results.push({ ...task, ...result });
+              }
+              if (result.status === "saved") job.saved++;
+              else job.failed++;
+            } finally {
+              job.active--;
+              job.processed++;
+              await this.update(job);
+            }
+          }
+        }),
+      );
+      if (workers.some((worker) => worker.status === "rejected"))
+        throw new Error("Unable to persist progress.");
+      deadline.throwIfAborted();
+      if (job.saved === 0 && job.failed > 0) {
+        job.status = "error";
+        job.error = "No articles could be saved. See the results for details.";
+      } else if (job.failed > 0) {
+        job.status = "partial";
+        job.error = null;
+      } else {
+        job.status = "completed";
+        job.error = null;
+      }
+    } catch {
+      job.status = "error";
+      job.error = "The operation could not finish. Any articles already saved are retained.";
+    } finally {
+      job.phase = "finished";
+      job.finishedAt = new Date().toISOString();
+      job.active = 0;
+      try {
+        await this.update(job);
+        this.jobs.delete(job.callId);
+      } catch {
+        console.warn(JSON.stringify({ event: "job_persistence_failed", callId: job.callId }));
+        if (this.jobs.size > 1) this.jobs.delete(this.jobs.keys().next().value!);
+      }
+      this.running = null;
+      console.info(JSON.stringify({ event: "save_batch_finished", callId: job.callId, status: job.status, saved: job.saved, failed: job.failed }));
       this.googleUrls.clear();
     }
   }

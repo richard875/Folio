@@ -211,6 +211,142 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/save-batch": {
+      post: {
+        tags: ["Articles"],
+        summary: "Save multiple articles in a single request",
+        operationId: "saveArticleBatch",
+        description:
+          "Accepts a list of URLs and saves each article. Returns individual results for each URL. Maximum 100 URLs per request. Use this endpoint to selectively save articles after reviewing /api/links output.",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["urls"],
+                properties: {
+                  urls: {
+                    type: "array",
+                    maxItems: 100,
+                    items: {
+                      type: "object",
+                      required: ["url"],
+                      properties: {
+                        url: { type: "string", format: "uri" },
+                        website: { type: "string", description: "Override the inferred website name." },
+                        section: { type: "string", description: "Override the inferred section name." },
+                        callId: { type: "string", format: "uuid", description: "Optional known batch call ID; pins the save folder to the job's start minute." },
+                      },
+                    },
+                  },
+                  format: { type: "string", enum: ["markdown", "json"], default: "markdown" },
+                },
+              },
+            },
+          },
+          "application/json": {
+            schema: {
+              type: "object",
+              required: ["urls"],
+              properties: {
+                urls: {
+                  type: "array",
+                  maxItems: 100,
+                  items: { type: "string", format: "uri" },
+                },
+                format: { type: "string", enum: ["markdown", "json"], default: "markdown" },
+              },
+            },
+          },
+        },
+        responses: {
+          "200": response("Batch save results (some may have failed).", {
+            type: "object",
+            properties: {
+              results: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    url: string,
+                    status: { type: "string", enum: ["saved", "failed"] },
+                    savedFile: string,
+                    partial: { type: "boolean" },
+                    error: string,
+                  },
+                },
+              },
+              summary: {
+                type: "object",
+                properties: {
+                  total: { type: "integer" },
+                  saved: { type: "integer" },
+                  failed: { type: "integer" },
+                },
+              },
+            },
+          }),
+          "400": error("Invalid request body, format, or callId."),
+          "404": error("Call ID not found."),
+          "405": error("Method not allowed. Use POST."),
+          ...commonErrors,
+        },
+      },
+    },
+    "/api/save-batch/status": {
+      get: {
+        tags: ["Articles"],
+        summary: "Check save-batch progress",
+        operationId: "saveBatchStatus",
+        description:
+          "Returns the status of a save-batch job started via POST /api/save-batch. Includes per-URL results as articles are saved.",
+        parameters: jobParameters,
+        responses: {
+          "200": response("Save-batch job status and partial results.", {
+            type: "object",
+            properties: {
+              callId: string,
+              status: { type: "string", enum: ["in progress", "completed", "partial", "error"] },
+              phase: { type: "string", enum: ["saving articles", "finished"] },
+              startedAt: string,
+              updatedAt: string,
+              finishedAt: { type: "string", nullable: true },
+              concurrency: { type: "integer" },
+              total: { type: "integer" },
+              processed: { type: "integer" },
+              saved: { type: "integer" },
+              failed: { type: "integer" },
+              active: { type: "integer" },
+              error: { type: "string", nullable: true },
+              results: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    url: string,
+                    website: string,
+                    section: string,
+                    callId: { type: "string", format: "uuid", nullable: true },
+                    status: { type: "string", enum: ["saved", "failed"] },
+                    savedFile: string,
+                    partial: { type: "boolean" },
+                    error: string,
+                  },
+                },
+              },
+              queued: { type: "integer" },
+            },
+          }),
+          "400": error("callId is required."),
+          "404": response("Call not found.", {
+            type: "object",
+            properties: { callId: string, status: { type: "string", enum: ["not found"] } },
+          }),
+          ...commonErrors,
+        },
+      },
+    },
     "/api/links": {
       get: linksOperation,
       post: { ...linksOperation, operationId: "collectLinksPost" },

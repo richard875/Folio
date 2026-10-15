@@ -20,10 +20,12 @@ import { Route as ApiOpenapiRouteImport } from './routes/api/openapi'
 import { Route as ApiPurgeRouteImport } from './routes/api/purge'
 import { Route as ApiReadRouteImport } from './routes/api/read'
 import { Route as ApiSaveRouteImport } from './routes/api/save'
+import { Route as ApiSaveBatchRouteImport } from './routes/api/save-batch'
 import { Route as ApiAgentLatestRouteImport } from './routes/api/agent/latest'
 import { Route as ApiAgentReadRouteImport } from './routes/api/agent/read'
 import { Route as ApiCollectStatusRouteImport } from './routes/api/collect/status'
 import { Route as ApiDocsAssetsRouteImport } from './routes/api/docs/assets'
+import { Route as ApiSaveBatchStatusRouteImport } from './routes/api/save-batch/status'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -80,6 +82,11 @@ const ApiSaveRoute = ApiSaveRouteImport.update({
   path: '/api/save',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSaveBatchRoute = ApiSaveBatchRouteImport.update({
+  id: '/api/save-batch',
+  path: '/api/save-batch',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAgentLatestRoute = ApiAgentLatestRouteImport.update({
   id: '/api/agent/latest',
   path: '/api/agent/latest',
@@ -100,6 +107,11 @@ const ApiDocsAssetsRoute = ApiDocsAssetsRouteImport.update({
   path: '/assets',
   getParentRoute: () => ApiDocsRoute,
 } as any)
+const ApiSaveBatchStatusRoute = ApiSaveBatchStatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => ApiSaveBatchRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -113,10 +125,12 @@ export interface FileRoutesByFullPath {
   '/api/purge': typeof ApiPurgeRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
+  '/api/save-batch': typeof ApiSaveBatchRouteWithChildren
   '/api/agent/latest': typeof ApiAgentLatestRoute
   '/api/agent/read': typeof ApiAgentReadRoute
   '/api/collect/status': typeof ApiCollectStatusRoute
   '/api/docs/assets': typeof ApiDocsAssetsRoute
+  '/api/save-batch/status': typeof ApiSaveBatchStatusRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -130,10 +144,12 @@ export interface FileRoutesByTo {
   '/api/purge': typeof ApiPurgeRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
+  '/api/save-batch': typeof ApiSaveBatchRouteWithChildren
   '/api/agent/latest': typeof ApiAgentLatestRoute
   '/api/agent/read': typeof ApiAgentReadRoute
   '/api/collect/status': typeof ApiCollectStatusRoute
   '/api/docs/assets': typeof ApiDocsAssetsRoute
+  '/api/save-batch/status': typeof ApiSaveBatchStatusRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -148,10 +164,12 @@ export interface FileRoutesById {
   '/api/purge': typeof ApiPurgeRoute
   '/api/read': typeof ApiReadRoute
   '/api/save': typeof ApiSaveRoute
+  '/api/save-batch': typeof ApiSaveBatchRouteWithChildren
   '/api/agent/latest': typeof ApiAgentLatestRoute
   '/api/agent/read': typeof ApiAgentReadRoute
   '/api/collect/status': typeof ApiCollectStatusRoute
   '/api/docs/assets': typeof ApiDocsAssetsRoute
+  '/api/save-batch/status': typeof ApiSaveBatchStatusRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -167,10 +185,12 @@ export interface FileRouteTypes {
     | '/api/purge'
     | '/api/read'
     | '/api/save'
+    | '/api/save-batch'
     | '/api/agent/latest'
     | '/api/agent/read'
     | '/api/collect/status'
     | '/api/docs/assets'
+    | '/api/save-batch/status'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -184,10 +204,12 @@ export interface FileRouteTypes {
     | '/api/purge'
     | '/api/read'
     | '/api/save'
+    | '/api/save-batch'
     | '/api/agent/latest'
     | '/api/agent/read'
     | '/api/collect/status'
     | '/api/docs/assets'
+    | '/api/save-batch/status'
   id:
     | '__root__'
     | '/'
@@ -201,10 +223,12 @@ export interface FileRouteTypes {
     | '/api/purge'
     | '/api/read'
     | '/api/save'
+    | '/api/save-batch'
     | '/api/agent/latest'
     | '/api/agent/read'
     | '/api/collect/status'
     | '/api/docs/assets'
+    | '/api/save-batch/status'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -219,6 +243,7 @@ export interface RootRouteChildren {
   ApiPurgeRoute: typeof ApiPurgeRoute
   ApiReadRoute: typeof ApiReadRoute
   ApiSaveRoute: typeof ApiSaveRoute
+  ApiSaveBatchRoute: typeof ApiSaveBatchRouteWithChildren
   ApiAgentLatestRoute: typeof ApiAgentLatestRoute
   ApiAgentReadRoute: typeof ApiAgentReadRoute
 }
@@ -302,6 +327,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSaveRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/save-batch': {
+      id: '/api/save-batch'
+      path: '/api/save-batch'
+      fullPath: '/api/save-batch'
+      preLoaderRoute: typeof ApiSaveBatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/agent/latest': {
       id: '/api/agent/latest'
       path: '/api/agent/latest'
@@ -330,6 +362,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiDocsAssetsRouteImport
       parentRoute: typeof ApiDocsRoute
     }
+    '/api/save-batch/status': {
+      id: '/api/save-batch/status'
+      path: '/status'
+      fullPath: '/api/save-batch/status'
+      preLoaderRoute: typeof ApiSaveBatchStatusRouteImport
+      parentRoute: typeof ApiSaveBatchRoute
+    }
   }
 }
 
@@ -356,6 +395,18 @@ const ApiDocsRouteChildren: ApiDocsRouteChildren = {
 const ApiDocsRouteWithChildren =
   ApiDocsRoute._addFileChildren(ApiDocsRouteChildren)
 
+interface ApiSaveBatchRouteChildren {
+  ApiSaveBatchStatusRoute: typeof ApiSaveBatchStatusRoute
+}
+
+const ApiSaveBatchRouteChildren: ApiSaveBatchRouteChildren = {
+  ApiSaveBatchStatusRoute: ApiSaveBatchStatusRoute,
+}
+
+const ApiSaveBatchRouteWithChildren = ApiSaveBatchRoute._addFileChildren(
+  ApiSaveBatchRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HealthzRoute: HealthzRoute,
@@ -368,6 +419,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPurgeRoute: ApiPurgeRoute,
   ApiReadRoute: ApiReadRoute,
   ApiSaveRoute: ApiSaveRoute,
+  ApiSaveBatchRoute: ApiSaveBatchRouteWithChildren,
   ApiAgentLatestRoute: ApiAgentLatestRoute,
   ApiAgentReadRoute: ApiAgentReadRoute,
 }
