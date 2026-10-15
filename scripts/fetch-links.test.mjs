@@ -28,14 +28,14 @@ const rss = `<?xml version="1.0"?><rss version="2.0"><channel><title>News</title
 <item><title>Only ID</title><guid isPermaLink="false">internal-id</guid></item>
 </channel></rss>`;
 
-test("catalog uses exactly the twelve primary feed URLs in the replacement attachment", async () => {
+test("catalog uses exactly the eleven primary feed URLs in the replacement attachment", async () => {
   const source = await readFile(
     new URL("../attachments/News site RSS feeds by section.md", import.meta.url),
     "utf8",
   );
   const feeds = parseFeedCatalog(source);
-  assert.equal(feeds.length, 12);
-  assert.equal(new Set(feeds.map((item) => item.site)).size, 12);
+  assert.equal(feeds.length, 11);
+  assert.equal(new Set(feeds.map((item) => item.site)).size, 11);
   const urls = new Set(feeds.map((item) => item.url));
   assert.ok(urls.has("https://thehill.com/news/feed/"));
   assert.ok(urls.has("https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"));
@@ -90,28 +90,16 @@ test("a smaller site table fetches only its explicit URLs and yields at most one
   );
 });
 
-test("limit one with the current attachment returns no more than twelve links", async () => {
+test("limit one with the current attachment returns no more than eleven links", async () => {
   const source = await readFile(
     new URL("../attachments/News site RSS feeds by section.md", import.meta.url),
     "utf8",
   );
   const feeds = parseFeedCatalog(source);
   let feedRequests = 0;
-  let resolveRequests = 0;
   const results = await collectFeeds(feeds, {
     limit: 1,
     fetchImpl: async (input) => {
-      if (input.includes("/rss/articles/CBMiTEST")) {
-        resolveRequests++;
-        const testNum = input.split("CBMiTEST")[1]?.split("?")[0] || "0";
-        return new Response(null, { 
-          status: 302, 
-          headers: { 
-            location: `https://www.reuters.com/world/test-article-${testNum}-2026-10-15/`,
-            "content-type": "text/html" 
-          } 
-        });
-      }
       feedRequests++;
       const entry = feeds.find((item) => item.url === String(input));
       const domains = {
@@ -125,20 +113,9 @@ test("limit one with the current attachment returns no more than twelve links", 
         "Financial Times": "ft.com",
         "Foreign Policy": "foreignpolicy.com",
         CNBC: "cnbc.com",
-        Reuters: "reuters.com",
         "Business Insider": "businessinsider.com",
       };
       const url = `https://www.${domains[entry.site]}/news/story`;
-      if (entry.site === "Reuters") {
-        return new Response(
-          `<rss version="2.0"><channel><title>Google News</title>` +
-          Array.from({ length: 5 }, (_, i) => 
-            `<item><title>Test Article ${i}</title><link>https://news.google.com/rss/articles/CBMiTEST${i}?oc=5</link></item>`
-          ).join("") +
-          `</channel></rss>`,
-          { headers: { "content-type": "application/xml" } },
-        );
-      }
       return new Response(
         entry.format === "news-sitemap"
           ? `<urlset xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"><url><loc>${url}</loc><news:news><news:title>Example article</news:title></news:news></url></urlset>`
@@ -146,12 +123,11 @@ test("limit one with the current attachment returns no more than twelve links", 
       );
     },
   });
-  // Debug: include in assertion message
   const details = results.map((r, i) => `${feeds[i].site}: ${r.urls.length}`).join(", ");
-  assert.equal(feedRequests, 12, `feed requests: ${details}`);
+  assert.equal(feedRequests, 11, `feed requests: ${details}`);
   assert.equal(
     results.reduce((sum, result) => sum + result.urls.length, 0),
-    12,
+    11,
     `total urls: ${details}`,
   );
 });
