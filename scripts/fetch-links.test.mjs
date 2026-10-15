@@ -96,11 +96,23 @@ test("limit one with the current attachment returns no more than twelve links", 
     "utf8",
   );
   const feeds = parseFeedCatalog(source);
-  let requests = 0;
+  let feedRequests = 0;
+  let resolveRequests = 0;
   const results = await collectFeeds(feeds, {
     limit: 1,
     fetchImpl: async (input) => {
-      requests++;
+      if (input.includes("/rss/articles/CBMiTEST")) {
+        resolveRequests++;
+        const testNum = input.split("CBMiTEST")[1]?.split("?")[0] || "0";
+        return new Response(null, { 
+          status: 302, 
+          headers: { 
+            location: `https://www.reuters.com/world/test-article-${testNum}-2026-10-15/`,
+            "content-type": "text/html" 
+          } 
+        });
+      }
+      feedRequests++;
       const entry = feeds.find((item) => item.url === String(input));
       const domains = {
         WSJ: "wsj.com",
@@ -119,20 +131,12 @@ test("limit one with the current attachment returns no more than twelve links", 
       const url = `https://www.${domains[entry.site]}/news/story`;
       if (entry.site === "Reuters") {
         return new Response(
-          JSON.stringify({
-            result: {
-              articles: [
-                {
-                  canonical_url: "/world/test-article-2026-10-15/",
-                  title: "Test Article",
-                  description: "Test summary",
-                  published_time: "2026-10-15T12:00:00Z",
-                  kicker: { names: ["World"] },
-                },
-              ],
-            },
-          }),
-          { headers: { "content-type": "application/json" } },
+          `<rss version="2.0"><channel><title>Google News</title>` +
+          Array.from({ length: 5 }, (_, i) => 
+            `<item><title>Test Article ${i}</title><link>https://news.google.com/rss/articles/CBMiTEST${i}?oc=5</link></item>`
+          ).join("") +
+          `</channel></rss>`,
+          { headers: { "content-type": "application/xml" } },
         );
       }
       return new Response(
@@ -144,7 +148,7 @@ test("limit one with the current attachment returns no more than twelve links", 
   });
   // Debug: include in assertion message
   const details = results.map((r, i) => `${feeds[i].site}: ${r.urls.length}`).join(", ");
-  assert.equal(requests, 12, `requests: ${details}`);
+  assert.equal(feedRequests, 12, `feed requests: ${details}`);
   assert.equal(
     results.reduce((sum, result) => sum + result.urls.length, 0),
     12,
