@@ -77,7 +77,7 @@ const linksOperation = {
   summary: "Collect RSS links and save their report",
   operationId: "collectLinks",
   description:
-    "Fetches only configured RSS/Atom/news-sitemap sources, filters non-articles before the limit, preserves editor order for curated sources, and uses publication time plus cross-publisher headline support for unranked sources. Google News selections are resolved to publisher URLs and filtered before saving the report. RSS_LINKS_PER_SECTION defaults to 5. This request waits for collection to finish; use /api/collect for a non-blocking workflow. Creates a file; POST is preferred.",
+    "Fetches only configured RSS/Atom/news-sitemap sources, filters non-articles before the limit, preserves editor order for curated sources, and uses publication time plus cross-publisher headline support for unranked sources. Google News selections are resolved to publisher URLs and filtered before saving the report. Feed descriptions/summaries are included when meaningful (at least 40 characters, not just the headline/publisher), converted to plain text and capped at 1000 characters. No article pages are fetched for summaries. Markdown includes an optional Summary line under each URL; JSON preserves links and adds articles with url and optional summary. RSS_LINKS_PER_SECTION defaults to 5. This request waits for collection to finish; use /api/collect for a non-blocking workflow. Creates a file; POST is preferred.",
   parameters: [format],
   responses: {
     "200": {
@@ -468,7 +468,22 @@ export const openApiDocument = {
                     type: "object",
                     properties: {
                       name: string,
-                      links: { type: "array", items: string },
+                       links: { type: "array", items: string },
+                       articles: {
+                         type: "array",
+                         items: {
+                           type: "object",
+                           required: ["url"],
+                           properties: {
+                             url: { type: "string", format: "uri" },
+                             summary: {
+                               type: "string",
+                               maxLength: 1000,
+                               description: "Optional feed-provided plain-text summary; omitted when unavailable or insufficient.",
+                             },
+                           },
+                         },
+                       },
                       available: { type: "boolean" },
                     },
                   },

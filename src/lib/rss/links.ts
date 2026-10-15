@@ -10,7 +10,13 @@ import { boundedInteger } from "../runtime/limits.ts";
 
 const USER_AGENT = "Mozilla/5.0 (compatible; FolioRSS/1.0)";
 
-export type FeedResult = Feed & { urls: string[]; ok: boolean; candidates?: Candidate[] };
+export type FeedArticle = { url: string; summary?: string };
+export type FeedResult = Feed & {
+  urls: string[];
+  articles?: FeedArticle[];
+  ok: boolean;
+  candidates?: Candidate[];
+};
 export type FetchOptions = {
   fetchImpl?: typeof fetch;
   retryLimit?: number;
@@ -75,11 +81,13 @@ export async function fetchFeed(
       }
       const xml = new TextDecoder().decode(await boundedBytes(response, 8_000_000, signal));
       const candidates = parseCandidates(xml, { ...feed, url: response.url || feed.url }, now());
+      const articles = rankCandidates(candidates, candidates, now())
+        .slice(0, limit)
+        .map(({ url, summary }) => ({ url, ...(summary && { summary }) }));
       return {
         ...feed,
-        urls: rankCandidates(candidates, candidates, now())
-          .slice(0, limit)
-          .map((candidate) => candidate.url),
+        urls: articles.map((article) => article.url),
+        articles,
         candidates,
         ok: true,
       };
@@ -118,7 +126,7 @@ export async function collectFeeds(
           continue;
         }
         const ranked = rankCandidates(result.candidates || [], pool, options.now?.() ?? Date.now());
-        const selected = new Set<string>();
+        const selected = new Map<string, FeedArticle>();
         const deadline = AbortSignal.timeout(60000);
         let resolutionFailed = false;
         for (const candidate of ranked) {
@@ -148,9 +156,14 @@ export async function collectFeeds(
             }
           }
           const canonical = articleUrl(url, result);
-          if (canonical) selected.add(canonical);
+          if (canonical && (!selected.has(canonical) || !selected.get(canonical)?.summary))
+            selected.set(canonical, {
+              url: canonical,
+              ...(candidate.summary && { summary: candidate.summary }),
+            });
         }
-        result.urls = [...selected];
+        result.urls = [...selected.keys()];
+        result.articles = [...selected.values()];
         if (!result.urls.length && resolutionFailed) result.ok = false;
         options.onProgress?.(result, index);
       }
@@ -167,12 +180,23 @@ export async function collectFeeds(
       seen.add(url);
       return true;
     });
-    return { ...result, urls };
+    return { ...result, urls, articles: result.articles?.filter((article) => urls.includes(article.url)) };
   });
 }
 
 function heading(text: string): string {
   return text.replace(/[\r\n]/g, " ").replace(/[\\`*_[\]<>#]/g, "\\$&");
+}
+
+function sectionArticles(group: FeedResult[], limit: number): FeedArticle[] {
+  const summaries = new Map<string, string>();
+  for (const result of group)
+    for (const article of result.articles || [])
+      if (article.summary && !summaries.has(article.url)) summaries.set(article.url, article.summary);
+  return [...new Set(group.flatMap((result) => result.urls))].slice(0, limit).map((url) => ({
+    url,
+    ...(summaries.has(url) && { summary: summaries.get(url)! }),
+  }));
 }
 
 export function renderLinksMarkdown(
@@ -187,11 +211,14 @@ export function renderLinksMarkdown(
     for (const section of new Set(sections.map((result) => result.section))) {
       lines.push(`## ${heading(section)}`, "");
       const group = sections.filter((result) => result.section === section);
-      const urls = [...new Set(group.flatMap((result) => result.urls))].slice(0, limit);
-      for (const url of urls) lines.push(`- <${url.replace(/</g, "%3C").replace(/>/g, "%3E")}>`);
+      const articles = sectionArticles(group, limit);
+      for (const { url, summary } of articles) {
+        lines.push(`- <${url.replace(/</g, "%3C").replace(/>/g, "%3E")}>`);
+        if (summary) lines.push(`  Summary: ${heading(summary).replace(/([!|~])/g, "\\$1")}`);
+      }
       if (group.some((result) => !result.ok))
         lines.push("", "Some feeds were unavailable during this run.");
-      if (!urls.length && group.every((result) => result.ok))
+      if (!articles.length && group.every((result) => result.ok))
         lines.push("No article links available in this feed.");
       lines.push("");
     }
@@ -251,7 +278,8 @@ export async function generateLinks(
           const group = siteResults.filter((result) => result.section === section);
           return {
             name: section,
-            links: group.flatMap((result) => result.urls),
+            links: sectionArticles(group, limit).map((article) => article.url),
+            articles: sectionArticles(group, limit),
             available: group.every((result) => result.ok),
           };
         }),

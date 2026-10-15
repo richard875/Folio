@@ -8,6 +8,7 @@ Built with React 19, TypeScript, TanStack Start, Tailwind CSS, and Nitro. The cu
 
 - Browser-based article reading with title, author, publication date, and partial-content indicators.
 - RSS, Atom, and news-sitemap collection with publisher URL resolution.
+- Feed-provided article summaries in link reports, when available.
 - Background collection jobs with progress polling and bounded execution.
 - Saved-article manifests and paginated agent retrieval with SHA-256 verification.
 - Interactive Swagger documentation and an OpenAPI specification.
@@ -43,6 +44,12 @@ The home page includes an **API documentation** control. Swagger is served at `/
 | `/api/agent/read` | Retrieve checksum-verifiable article content |
 
 Most endpoints authenticate through the `hash` query parameter; agent endpoints also accept Bearer authentication. Treat URLs containing the key as secrets. `/healthz` is public; `/api/health` is authenticated.
+
+### Feed summaries
+
+`/api/links` includes an indented `Summary:` line below an article URL when its RSS description or Atom summary contains useful text. RSS `content:encoded` and Atom inline content are fallbacks. HTML is converted to plain text; short stubs (under 40 characters) and headline/publisher-only descriptions are omitted. Summaries are capped at 1,000 characters with an ellipsis; they are feed excerpts, not generated summaries or full-article extractions. Missing summaries leave the existing URL-only entry unchanged, including news sitemaps without descriptions.
+
+With `format=json`, each section keeps its existing `links` string array and adds an `articles` array of `{ "url": "…", "summary": "…" }` objects. `summary` is omitted when unavailable. Saved Markdown reports include the same summaries, and background article collection continues to use the URL lines only.
 
 ## Development and deployment
 

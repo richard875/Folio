@@ -1,9 +1,11 @@
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import type { Feed } from "./catalog.ts";
+import { feedSummary } from "./summary.ts";
 
 export type Candidate = {
   url: string;
   title: string;
+  summary?: string;
   creator: string;
   categories: string[];
   publishedAt: number | null;
@@ -223,6 +225,13 @@ export function parseCandidates(xml: string, feed: Feed, now = Date.now()): Cand
     candidates.push({
       url,
       title,
+      ...(!sitemap && {
+        summary: feedSummary(
+          atom ? [item.summary, item.content] : [item.description, item.summary, item.encoded],
+          title,
+          feed.site,
+        ),
+      }),
       creator,
       categories,
       publishedAt,
