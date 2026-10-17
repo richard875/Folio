@@ -68,7 +68,7 @@ function Home() {
             type="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://www.wsj.com/…"
+            placeholder="https://www.nytimes.com/…"
             className="min-h-11 rounded-lg border border-line bg-bg px-3 text-base text-ink outline-none focus:border-accent"
           />
         </label>
