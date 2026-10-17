@@ -21,6 +21,8 @@ async function fakeProxy(t: TestContext, handle: (request: IncomingMessage, sock
   assert.ok(address && typeof address === "object");
   const previous = process.env.OUTBOUND_PROXY_URL;
   const previousEnabled = process.env.OUTBOUND_PROXY_ENABLED;
+  const previousMode = process.env.OUTBOUND_PROXY_MODE;
+  process.env.OUTBOUND_PROXY_MODE = "configured";
   process.env.OUTBOUND_PROXY_ENABLED = "true";
   process.env.OUTBOUND_PROXY_URL = `http://test-user:test%3Apassword@127.0.0.1:${address.port}/`;
   t.after(async () => {
@@ -28,6 +30,8 @@ async function fakeProxy(t: TestContext, handle: (request: IncomingMessage, sock
     else process.env.OUTBOUND_PROXY_URL = previous;
     if (previousEnabled === undefined) delete process.env.OUTBOUND_PROXY_ENABLED;
     else process.env.OUTBOUND_PROXY_ENABLED = previousEnabled;
+    if (previousMode === undefined) delete process.env.OUTBOUND_PROXY_MODE;
+    else process.env.OUTBOUND_PROXY_MODE = previousMode;
     for (const socket of sockets) socket.destroy();
     await new Promise<void>((resolve) => server.close(() => resolve()));
   });
@@ -71,6 +75,55 @@ test("proxy toggle defaults on, supports explicit off, and rejects typos", () =>
   for (const value of ["", "  ", "true", " TRUE "]) assert.equal(outboundProxyEnabled(value), true);
   for (const value of ["false", " FALSE "]) assert.equal(outboundProxyEnabled(value), false);
   for (const value of ["0", "1", "yes", "flase"]) assert.throws(() => outboundProxyEnabled(value), /Invalid OUTBOUND_PROXY_ENABLED/);
+});
+
+test("Webshare rotating mode selects the rotation username without duplicating its suffix", () => {
+  const base = "http://example-user:example-password@p.webshare.io:80/";
+  assert.equal(outboundProxyUrl(base, "rotating")?.username, "example-user-rotate");
+  assert.equal(outboundProxyUrl(base.replace("example-user", "example-user-rotate"), "rotating")?.username, "example-user-rotate");
+  assert.equal(outboundProxyUrl(base, "configured")?.username, "example-user");
+  assert.equal(outboundProxyUrl(base, "")?.username, "example-user");
+  assert.equal(outboundProxyUrl(base, "rotating")?.password, "example-password");
+  assert.throws(() => outboundProxyUrl(base, "typo"), /Invalid OUTBOUND_PROXY_MODE/);
+  for (const value of ["http://example-user:example-password@another.example/", "http://p.webshare.io/"]) {
+    assert.throws(() => outboundProxyUrl(value, "rotating"), (error: Error) => {
+      assert.match(error.message, /requires the p.webshare.io gateway/);
+      assert.doesNotMatch(error.message, /example-user|example-password/);
+      return true;
+    });
+  }
+});
+
+test("rotation credentials use a fresh tunnel for repeated fetches, retries and redirects", async (t) => {
+  const sockets = new Set<Duplex>();
+  let connects = 0;
+  await fakeProxy(t, (request, socket) => {
+    connects++;
+    sockets.add(socket);
+    assert.equal(request.headers["proxy-authorization"], `Basic ${Buffer.from("test-user-rotate:test:password").toString("base64")}`);
+    socket.write("HTTP/1.1 200 Connection Established\r\n\r\n");
+    socket.once("data", () => {
+      // Keep-alive would permit reuse; Folio must still start a fresh tunnel.
+      if (connects === 3) socket.write("HTTP/1.1 503 Unavailable\r\nContent-Length: 0\r\n\r\n");
+      else if (connects === 5) socket.write("HTTP/1.1 302 Found\r\nLocation: /redirected\r\nContent-Length: 0\r\n\r\n");
+      else socket.write("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 7\r\n\r\narticle");
+    });
+  });
+  process.env.OUTBOUND_PROXY_URL = process.env.OUTBOUND_PROXY_URL!.replace("test-user:", "test-user-rotate:");
+  const options = () => ({ signal: AbortSignal.timeout(2000) });
+  for (let index = 0; index < 2; index++) {
+    assert.equal(await (await publicFetch("http://93.184.216.34/story", options())).text(), "article");
+  }
+  const previousRetry = process.env.FETCH_RETRY_LIMIT;
+  process.env.FETCH_RETRY_LIMIT = "1";
+  t.after(() => {
+    if (previousRetry === undefined) delete process.env.FETCH_RETRY_LIMIT;
+    else process.env.FETCH_RETRY_LIMIT = previousRetry;
+  });
+  assert.equal(await fetchHtml("http://93.184.216.34/story", "direct", Date.now() + 2000), "article");
+  assert.equal(await (await publicFetchRedirects("http://93.184.216.34/story", options())).text(), "article");
+  assert.equal(connects, 6);
+  assert.equal(sockets.size, 6);
 });
 
 test("disabled proxy ignores its URL, uses direct transport, and emits no proxy log", async (t) => {

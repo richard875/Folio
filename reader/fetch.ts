@@ -1,9 +1,11 @@
 import { userAgentFor } from "./extract.ts";
 import { boundedBytes, publicFetch, publicUrl } from "../src/lib/runtime/network.ts";
+import { boundedInteger } from "../src/lib/runtime/limits.ts";
 
 const ATTEMPT_MS = 15_000;
 const TEXT_EXTRACTION_ATTEMPT_MS = 10_000;
-const MAX_BYTES = 3_000_000;
+const DEFAULT_MAX_BYTES = 8_000_000;
+const HARD_MAX_BYTES = 16_000_000;
 const DEFAULT_RETRY_LIMIT = 8;
 
 const TEXT_EXTRACTION_METHODS = new Set([
@@ -45,6 +47,7 @@ export async function fetchHtmlWithRedirects(
   maxRedirects = 10,
 ): Promise<FetchResult> {
   const limit = retryLimit();
+  const maxBytes = boundedInteger(process.env.ARTICLE_MAX_RESPONSE_BYTES, DEFAULT_MAX_BYTES, HARD_MAX_BYTES);
   let currentUrl = url;
 
   for (let attempt = 0; ; attempt++) {
@@ -69,7 +72,7 @@ export async function fetchHtmlWithRedirects(
             accept: "text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.8",
             "accept-language": "en-US,en;q=0.9",
           },
-        }, MAX_BYTES);
+        }, maxBytes);
 
         if ([301, 302, 303, 307, 308].includes(res.status)) {
           const location = res.headers.get("location");
@@ -97,12 +100,15 @@ export async function fetchHtmlWithRedirects(
           await res.body?.cancel();
           throw new Error(`Unsupported type ${type}`);
         }
-        buf = await boundedBytes(res, MAX_BYTES, signal);
+        buf = await boundedBytes(res, maxBytes, signal);
         break;
       }
       if (redirectCount >= maxRedirects) throw new Error("Too many redirects.");
     } catch (error) {
-      if (error instanceof Error && /Response too large|Unsupported type|Private network|URL credentials|HTTP 429/.test(error.message)) throw error;
+      if (error instanceof Error && /Response too large/.test(error.message)) {
+        throw new Error(`Response too large (article limit: ${maxBytes} bytes; ARTICLE_MAX_RESPONSE_BYTES supports up to ${HARD_MAX_BYTES}).`);
+      }
+      if (error instanceof Error && /Unsupported type|Private network|URL credentials|HTTP 429/.test(error.message)) throw error;
       if (attempt >= limit || Date.now() >= deadline) throw error;
       continue;
     }
@@ -110,7 +116,7 @@ export async function fetchHtmlWithRedirects(
     // A successfully fetched but unusable response needs another extraction
     // method, not repeated requests for the same payload.
     if (type && !/html|text|json|xml/i.test(type)) throw new Error(`Unsupported type ${type}`);
-    if (buf.byteLength > MAX_BYTES) throw new Error("Response too large");
+    if (buf.byteLength > maxBytes) throw new Error(`Response too large (article limit: ${maxBytes} bytes).`);
     return {
       html: new TextDecoder("utf-8", { fatal: false }).decode(buf),
       finalUrl,

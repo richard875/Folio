@@ -7,11 +7,13 @@ import { readArticle } from "./read.ts";
 const originalFetch = globalThis.fetch;
 const originalAccessHash = process.env.ACCESS_HASH;
 const originalRetryLimit = process.env.FETCH_RETRY_LIMIT;
+const originalMaxResponseBytes = process.env.ARTICLE_MAX_RESPONSE_BYTES;
 const ACCESS_HASH = "test-reader-access-hash";
 
 beforeEach(() => {
   process.env.ACCESS_HASH = ACCESS_HASH;
   delete process.env.FETCH_RETRY_LIMIT;
+  delete process.env.ARTICLE_MAX_RESPONSE_BYTES;
 });
 
 afterEach(() => {
@@ -20,6 +22,8 @@ afterEach(() => {
   else process.env.ACCESS_HASH = originalAccessHash;
   if (originalRetryLimit === undefined) delete process.env.FETCH_RETRY_LIMIT;
   else process.env.FETCH_RETRY_LIMIT = originalRetryLimit;
+  if (originalMaxResponseBytes === undefined) delete process.env.ARTICLE_MAX_RESPONSE_BYTES;
+  else process.env.ARTICLE_MAX_RESPONSE_BYTES = originalMaxResponseBytes;
 });
 
 describe("reader access hash", () => {
@@ -142,6 +146,65 @@ describe("fetch retries", () => {
     };
     assert.equal(await fetchHtml("https://example.com", "direct", Date.now() + 1000), "article");
     assert.equal(calls, 2);
+  });
+});
+
+describe("article response size", () => {
+  it("accepts archive HTML larger than the old 3 MB limit", async () => {
+    const html = `<html><body>${"article text ".repeat(300_000)}</body></html>`;
+    assert.ok(Buffer.byteLength(html) > 3_000_000);
+    globalThis.fetch = async () => new Response(html, {
+      headers: { "content-type": "text/html", "content-length": String(Buffer.byteLength(html)) },
+    });
+    assert.equal(await fetchHtml("https://archive.is/example", "archive.is-newest", Date.now() + 5000), html);
+  });
+
+  it("allows a configured limit above the default", async () => {
+    process.env.ARTICLE_MAX_RESPONSE_BYTES = "9000000";
+    const html = "x".repeat(8_000_001);
+    globalThis.fetch = async () => new Response(html);
+    assert.equal((await fetchHtml("https://example.com", "direct", Date.now() + 5000)).length, html.length);
+  });
+
+  it("rejects advertised oversized bodies once with an actionable limit", async () => {
+    let calls = 0;
+    let cancelled = false;
+    globalThis.fetch = async () => {
+      calls++;
+      return new Response(new ReadableStream({ cancel() { cancelled = true; } }), {
+        headers: { "content-length": "8000001" },
+      });
+    };
+    await assert.rejects(fetchHtml("https://archive.is/example", "archive.is-newest", Date.now() + 1000), /Response too large.*8000000.*ARTICLE_MAX_RESPONSE_BYTES/);
+    assert.equal(calls, 1);
+    assert.equal(cancelled, true);
+  });
+
+  it("enforces custom byte limits on chunked or decoded compressed bodies without truncation", async () => {
+    process.env.ARTICLE_MAX_RESPONSE_BYTES = "64";
+    for (const headers of [new Headers(), new Headers({ "content-encoding": "gzip", "content-length": "10" })]) {
+      let calls = 0;
+      let cancelled = false;
+      globalThis.fetch = async () => {
+        calls++;
+        // Native fetch exposes already-decoded bytes, even with compression headers.
+        return new Response(new ReadableStream({
+          pull(controller) { controller.enqueue(new Uint8Array(40)); },
+          cancel() { cancelled = true; },
+        }), { headers });
+      };
+      await assert.rejects(fetchHtml("https://example.com", "direct", Date.now() + 1000), /Response too large.*64 bytes/);
+      assert.equal(calls, 1);
+      assert.equal(cancelled, true);
+    }
+  });
+
+  it("invalid limits cannot disable or exceed the 16 MB hard ceiling", async () => {
+    for (const value of ["0", "-1", "Infinity", "16000001", "invalid"]) {
+      process.env.ARTICLE_MAX_RESPONSE_BYTES = value;
+      globalThis.fetch = async () => new Response("", { headers: { "content-length": "8000001" } });
+      await assert.rejects(fetchHtml("https://example.com", "direct", Date.now() + 1000), /article limit: 8000000 bytes/);
+    }
   });
 });
 

@@ -37,6 +37,11 @@ See the README's outbound-proxy section for scope, TLS and DNS behaviour.
 Set `OUTBOUND_PROXY_ENABLED=false` to disable the proxy while keeping its URL;
 set `true` to re-enable it, then redeploy. Unset/blank defaults to true and still
 requires a nonblank proxy URL. Invalid toggle values fail requests.
+For Webshare rotation, set `OUTBOUND_PROXY_MODE=rotating` with the `p.webshare.io:80`
+HTTP gateway. Folio adds `-rotate` to the username if missing and opens a fresh
+tunnel for every request, retry and redirect. Webshare randomly selects from your
+pool, so consecutive IPs can repeat. Unset mode or `configured` preserves the URL's
+credentials unchanged. Set these values in the service environment, then redeploy.
 
 ### Limits and costs
 

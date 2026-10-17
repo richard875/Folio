@@ -60,19 +60,31 @@ export function outboundProxyEnabled(value = process.env.OUTBOUND_PROXY_ENABLED)
 }
 
 /** Never include the supplied value (which may contain credentials) in errors. */
-export function outboundProxyUrl(value = process.env.OUTBOUND_PROXY_URL): URL | undefined {
+export function outboundProxyUrl(value = process.env.OUTBOUND_PROXY_URL, mode = process.env.OUTBOUND_PROXY_MODE): URL | undefined {
   if (!value?.trim()) return undefined;
+  let url: URL;
   try {
-    const url = new URL(value.trim());
+    url = new URL(value.trim());
     if (!["http:", "https:"].includes(url.protocol) || !url.hostname ||
         url.pathname !== "/" || url.search || url.hash) throw new Error();
     // Validate percent escapes before passing credentials to Undici.
     decodeURIComponent(url.username);
     decodeURIComponent(url.password);
-    return url;
   } catch {
     throw new Error("Invalid OUTBOUND_PROXY_URL: expected an http(s) proxy URL without a path, query or fragment.");
   }
+  const connectionMode = mode?.trim().toLowerCase() || "configured";
+  if (connectionMode === "rotating") {
+    if (url.hostname.toLowerCase().replace(/\.$/, "") !== "p.webshare.io" || !url.username || !url.password) {
+      throw new Error("OUTBOUND_PROXY_MODE=rotating requires the p.webshare.io gateway with username/password authentication.");
+    }
+    const username = decodeURIComponent(url.username);
+    // Webshare's rotating endpoint is selected by authentication, not hostname.
+    if (!username.endsWith("-rotate")) url.username = encodeURIComponent(`${username}-rotate`);
+  } else if (connectionMode !== "configured") {
+    throw new Error("Invalid OUTBOUND_PROXY_MODE: expected configured or rotating.");
+  }
+  return url;
 }
 
 async function proxyDispatcher(url: URL, proxy: URL, signal?: AbortSignal | null): Promise<ProxyAgent> {

@@ -29,12 +29,43 @@ Open `http://localhost:8080`, enter an article URL, and use the generated `ACCES
 
 See [`.env.example`](.env.example) for configuration options. Keep `VITE_AUTH_ENABLED=false` and leave `DATABASE_URL` unset for the current file-backed deployment. Never commit access keys or expose them through `VITE_` variables.
 
+### Article response limits
+
+Article downloads allow up to **8,000,000 bytes** per response by default,
+including decoded compressed bodies. Set server-only `ARTICLE_MAX_RESPONSE_BYTES`
+to a positive integer up to **16,000,000** for larger archive/publisher pages;
+invalid values fall back to the 8 MB default. Oversized responses are cancelled,
+not truncated or repeatedly retried by the fetcher. Keep extraction concurrency low
+on Render Free: HTML parsing needs substantially more memory than the raw response.
+This setting does not increase feed-download limits. Restart after changing it.
+
 ### Optional outbound proxy (Webshare)
 
 Set the server-only `OUTBOUND_PROXY_URL` environment variable to your proxy URL,
 for example `http://USERNAME:PASSWORD@p.webshare.io:80/`. Use your current credentials
 privately; never commit them or put them in a `VITE_` variable. Percent-encode special
 characters in the username/password. HTTP and HTTPS proxy endpoints are supported.
+
+For Webshare **Rotating Proxy Endpoint / HTTP / Username-Password**, configure:
+
+```text
+OUTBOUND_PROXY_ENABLED=true
+OUTBOUND_PROXY_MODE=rotating
+OUTBOUND_PROXY_URL=http://USERNAME:YOUR_PRIVATE_PASSWORD@p.webshare.io:80/
+```
+
+Rotating mode appends Webshare's `-rotate` username suffix automatically, or keeps
+an existing suffix unchanged. It requires the `p.webshare.io` gateway and username/
+password authentication. Credentials from the dashboard remain private; the example
+contains placeholders only. Unset `OUTBOUND_PROXY_MODE` (or set `configured`) to use
+the URL exactly as supplied, including for non-Webshare proxies. Invalid modes fail
+requests rather than silently bypassing the proxy.
+
+Every outbound fetch creates a new CONNECT tunnel and destroys its dispatcher
+afterwards, even for the same site, retries and redirect hops. Webshare chooses a
+random exit from your pool; repeated IPs are still possible. This is not a promise
+of a unique IP for every request. Existing third-party retrieval services make their
+own downstream requests, whose exit IPs Folio cannot control.
 
 For local development, set the variable in the environment before `npm run dev`
 (for example, `export OUTBOUND_PROXY_URL='http://USERNAME:PASSWORD@p.webshare.io:80/'`,
@@ -70,7 +101,8 @@ HTTP proxies receive proxy credentials over an unencrypted connection; HTTPS pub
 content still uses verified end-to-end TLS. Prefer an HTTPS proxy endpoint if your
 provider supports one. Plain HTTP publisher traffic is not encrypted.
 
-Use a fixed Webshare exit IP for representative local/Render comparisons; a gateway
+If reproducible local/Render comparisons matter more than rotation, use Webshare's
+fixed-IP configuration with mode `configured`; a gateway
 hostname alone does not guarantee a fixed exit IP. Different DNS answers, rate limits,
 content changes and publisher policy can still produce different results. Shared
 datacenter proxies may also be blocked. Free-plan bandwidth is consumed by downloads
