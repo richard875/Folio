@@ -20,7 +20,7 @@ individual saves finish. Filenames retain their actual save times. The start and
 responses are always JSON, regardless of article file format.
 
 Before calling `/api/save`, Google News article links are resolved to their
-publisher URLs (for example, the original publisher's article URL). Direct publisher links
+publisher URLs (for example, the original Reuters URL). Direct publisher links
 are unchanged and cause no additional requests. Resolution shares the batch's
 save concurrency and has a 20-second timeout. If a destination cannot be found,
 that article is marked as failed and the other articles continue; the Google

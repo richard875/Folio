@@ -91,7 +91,7 @@ export function ApiDocumentation({ accessHash = "" }: { accessHash?: string }) {
                 <p>
                   Website and section names are inferred from the article URL. Add{" "}
                   <code className="text-ink">section=Markets</code> or{" "}
-                  <code className="text-ink">website=Bloomberg</code> to override them. The{" "}
+                  <code className="text-ink">website=Reuters</code> to override them. The{" "}
                   <code className="text-ink">X-Saved-File</code> response header provides the saved
                   path. Saving requires a writable server filesystem.
                 </p>

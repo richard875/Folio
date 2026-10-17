@@ -11,8 +11,7 @@ import { createLinksHandler } from "./api.ts";
 const feed = { site: "Example", section: "Main feed", url: "https://example.com/feed" };
 const summary = "The central bank announced new measures to support lending across the country.";
 const rss = (body: string) => `<rss xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel>${body}</channel></rss>`;
-const published = new Date().toISOString();
-const item = (body: string, path = "story") => `<item><title>Headline</title><link>https://example.com/${path}</link><pubDate>${published}</pubDate>${body}</item>`;
+const item = (body: string, path = "story") => `<item><title>Headline</title><link>https://example.com/${path}</link>${body}</item>`;
 
 test("RSS summaries decode HTML/entities, remove active content and preserve word boundaries", () => {
   const [candidate] = parseCandidates(rss(item(`<description><![CDATA[<p>The central bank &amp; lenders</p><p>announced &ldquo;new measures&rdquo; for the country.</p><script>bad()</script><style>hidden</style>]]></description>`)), feed);
@@ -33,7 +32,7 @@ test("Atom supports plain text, escaped HTML, XHTML summaries and inline content
     `<summary type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>The central bank announced new measures</p><p>to support lending across the country.</p></div></summary>`,
     `<summary>Short</summary><content type="html">&lt;p&gt;${summary}&lt;/p&gt;</content>`,
   ]) {
-    const xml = `<feed xmlns="http://www.w3.org/2005/Atom"><entry><title>Headline</title><published>${published}</published><link href="https://example.com/story"/>${field}</entry></feed>`;
+    const xml = `<feed xmlns="http://www.w3.org/2005/Atom"><entry><title>Headline</title><link href="https://example.com/story"/>${field}</entry></feed>`;
     assert.equal(parseCandidates(xml, feed)[0].summary, summary);
   }
 });
@@ -41,10 +40,10 @@ test("Atom supports plain text, escaped HTML, XHTML summaries and inline content
 test("missing, short, image-only and headline-only descriptions do not invent summaries", () => {
   const title = "A long headline about central bank measures and lending across the country";
   for (const description of ["", "Read more", "<img src='https://example.com/image.jpg'>", title, `${title} Example`]) {
-    const xml = rss(`<item><title>${title}</title><link>https://example.com/story</link><pubDate>${published}</pubDate><description><![CDATA[${description}]]></description></item>`);
+    const xml = rss(`<item><title>${title}</title><link>https://example.com/story</link><description><![CDATA[${description}]]></description></item>`);
     assert.equal(parseCandidates(xml, feed)[0].summary, undefined);
   }
-  const sitemap = `<urlset><url><loc>https://example.com/story</loc><lastmod>${published}</lastmod></url></urlset>`;
+  const sitemap = `<urlset><url><loc>https://example.com/story</loc></url></urlset>`;
   assert.equal(parseCandidates(sitemap, feed)[0].summary, undefined);
 });
 
@@ -59,7 +58,7 @@ test("summary follows a Google News URL through publisher resolution", async () 
   const results = await collectFeeds([source], {
     retryLimit: 0,
     fetchImpl: async (input) => String(input) === source.url
-      ? new Response(rss(`<item><title>Headline</title><link>https://news.google.com/rss/articles/CBMiExample</link><pubDate>${published}</pubDate><description>${summary}</description></item>`))
+      ? new Response(rss(`<item><title>Headline</title><link>https://news.google.com/rss/articles/CBMiExample</link><description>${summary}</description></item>`))
       : new Response(null, { status: 302, headers: { location: "https://example.com/resolved" } }),
   });
   assert.deepEqual(results[0].articles, [{ url: "https://example.com/resolved", summary }]);

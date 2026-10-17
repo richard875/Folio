@@ -65,6 +65,8 @@ export async function fetchFeed(
     now = Date.now,
   }: FetchOptions = {},
 ): Promise<FeedResult> {
+  const isReutersJson = feed.site === "Reuters" && feed.url.includes("/pf/api/v3/");
+  
   for (let attempt = 0; ; attempt++) {
     try {
       const signal = AbortSignal.timeout(timeoutMs);
@@ -72,12 +74,39 @@ export async function fetchFeed(
         signal,
         headers: {
           "user-agent": USER_AGENT,
-          accept: "application/rss+xml, application/atom+xml, application/xml, text/xml",
+          accept: isReutersJson 
+            ? "application/json" 
+            : "application/rss+xml, application/atom+xml, application/xml, text/xml",
         },
       });
       if (!response.ok) {
         await response.body?.cancel();
         throw new Error(`HTTP ${response.status}`);
+      }
+      
+      if (isReutersJson) {
+        const json = await response.json();
+        const articles = parseReutersJson(json, feed, limit, now);
+        // Create candidates for post-processing compatibility
+        const candidates = articles.map((a, i) => ({
+          url: a.url,
+          title: a.summary || "Reuters article",
+          summary: a.summary,
+          creator: "",
+          categories: [],
+          publishedAt: null,
+          index: i,
+          source: feed.site,
+          ordering: "newest" as const,
+          sourceWeight: Math.max(0, Math.min(1, (feed.homepageScore ?? 7) / 10)),
+        }));
+        return {
+          ...feed,
+          urls: articles.map((a) => a.url),
+          articles,
+          candidates,
+          ok: true,
+        };
       }
       
       const xml = new TextDecoder().decode(await boundedBytes(response, 8_000_000, signal));
@@ -97,6 +126,40 @@ export async function fetchFeed(
       await sleep(Math.min(250 * 2 ** attempt, 2000));
     }
   }
+}
+
+export function parseReutersJson(
+  json: { result?: { articles?: Array<{ canonical_url: string; title: string; description?: string; published_time?: string; kicker?: { names?: string[] } }> } },
+  feed: Feed,
+  limit: number,
+  now: () => number,
+): FeedArticle[] {
+  const articles = json.result?.articles || [];
+  const results: FeedArticle[] = [];
+  
+  for (const article of articles) {
+    if (results.length >= limit) break;
+    
+    // Skip stock-quote pages and wire-only headlines
+    const title = article.title || "";
+    if (/stock price/i.test(title) || /^Reuters$/i.test(title)) continue;
+    
+    const canonicalUrl = article.canonical_url;
+    if (!canonicalUrl) continue;
+    
+    const url = `https://www.reuters.com${canonicalUrl}`;
+    
+    // Validate URL is a proper article
+    const validated = articleUrl(url, feed);
+    if (!validated) continue;
+    
+    results.push({
+      url: validated,
+      ...(article.description && { summary: article.description }),
+    });
+  }
+  
+  return results;
 }
 
 export async function collectFeeds(
@@ -194,11 +257,10 @@ function sectionArticles(group: FeedResult[], limit: number): FeedArticle[] {
   for (const result of group)
     for (const article of result.articles || [])
       if (article.summary && !summaries.has(article.url)) summaries.set(article.url, article.summary);
-  return [...new Set(group.flatMap((result) => result.urls))].slice(0, limit).map((url) => {
-    const article: FeedArticle = { url };
-    if (summaries.has(url)) article.summary = summaries.get(url)!;
-    return article;
-  });
+  return [...new Set(group.flatMap((result) => result.urls))].slice(0, limit).map((url) => ({
+    url,
+    ...(summaries.has(url) && { summary: summaries.get(url)! }),
+  }));
 }
 
 export function renderLinksMarkdown(
@@ -278,11 +340,10 @@ export async function generateLinks(
         name,
         sections: [...new Set(siteResults.map((result) => result.section))].map((section) => {
           const group = siteResults.filter((result) => result.section === section);
-          const articles = group.flatMap((result) => result.articles || []).slice(0, limit);
           return {
             name: section,
-            links: group.flatMap((result) => result.urls),
-            articles,
+            links: sectionArticles(group, limit).map((article) => article.url),
+            articles: sectionArticles(group, limit),
             available: group.every((result) => result.ok),
           };
         }),

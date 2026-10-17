@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { isGoogleNewsArticle, resolveGoogleNewsUrl } from "./google-news.ts";
 
 const GOOGLE = "https://news.google.com/rss/articles/CBMiExample?oc=5";
-const PUBLISHER = "https://example.com/world/example-story/";
+const PUBLISHER = "https://www.reuters.com/world/example-story/";
 const PAGE =
   '<div data-n-a-id="CBMiExample" data-n-a-sg="example-signature" data-n-a-ts="1791726338"></div>';
 
@@ -18,7 +18,7 @@ test("only recognizes Google News article wrappers", () => {
   assert.equal(isGoogleNewsArticle(GOOGLE), true);
   assert.equal(isGoogleNewsArticle("https://news.google.com/read/CBMiExample"), true);
   assert.equal(isGoogleNewsArticle("https://news.google.com/articles/CBMiExample"), true);
-  assert.equal(isGoogleNewsArticle("https://news.google.com/rss/search?q=example"), false);
+  assert.equal(isGoogleNewsArticle("https://news.google.com/rss/search?q=reuters"), false);
   assert.equal(
     isGoogleNewsArticle("https://news.google.com.evil.example/rss/articles/CBMiExample"),
     false,
@@ -100,7 +100,7 @@ test("rejects private, non-http, Google consent and credential-bearing destinati
     "https://metadata.google.internal/",
     "file:///private",
     "https://consent.google.com/",
-    "https://user:password@example.com/story",
+    "https://user:password@reuters.com/story",
   ]) {
     await assert.rejects(
       resolveGoogleNewsUrl(

@@ -18,7 +18,7 @@ test("resolves only Google News wrappers before save and never saves an unresolv
   await mkdir(join(root, "output/links"), { recursive: true });
   await writeFile(
     join(root, linksFile),
-    "# Example News\n## Main feed\n- <https://news.google.com/rss/articles/CBMiWorking>\n- <https://news.google.com/rss/articles/CBMiBroken>\n# NY Times\n## Main feed\n- <https://www.nytimes.com/story>\n",
+    "# Reuters\n## Main feed\n- <https://news.google.com/rss/articles/CBMiWorking>\n- <https://news.google.com/rss/articles/CBMiBroken>\n# NY Times\n## Main feed\n- <https://www.nytimes.com/story>\n",
   );
   const saves: URL[] = [];
   const manager = new JobManager({
@@ -30,7 +30,7 @@ test("resolves only Google News wrappers before save and never saves an unresolv
         if (url.pathname.endsWith("CBMiWorking"))
           return new Response(null, {
             status: 302,
-            headers: { location: "https://example.com/world/real-article/" },
+            headers: { location: "https://www.reuters.com/world/real-article/" },
           });
         return new Response("No destination", { status: 503 });
       }
@@ -47,16 +47,16 @@ test("resolves only Google News wrappers before save and never saves an unresolv
   assert.equal(result.saved, 2);
   assert.equal(result.failed, 1);
   assert.deepEqual(saves.map((url) => url.searchParams.get("url")).sort(), [
-    "https://example.com/world/real-article/",
     "https://www.nytimes.com/story",
+    "https://www.reuters.com/world/real-article/",
   ]);
-  const publisher = saves.find((url) => url.searchParams.get("website") === "Example News")!;
-  assert.equal(publisher.searchParams.get("section"), "Main feed");
-  assert.equal(publisher.searchParams.get("callId"), job.callId);
-  assert.equal(publisher.searchParams.get("hash"), "test-key");
+  const reuters = saves.find((url) => url.searchParams.get("website") === "Reuters")!;
+  assert.equal(reuters.searchParams.get("section"), "Main feed");
+  assert.equal(reuters.searchParams.get("callId"), job.callId);
+  assert.equal(reuters.searchParams.get("hash"), "test-key");
   assert.equal(
-    result.results.find((entry: Job["results"][0]) => entry.website === "Example News" && entry.status === "saved")?.url,
-    "https://example.com/world/real-article/",
+    result.results.find((entry: Job["results"][0]) => entry.website === "Reuters" && entry.status === "saved")?.url,
+    "https://www.reuters.com/world/real-article/",
   );
   const failedEntry = result.results.find((entry: Job["results"][0]) => entry.status === "failed");
   assert.ok(failedEntry, "Expected a failed entry for the unresolved Google News wrapper");

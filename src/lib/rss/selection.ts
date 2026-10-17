@@ -33,13 +33,18 @@ function text(value: unknown): string {
 }
 
 const PROFILES: Record<string, { domains: string[]; editorial?: boolean }> = {
+  wsj: { domains: ["wsj.com"] },
   nytimes: { domains: ["nytimes.com"], editorial: true },
   washingtonpost: { domains: ["washingtonpost.com"] },
   bloomberg: { domains: ["bloomberg.com"] },
   theeconomist: { domains: ["economist.com"] },
+  thehill: { domains: ["thehill.com"] },
+  axios: { domains: ["axios.com"], editorial: true },
   financialtimes: { domains: ["ft.com"], editorial: true },
   foreignpolicy: { domains: ["foreignpolicy.com"] },
   cnbc: { domains: ["cnbc.com"], editorial: true },
+  reuters: { domains: ["reuters.com"] },
+  businessinsider: { domains: ["businessinsider.com", "insider.com"] },
 };
 const identity = (site: string) => site.toLowerCase().replace(/[^a-z]/g, "");
 
@@ -72,8 +77,10 @@ export function articleUrl(raw: string, feed: Feed): string | null {
     )
       return null;
     const site = identity(feed.site);
+    if (site === "wsj" && /\/buyside(?:\/|$)/.test(path)) return null;
     if (site === "washingtonpost" && /\/sports(?:\/|$)/.test(path)) return null;
     if (site === "cnbc" && /\/select(?:\/|$)/.test(path)) return null;
+    if (site === "reuters" && /\/markets\/companies(?:\/|$)/.test(path)) return null;
     const domains = PROFILES[site]?.domains;
     if (
       domains &&
@@ -85,7 +92,10 @@ export function articleUrl(raw: string, feed: Feed): string | null {
     for (const key of [...url.searchParams.keys()]) {
       if (
         /^utm_/i.test(key) ||
-        /^(?:fbclid|gclid)$/i.test(key)
+        /^(?:fbclid|gclid)$/i.test(key) ||
+        (site === "wsj" &&
+          key.toLowerCase() === "mod" &&
+          url.searchParams.get(key)?.toLowerCase() === "flipboard")
       )
         url.searchParams.delete(key);
     }
@@ -193,6 +203,11 @@ export function parseCandidates(xml: string, feed: Feed, now = Date.now()): Cand
       creators.some((name) => /associated\s+press/i.test(name) || /\|\s*AP\s*$/iu.test(name))
     )
       continue;
+    if (
+      site === "reuters" &&
+      (/stock price/i.test(title) || /^Reuters(?:\s*[-|–—]\s*Reuters)?$/i.test(title))
+    )
+      continue;
     const date =
       text(sitemap ? news.publication_date : item.pubDate || item.published || item.date) ||
       text(item.updated || item.lastmod);
@@ -205,8 +220,6 @@ export function parseCandidates(xml: string, feed: Feed, now = Date.now()): Cand
       (now - publishedAt > horizonHours * 3600000 || publishedAt - now > 24 * 3600000)
     )
       continue;
-    // Exclude undated articles unless the feed is editorial (curated feeds may feature older/explainer pieces)
-    if (publishedAt === null && ordering !== "editorial") continue;
     if (seen.has(url)) continue;
     seen.add(url);
     candidates.push({
@@ -232,7 +245,7 @@ export function parseCandidates(xml: string, feed: Feed, now = Date.now()): Cand
 }
 
 const STOP = new Set(
-  "this that with from have will their after before about over into says said news latest update updates report reports analysis opinion world business more what why how amid could would should live today yesterday exclusive breaking story stories times post bloomberg economist cnbc financial america american people first year years week weeks markets market stock stocks price prices".split(
+  "this that with from have will their after before about over into says said news latest update updates report reports analysis opinion world business more what why how amid could would should live today yesterday exclusive breaking story stories reuters times post bloomberg economist hill axios cnbc financial insider america american people first year years week weeks markets market stock stocks price prices".split(
     " ",
   ),
 );
