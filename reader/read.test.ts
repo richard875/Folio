@@ -3,17 +3,20 @@ import { afterEach, beforeEach, describe, it } from "node:test";
 import { hashMatches } from "./auth.ts";
 import { fetchHtml } from "./fetch.ts";
 import { readArticle } from "./read.ts";
+import { probeList } from "./targets.ts";
 
 const originalFetch = globalThis.fetch;
 const originalAccessHash = process.env.ACCESS_HASH;
 const originalRetryLimit = process.env.FETCH_RETRY_LIMIT;
 const originalMaxResponseBytes = process.env.ARTICLE_MAX_RESPONSE_BYTES;
+const originalProxyEnv = Object.fromEntries(["OUTBOUND_PROXY_ENABLED", "OUTBOUND_PROXY_URL", "OUTBOUND_PROXY_MODE", "OUTBOUND_PROXY_BYPASS_HOSTS"].map((key) => [key, process.env[key]]));
 const ACCESS_HASH = "test-reader-access-hash";
 
 beforeEach(() => {
   process.env.ACCESS_HASH = ACCESS_HASH;
   delete process.env.FETCH_RETRY_LIMIT;
   delete process.env.ARTICLE_MAX_RESPONSE_BYTES;
+  for (const key of Object.keys(originalProxyEnv)) delete process.env[key];
 });
 
 afterEach(() => {
@@ -24,6 +27,10 @@ afterEach(() => {
   else process.env.FETCH_RETRY_LIMIT = originalRetryLimit;
   if (originalMaxResponseBytes === undefined) delete process.env.ARTICLE_MAX_RESPONSE_BYTES;
   else process.env.ARTICLE_MAX_RESPONSE_BYTES = originalMaxResponseBytes;
+  for (const [key, value] of Object.entries(originalProxyEnv)) {
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
+  }
 });
 
 describe("reader access hash", () => {
@@ -146,6 +153,76 @@ describe("fetch retries", () => {
     };
     assert.equal(await fetchHtml("https://example.com", "direct", Date.now() + 1000), "article");
     assert.equal(calls, 2);
+  });
+});
+
+describe("extraction service catalog", () => {
+  it("keeps both working mirror variants and never schedules the retired service", () => {
+    for (const proxyEnabled of [false, true]) {
+      process.env.OUTBOUND_PROXY_ENABLED = String(proxyEnabled);
+      process.env.OUTBOUND_PROXY_URL = "http://test-user:test-password@127.0.0.1:9999/";
+      for (const host of ["example.com", "www.ft.com", "www.wsj.com", "foreignpolicy.com"]) {
+        const probes = probeList(`https://${host}/article?example=1`);
+        assert.deepEqual(probes.filter((probe) => new URL(probe.url).hostname === "freedium-mirror.cfd").map((probe) => probe.method), ["freedium-mirror", "freedium-mirror-encoded"]);
+        assert.equal(probes.some((probe) => new URL(probe.url).hostname === "freedium.cfd"), false);
+        assert.equal(probes.some((probe) => ["freedium", "freedium-encoded"].includes(probe.method)), false);
+      }
+    }
+  });
+});
+
+describe("failure handling and proxy extraction budgets", () => {
+  function enableProxy() {
+    process.env.OUTBOUND_PROXY_ENABLED = "true";
+    process.env.OUTBOUND_PROXY_URL = "http://test-user:test-password@127.0.0.1:9999/";
+    process.env.FETCH_RETRY_LIMIT = "8";
+  }
+
+  it("does not repeatedly retry invalid certificates in direct or proxy mode", async () => {
+    for (const enabled of [false, true]) {
+      if (enabled) enableProxy();
+      let calls = 0;
+      globalThis.fetch = async () => {
+        calls++;
+        throw new TypeError("fetch failed", { cause: Object.assign(new Error("invalid chain"), { code: "UNABLE_TO_GET_ISSUER_CERT_LOCALLY" }) });
+      };
+      await assert.rejects(fetchHtml("https://93.184.216.34/story", "direct", Date.now() + 1000), /fetch failed/);
+      assert.equal(calls, 1);
+    }
+  });
+
+  it("does not retry a missing article eight times", async () => {
+    let calls = 0;
+    globalThis.fetch = async () => { calls++; return new Response(null, { status: 404 }); };
+    await assert.rejects(fetchHtml("https://example.com/story", "direct", Date.now() + 1000), /HTTP 404/);
+    assert.equal(calls, 1);
+  });
+
+  it("caps proxy retries even when FETCH_RETRY_LIMIT is eight", async () => {
+    enableProxy();
+    let calls = 0;
+    globalThis.fetch = async () => { calls++; throw new TypeError("fetch failed"); };
+    await assert.rejects(fetchHtml("https://93.184.216.34/story", "direct", Date.now() + 1000), /fetch failed/);
+    assert.equal(calls, 2);
+  });
+
+  it("stops a proxy method after six seconds rather than consuming the article budget", async (t) => {
+    enableProxy();
+    let now = Date.now();
+    t.mock.method(Date, "now", () => now);
+    let calls = 0;
+    globalThis.fetch = async () => { calls++; now += 6100; throw new TypeError("fetch failed"); };
+    await assert.rejects(fetchHtml("https://93.184.216.34/story", "direct", now + 48000), /fetch failed/);
+    assert.equal(calls, 1);
+  });
+
+  it("tries the publisher via the configured proxy before retrieval services", async () => {
+    enableProxy();
+    const requested: string[] = [];
+    globalThis.fetch = async (input) => { requested.push(String(input)); return articleResponse(); };
+    const url = "https://93.184.216.34/proxy-publisher-story";
+    assert.equal((await readArticle(url, ACCESS_HASH)).originalUrl, url);
+    assert.deepEqual(requested, [url]);
   });
 });
 

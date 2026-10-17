@@ -67,6 +67,34 @@ random exit from your pool; repeated IPs are still possible. This is not a promi
 of a unique IP for every request. Existing third-party retrieval services make their
 own downstream requests, whose exit IPs Folio cannot control.
 
+With proxy routing enabled, extraction tries the publisher URL first, through the
+proxy, before the existing retrieval-service cascade. Each extraction method gets
+at most **6 seconds total** across redirects/retries and **one retry**, further
+bounded by the existing article deadline and `FETCH_RETRY_LIMIT`. This prevents an
+unreachable service from exhausting the entire extraction budget. Direct mode
+retains the existing retry budget. In either mode, certificate-validation failures,
+DNS `ENOTFOUND`, proxy authentication/quota failures, and non-transient HTTP 4xx
+responses fail that method immediately. Certificate verification is never disabled.
+
+#### Selective routing for retrieval services
+
+If a service works directly but performs poorly through Webshare, explicitly list
+its hostname in `OUTBOUND_PROXY_BYPASS_HOSTS`, for example:
+
+```text
+OUTBOUND_PROXY_BYPASS_HOSTS=freedium-mirror.cfd
+```
+
+This intentionally uses your machine/Render's IP for **those exact hosts only**;
+other sites still use the proxy. The example configuration bypasses only the working
+mirror; archive.is, archive.today and archive.ph remain proxied. An unset/empty list
+bypasses nothing. Do not bypass archive sites based on local-only access tests. No
+automatic direct fallback is introduced. Subdomains do not match implicitly, and
+redirects are routed again by destination hostname. Private-network protections
+still apply. Bypassed requests emit an `outbound_proxy_bypass` log. This option can
+improve access to retrieval services but cannot fix their outages, rate limits,
+missing articles or invalid certificates. It also means not every request rotates.
+
 For local development, set the variable in the environment before `npm run dev`
 (for example, `export OUTBOUND_PROXY_URL='http://USERNAME:PASSWORD@p.webshare.io:80/'`,
 with your private values). For Render, add the same variable in the service's
@@ -93,6 +121,9 @@ be a publisher error such as 403; the log does not claim successful article extr
 or report the proxy's exit IP. Destination paths/queries and proxy credentials are
 never included. Requests rejected before proxy dispatch and cached results do not
 emit this event. Logs appear in the local server output or Render logs.
+Logs also include the effective `connectionMode`. Failures include allowlisted
+`errorCode`, `errorType`, and `proxyStatus` diagnostics (for example certificate
+errors or CONNECT 407), without exposing raw error messages or credentials.
 
 Private-network filtering, TLS verification, deadlines and response-size limits remain
 enabled. Publisher hostnames are resolved locally and CONNECT tunnels use validated

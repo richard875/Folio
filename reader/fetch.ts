@@ -1,5 +1,5 @@
 import { userAgentFor } from "./extract.ts";
-import { boundedBytes, publicFetch, publicUrl } from "../src/lib/runtime/network.ts";
+import { boundedBytes, publicFetch, publicUrl, outboundProxyEnabled, outboundProxyUrl, permanentNetworkFailure } from "../src/lib/runtime/network.ts";
 import { boundedInteger } from "../src/lib/runtime/limits.ts";
 
 const ATTEMPT_MS = 15_000;
@@ -46,12 +46,16 @@ export async function fetchHtmlWithRedirects(
   deadline: number,
   maxRedirects = 10,
 ): Promise<FetchResult> {
-  const limit = retryLimit();
+  // A failing service must not consume the entire 48-second extraction budget.
+  // Direct mode retains its existing retry/deadline behaviour.
+  const proxyActive = outboundProxyEnabled() && Boolean(outboundProxyUrl());
+  const limit = proxyActive ? Math.min(retryLimit(), 1) : retryLimit();
+  const probeDeadline = proxyActive ? Math.min(deadline, Date.now() + 6000) : deadline;
   const maxBytes = boundedInteger(process.env.ARTICLE_MAX_RESPONSE_BYTES, DEFAULT_MAX_BYTES, HARD_MAX_BYTES);
   let currentUrl = url;
 
   for (let attempt = 0; ; attempt++) {
-    const remainingMs = deadline - Date.now();
+    const remainingMs = probeDeadline - Date.now();
     if (remainingMs <= 0) throw new Error("time budget");
 
     let type = "";
@@ -63,7 +67,8 @@ export async function fetchHtmlWithRedirects(
       // Follow redirects manually to capture the final URL
       while (redirectCount < maxRedirects) {
         publicUrl(currentUrl);
-        const signal = AbortSignal.timeout(Math.max(1, Math.min(attemptTimeout(method), deadline - Date.now())));
+        if (Date.now() >= probeDeadline) throw new Error("time budget");
+        const signal = AbortSignal.timeout(Math.max(1, Math.min(attemptTimeout(method), probeDeadline - Date.now())));
         const res = await publicFetch(currentUrl, {
           redirect: "manual",
           signal,
@@ -92,7 +97,7 @@ export async function fetchHtmlWithRedirects(
 
         if (!res.ok) {
           await res.body?.cancel();
-          throw new Error(`HTTP ${res.status}`);
+          throw Object.assign(new Error(`HTTP ${res.status}`), { httpStatus: res.status });
         }
 
         type = res.headers.get("content-type") || "";
@@ -109,7 +114,9 @@ export async function fetchHtmlWithRedirects(
         throw new Error(`Response too large (article limit: ${maxBytes} bytes; ARTICLE_MAX_RESPONSE_BYTES supports up to ${HARD_MAX_BYTES}).`);
       }
       if (error instanceof Error && /Unsupported type|Private network|URL credentials|HTTP 429/.test(error.message)) throw error;
-      if (attempt >= limit || Date.now() >= deadline) throw error;
+      if (permanentNetworkFailure(error) || error instanceof Error && "httpStatus" in error &&
+          typeof error.httpStatus === "number" && error.httpStatus >= 400 && error.httpStatus < 500 && error.httpStatus !== 408) throw error;
+      if (attempt >= limit || Date.now() >= probeDeadline) throw error;
       continue;
     }
 

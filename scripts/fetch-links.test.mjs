@@ -28,23 +28,34 @@ const rss = `<?xml version="1.0"?><rss version="2.0"><channel><title>News</title
 <item><title>Only ID</title><guid isPermaLink="false">internal-id</guid></item>
 </channel></rss>`;
 
-test("catalog uses exactly the twelve primary feed URLs in the replacement attachment", async () => {
+test("catalog uses exactly the ten configured primary feed URLs", async () => {
   const source = await readFile(
     new URL("../attachments/News site RSS feeds by section.md", import.meta.url),
     "utf8",
   );
   const feeds = parseFeedCatalog(source);
-  assert.equal(feeds.length, 12);
-  assert.equal(new Set(feeds.map((item) => item.site)).size, 12);
+  assert.equal(feeds.length, 10);
+  assert.equal(new Set(feeds.map((item) => item.site)).size, 10);
   const urls = new Set(feeds.map((item) => item.url));
-  assert.ok(urls.has("https://thehill.com/news/feed/"));
+  assert.deepEqual([...urls].sort(), [
+    "https://flipboard.com/@WSJ.rss",
+    "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+    "https://www.washingtonpost.com/arcio/rss/",
+    "https://www.bloomberg.com/sitemaps/news/latest.xml",
+    "https://www.economist.com/latest/rss.xml",
+    "https://www.ft.com/?format=rss",
+    "https://foreignpolicy.com/feed/",
+    "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+    "https://news.google.com/rss/search?q=when:24h+site:reuters.com&ceid=US:en&hl=en-US&gl=US",
+    "https://www.businessinsider.com/sitemap/google-news.xml",
+  ].sort());
   assert.ok(urls.has("https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"));
   assert.ok(urls.has("https://flipboard.com/@WSJ.rss"));
   assert.ok(urls.has("https://www.bloomberg.com/sitemaps/news/latest.xml"));
   assert.ok(urls.has("https://www.businessinsider.com/sitemap/google-news.xml"));
   assert.equal(feeds.find((item) => item.site === "Bloomberg").format, "news-sitemap");
   assert.equal(feeds.find((item) => item.site === "NY Times").ordering, "editorial");
-  assert.equal(feeds.find((item) => item.site === "Axios").homepageScore, 10);
+  assert.equal(feeds.find((item) => item.site === "Financial Times").homepageScore, 9);
   assert.match(
     feeds.find((item) => item.site === "Washington Post").description,
     /Associated Press/,
@@ -54,7 +65,6 @@ test("catalog uses exactly the twelve primary feed URLs in the replacement attac
     !urls.has("https://www.ft.com/rss/home/international"),
     "Ignore alternate URLs in notes",
   );
-  assert.ok(!urls.has("https://api.axios.com/feed/audience/denver"), "Do not add historical feeds");
   assert.ok(feeds.every((item) => !/[<>]|\.\.\./.test(item.url)));
   assert.ok(feeds.every((item) => !/feeder\.co|feedspot\.com/.test(item.url)));
   assert.ok(feeds.every((item) => item.site !== "At a glance" && item.site !== "Sources"));
@@ -73,7 +83,7 @@ test("catalog ignores dead/prose links and supports CRLF and escaped table pipes
 
 test("a smaller site table fetches only its explicit URLs and yields at most one article per row", async () => {
   const source =
-    "# Feeds\n| Site | Feed URL | Notes |\n| --- | --- | --- |\n| Example One | `https://example.com/axios` | Alternate: `https://example.com/alternate` |\n| Example Two | `https://example.com/nyt` | |\n\n## Sources\n| Site | Feed URL |\n| --- | --- | --- |\n| Reference | `https://example.com/reference` |\n";
+    "# Feeds\n| Site | Feed URL | Notes |\n| --- | --- | --- |\n| Example One | `https://example.com/one` | Alternate: `https://example.com/alternate` |\n| Example Two | `https://example.com/nyt` | |\n\n## Sources\n| Site | Feed URL |\n| --- | --- | --- |\n| Reference | `https://example.com/reference` |\n";
   const feeds = parseFeedCatalog(source);
   const requested = [];
   const results = await collectFeeds(feeds, {
@@ -83,14 +93,14 @@ test("a smaller site table fetches only its explicit URLs and yields at most one
       return new Response(rss);
     },
   });
-  assert.deepEqual(requested, ["https://example.com/axios", "https://example.com/nyt"]);
+  assert.deepEqual(requested, ["https://example.com/one", "https://example.com/nyt"]);
   assert.equal(
     results.reduce((sum, result) => sum + result.urls.length, 0),
     2,
   );
 });
 
-test("limit one with the current attachment returns no more than twelve links", async () => {
+test("limit one with the current attachment returns ten links", async () => {
   const source = await readFile(
     new URL("../attachments/News site RSS feeds by section.md", import.meta.url),
     "utf8",
@@ -120,8 +130,6 @@ test("limit one with the current attachment returns no more than twelve links", 
         "Washington Post": "washingtonpost.com",
         Bloomberg: "bloomberg.com",
         "The Economist": "economist.com",
-        "The Hill": "thehill.com",
-        Axios: "axios.com",
         "Financial Times": "ft.com",
         "Foreign Policy": "foreignpolicy.com",
         CNBC: "cnbc.com",
@@ -148,10 +156,10 @@ test("limit one with the current attachment returns no more than twelve links", 
   });
   // Debug: include in assertion message
   const details = results.map((r, i) => `${feeds[i].site}: ${r.urls.length}`).join(", ");
-  assert.equal(feedRequests, 12, `feed requests: ${details}`);
+  assert.equal(feedRequests, 10, `feed requests: ${details}`);
   assert.equal(
     results.reduce((sum, result) => sum + result.urls.length, 0),
-    12,
+    10,
     `total urls: ${details}`,
   );
 });

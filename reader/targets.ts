@@ -1,4 +1,5 @@
 export { publicUrl as assertPublicHttpUrl } from "../src/lib/runtime/network.ts";
+import { outboundProxyEnabled, outboundProxyUrl } from "../src/lib/runtime/network.ts";
 
 // Premium news domains that benefit from Freedium-first approach
 const PREMIUM_DOMAINS = new Set([
@@ -20,10 +21,6 @@ const PREMIUM_DOMAINS = new Set([
 const ARCHIVE_NEWEST_DOMAINS = new Set([
   "wsj.com",
   "www.wsj.com",
-  "axios.com",
-  "www.axios.com",
-  "thehill.com",
-  "www.thehill.com",
   "foreignpolicy.com",
   "www.foreignpolicy.com",
   "cnbc.com",
@@ -36,10 +33,6 @@ const ARCHIVE_NEWEST_DOMAINS = new Set([
 const CLOUD_BLOCKED_DOMAINS = new Set([
   "wsj.com",
   "www.wsj.com",
-  "axios.com",
-  "www.axios.com",
-  "thehill.com",
-  "www.thehill.com",
   "cnbc.com",
   "www.cnbc.com",
 ]);
@@ -81,14 +74,6 @@ function freediumMirrorProbes(original: string, enc: string): Probe[] {
   ];
 }
 
-/** Build Freedium service URLs (fails on Render with "fetch failed") */
-function freediumProbes(original: string, enc: string): Probe[] {
-  return [
-    { method: "freedium", url: `https://freedium.cfd/${original}` },
-    { method: "freedium-encoded", url: `https://freedium.cfd/${enc}` },
-  ];
-}
-
 /** Build archive service URLs (heavily rate-limited on cloud IPs) */
 function archiveProbes(original: string, enc: string): Probe[] {
   return [
@@ -123,17 +108,19 @@ export function probeList(original: string): Probe[] {
   const archiveNewest = isArchiveNewestDomain(original);
   const cloudBlocked = isCloudBlockedDomain(original);
 
-  // Build cascade: FREEMIUM MIRROR FIRST (works on Render), then freedium, then archives, then text extraction
+  // Build cascade: mirror, archives, then text extraction services.
   const raw: Probe[] = [];
 
-  // ALWAYS try freedium-mirror FIRST for ALL domains - it's the only thing that works on Render
+  // With a proxy available, try the actual publisher before external retrieval
+  // services. The transport still uses the configured proxy; "direct" here
+  // names the extraction method, not a bypass of proxy routing.
+  if (outboundProxyEnabled() && outboundProxyUrl()) raw.push({ method: "direct", url: original });
+
+  // Keep the working mirror ahead of the other retrieval services.
   raw.push(...freediumMirrorProbes(original, enc));
 
-  // Then try regular freedium (works locally, fails on Render)
-  raw.push(...freediumProbes(original, enc));
-
   if (cloudBlocked) {
-    // For cloud-blocked domains (WSJ, Axios, The Hill, CNBC):
+    // For cloud-blocked domains (WSJ, CNBC):
     // Archive services return 429 on Render; text extraction doesn't work either.
     // Try archive services anyway (work locally), then Jina AI as last resort.
     raw.push(

@@ -4,7 +4,7 @@ import { createServer, type IncomingMessage } from "node:http";
 import type { Duplex } from "node:stream";
 import dns from "node:dns";
 import { syncBuiltinESMExports } from "node:module";
-import { publicFetch, publicFetchRedirects, outboundProxyUrl, outboundProxyEnabled } from "./network.ts";
+import { publicFetch, publicFetchRedirects, outboundProxyUrl, outboundProxyEnabled, proxyBypassed, networkErrorDetails, permanentNetworkFailure } from "./network.ts";
 import { Agent } from "undici";
 import { fetchHtml } from "../../../reader/fetch.ts";
 
@@ -22,6 +22,8 @@ async function fakeProxy(t: TestContext, handle: (request: IncomingMessage, sock
   const previous = process.env.OUTBOUND_PROXY_URL;
   const previousEnabled = process.env.OUTBOUND_PROXY_ENABLED;
   const previousMode = process.env.OUTBOUND_PROXY_MODE;
+  const previousBypass = process.env.OUTBOUND_PROXY_BYPASS_HOSTS;
+  delete process.env.OUTBOUND_PROXY_BYPASS_HOSTS;
   process.env.OUTBOUND_PROXY_MODE = "configured";
   process.env.OUTBOUND_PROXY_ENABLED = "true";
   process.env.OUTBOUND_PROXY_URL = `http://test-user:test%3Apassword@127.0.0.1:${address.port}/`;
@@ -32,6 +34,8 @@ async function fakeProxy(t: TestContext, handle: (request: IncomingMessage, sock
     else process.env.OUTBOUND_PROXY_ENABLED = previousEnabled;
     if (previousMode === undefined) delete process.env.OUTBOUND_PROXY_MODE;
     else process.env.OUTBOUND_PROXY_MODE = previousMode;
+    if (previousBypass === undefined) delete process.env.OUTBOUND_PROXY_BYPASS_HOSTS;
+    else process.env.OUTBOUND_PROXY_BYPASS_HOSTS = previousBypass;
     for (const socket of sockets) socket.destroy();
     await new Promise<void>((resolve) => server.close(() => resolve()));
   });
@@ -245,6 +249,46 @@ test("per-site proxy logs report responses and failures without credentials or t
   assert.equal(response.outcome, "response");
   assert.equal(failure.status, null);
   assert.equal(failure.outcome, "error");
+  assert.equal(failure.proxyStatus, 407);
   assert.equal(typeof response.durationMs, "number");
   assert.doesNotMatch(logs.join("\n"), /test-user|password|target-secret|private-path|another-path|Basic/);
+});
+
+test("bypass list is exact-host only, never a wildcard or URL", () => {
+  assert.equal(proxyBypassed(new URL("https://archive.is/story"), "ARCHIVE.IS,archive.ph"), true);
+  assert.equal(proxyBypassed(new URL("https://sub.archive.is/story"), "archive.is"), false);
+  assert.equal(proxyBypassed(new URL("https://archive.is.evil.example/story"), "archive.is"), false);
+  assert.equal(proxyBypassed(new URL("https://archive.is/story"), ""), false);
+  for (const value of ["*", "*.archive.is", "https://archive.is/", "archive.is:443"]) {
+    assert.throws(() => proxyBypassed(new URL("https://archive.is/story"), value), /Invalid OUTBOUND_PROXY_BYPASS_HOSTS/);
+  }
+});
+
+test("configured bypass uses direct transport but a redirect to another host returns to the proxy", async (t) => {
+  await fakeProxy(t, (_request, socket) => socket.destroy());
+  process.env.OUTBOUND_PROXY_BYPASS_HOSTS = "publisher.example";
+  const logs: string[] = [];
+  t.mock.method(console, "info", (line: string) => logs.push(line));
+  let calls = 0;
+  t.mock.method(globalThis, "fetch", async (_input: unknown, init: RequestInit & { dispatcher: unknown }) => {
+    if (++calls === 1) {
+      assert.ok(init.dispatcher instanceof Agent);
+      return new Response(null, { status: 302, headers: { location: "https://8.8.8.8/next" } });
+    }
+    assert.equal(init.dispatcher instanceof Agent, false);
+    return new Response("article");
+  });
+  assert.equal(await (await publicFetchRedirects("https://publisher.example/start")).text(), "article");
+  assert.deepEqual(logs.map((line) => JSON.parse(line).event), ["outbound_proxy_bypass", "outbound_proxy_request"]);
+});
+
+test("diagnostics expose certificate failures and proxy authentication failures without raw errors", () => {
+  const error = new TypeError("secret credentials and destination URL", {
+    cause: Object.assign(new Error("another secret"), { code: "UNABLE_TO_GET_ISSUER_CERT_LOCALLY" }),
+  });
+  assert.deepEqual(networkErrorDetails(error), { errorCode: "UNABLE_TO_GET_ISSUER_CERT_LOCALLY", errorType: "TypeError", proxyStatus: null });
+  assert.equal(permanentNetworkFailure(error), true);
+  assert.equal(permanentNetworkFailure(Object.assign(new Error("reset"), { code: "ECONNRESET" })), false);
+  assert.equal(permanentNetworkFailure(new Error("Proxy response (407) !== 200 when HTTP Tunneling")), true);
+  assert.doesNotMatch(JSON.stringify(networkErrorDetails(error)), /secret|credentials|destination/);
 });

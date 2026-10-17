@@ -38,8 +38,6 @@ const PROFILES: Record<string, { domains: string[]; editorial?: boolean }> = {
   washingtonpost: { domains: ["washingtonpost.com"] },
   bloomberg: { domains: ["bloomberg.com"] },
   theeconomist: { domains: ["economist.com"] },
-  thehill: { domains: ["thehill.com"] },
-  axios: { domains: ["axios.com"], editorial: true },
   financialtimes: { domains: ["ft.com"], editorial: true },
   foreignpolicy: { domains: ["foreignpolicy.com"] },
   cnbc: { domains: ["cnbc.com"], editorial: true },
@@ -245,7 +243,7 @@ export function parseCandidates(xml: string, feed: Feed, now = Date.now()): Cand
 }
 
 const STOP = new Set(
-  "this that with from have will their after before about over into says said news latest update updates report reports analysis opinion world business more what why how amid could would should live today yesterday exclusive breaking story stories reuters times post bloomberg economist hill axios cnbc financial insider america american people first year years week weeks markets market stock stocks price prices".split(
+  "this that with from have will their after before about over into says said news latest update updates report reports analysis opinion world business more what why how amid could would should live today yesterday exclusive breaking story stories reuters times post bloomberg economist cnbc financial insider america american people first year years week weeks markets market stock stocks price prices".split(
     " ",
   ),
 );

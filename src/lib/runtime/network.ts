@@ -87,6 +87,49 @@ export function outboundProxyUrl(value = process.env.OUTBOUND_PROXY_URL, mode = 
   return url;
 }
 
+/** Exact host matches only: redirects are evaluated independently. */
+export function proxyBypassed(url: URL, value = process.env.OUTBOUND_PROXY_BYPASS_HOSTS): boolean {
+  const hosts = (value ?? "").split(",").map((host) => host.trim().toLowerCase().replace(/\.$/, "")).filter(Boolean);
+  if (hosts.some((host) => !/^[a-z0-9-]+(?:\.[a-z0-9-]+)+$/.test(host))) {
+    throw new Error("Invalid OUTBOUND_PROXY_BYPASS_HOSTS: expected comma-separated exact hostnames, without URLs or wildcards.");
+  }
+  return hosts.includes(url.hostname.toLowerCase().replace(/\.$/, ""));
+}
+
+const CERTIFICATE_ERRORS = new Set([
+  "UNABLE_TO_GET_ISSUER_CERT_LOCALLY", "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+  "DEPTH_ZERO_SELF_SIGNED_CERT", "SELF_SIGNED_CERT_IN_CHAIN", "CERT_HAS_EXPIRED",
+  "ERR_TLS_CERT_ALTNAME_INVALID", "CERT_NOT_YET_VALID",
+]);
+const NETWORK_ERRORS = new Set([
+  ...CERTIFICATE_ERRORS, "ENOTFOUND", "EAI_AGAIN", "ECONNRESET", "ECONNREFUSED",
+  "ETIMEDOUT", "ENETUNREACH", "EHOSTUNREACH", "UND_ERR_CONNECT_TIMEOUT",
+  "UND_ERR_HEADERS_TIMEOUT", "UND_ERR_BODY_TIMEOUT", "UND_ERR_SOCKET", "UND_ERR_ABORTED",
+]);
+
+/** Allowlisted diagnostics only: never log arbitrary error messages or URLs. */
+export function networkErrorDetails(error: unknown) {
+  let errorCode: string | null = null;
+  let errorType: string | null = null;
+  let proxyStatus: number | null = null;
+  const seen = new Set<unknown>();
+  for (let depth = 0; error instanceof Error && depth < 6 && !seen.has(error); depth++) {
+    seen.add(error);
+    if (["TimeoutError", "AbortError", "TypeError", "Error"].includes(error.name) && !errorType) errorType = error.name;
+    if ("code" in error && typeof error.code === "string" && NETWORK_ERRORS.has(error.code)) errorCode = error.code;
+    const match = /Proxy response \(([1-5]\d{2})\) !== 200 when HTTP Tunneling/.exec(error.message);
+    if (match) proxyStatus = Number(match[1]);
+    error = error.cause;
+  }
+  return { errorCode, errorType, proxyStatus };
+}
+
+export function permanentNetworkFailure(error: unknown): boolean {
+  const { errorCode, proxyStatus } = networkErrorDetails(error);
+  return errorCode === "ENOTFOUND" || (errorCode !== null && CERTIFICATE_ERRORS.has(errorCode)) ||
+    proxyStatus === 407 || proxyStatus === 402;
+}
+
 async function proxyDispatcher(url: URL, proxy: URL, signal?: AbortSignal | null): Promise<ProxyAgent> {
   signal?.throwIfAborted();
   const host = url.hostname.replace(/^\[|\]$/g, "");
@@ -158,13 +201,18 @@ export async function boundedBytes(response: Response, maximum: number, signal?:
  * Redirects are deliberately manual: each new destination is validated again. */
 export async function publicFetch(input: string | URL | Request, init: RequestInit = {}, maximumBytes = 8_000_000): Promise<Response> {
   const url = publicUrl(input instanceof Request ? input.url : String(input));
-  const proxy = outboundProxyEnabled() ? outboundProxyUrl() : undefined;
-  const agent = proxy ? await proxyDispatcher(url, proxy, init.signal)
-    : new Agent({ connect: { lookup: publicLookup, timeout: 10_000 }, connections: 1 });
+  const configuredProxy = outboundProxyEnabled() ? outboundProxyUrl() : undefined;
+  const bypass = configuredProxy && proxyBypassed(url);
+  const proxy = bypass ? undefined : configuredProxy;
+  if (bypass) console.info(JSON.stringify({ event: "outbound_proxy_bypass", site: url.origin, proxy: configuredProxy.origin, reason: "configured_hostname" }));
+  let agent: Agent | ProxyAgent | undefined;
   const started = Date.now();
   let status: number | null = null;
   let outcome = "error";
+  let diagnostics: ReturnType<typeof networkErrorDetails> | undefined;
   try {
+    agent = proxy ? await proxyDispatcher(url, proxy, init.signal)
+      : new Agent({ connect: { lookup: publicLookup, timeout: 10_000 }, connections: 1 });
     const response = await fetch(url, { ...init, redirect: "manual", dispatcher: agent } as RequestInit);
     status = response.status;
     if (!response.ok) {
@@ -177,6 +225,9 @@ export async function publicFetch(input: string | URL | Request, init: RequestIn
     Object.defineProperty(buffered, "url", { value: url.href });
     outcome = "response";
     return buffered;
+  } catch (error) {
+    diagnostics = networkErrorDetails(error);
+    throw error;
   } finally {
     if (proxy) console.info(JSON.stringify({
       event: "outbound_proxy_request",
@@ -184,9 +235,11 @@ export async function publicFetch(input: string | URL | Request, init: RequestIn
       proxy: proxy.origin,
       status,
       outcome,
+      connectionMode: proxy.hostname === "p.webshare.io" && decodeURIComponent(proxy.username).endsWith("-rotate") ? "rotating" : "configured",
+      ...diagnostics,
       durationMs: Date.now() - started,
     }));
-    await agent.destroy();
+    await agent?.destroy();
   }
 }
 

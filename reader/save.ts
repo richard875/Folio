@@ -21,8 +21,6 @@ const WEBSITE_NAMES: Record<string, string> = {
   "washingtonpost.com": "Washington Post",
   "bloomberg.com": "Bloomberg",
   "economist.com": "The Economist",
-  "thehill.com": "The Hill",
-  "axios.com": "Axios",
   "ft.com": "Financial Times",
   "foreignpolicy.com": "Foreign Policy",
   "cnbc.com": "CNBC",

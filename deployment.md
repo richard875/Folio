@@ -43,6 +43,17 @@ tunnel for every request, retry and redirect. Webshare randomly selects from you
 pool, so consecutive IPs can repeat. Unset mode or `configured` preserves the URL's
 credentials unchanged. Set these values in the service environment, then redeploy.
 
+If third-party retrieval services work directly but not through the proxy, set
+`OUTBOUND_PROXY_BYPASS_HOSTS` to a comma-separated list of their exact hostnames.
+Use `freedium-mirror.cfd` to bypass only the working mirror. Keep archive.is,
+archive.today and archive.ph out of this list unless direct access has been verified
+from Render itself. This explicitly
+uses Render's IP for those hosts and logs each bypass; all other hosts still use
+the proxy. Empty (default) bypasses nothing. Redirect destinations are checked
+independently and there is never automatic direct fallback. Proxy-enabled article
+extraction tries the publisher first and caps each method at six seconds/one retry
+to preserve time for alternate methods. See README for diagnostics and limitations.
+
 ### Limits and costs
 
 - Free compute: **0.1 CPU / 512 MB**, shared **750 hours/month/workspace**.

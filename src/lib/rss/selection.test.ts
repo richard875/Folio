@@ -25,10 +25,10 @@ const rss = (items: Item[]) =>
 
 test("catalog reads reordered columns, retains research metadata and never uses notes as feed URLs", () => {
   const catalog = parseFeedCatalog(
-    "| Site | Score (0–10) | Feed URL | Edition | What it actually is | How I know |\n| --- | --- | --- | --- | --- | --- |\n| Axios | 10 | `https://api.axios.com/feed/top/` | US | Homepage, in order | Saw it. Alternate `https://example.com/feed` |\n",
+    "| Site | Score (0–10) | Feed URL | Edition | What it actually is | How I know |\n| --- | --- | --- | --- | --- | --- |\n| Example News | 10 | `https://example.com/feed/top/` | US | Homepage, in order | Saw it. Alternate `https://example.com/feed` |\n",
   );
   assert.equal(catalog.length, 1);
-  assert.equal(catalog[0].url, "https://api.axios.com/feed/top/");
+  assert.equal(catalog[0].url, "https://example.com/feed/top/");
   assert.equal(catalog[0].ordering, "editorial");
   assert.equal(catalog[0].homepageScore, 10);
   assert.equal(catalog[0].edition, "US");
@@ -54,8 +54,6 @@ test("each publisher excludes standalone media and non-article links", () => {
     "Washington Post": "washingtonpost.com",
     Bloomberg: "bloomberg.com",
     "The Economist": "economist.com",
-    "The Hill": "thehill.com",
-    Axios: "axios.com",
     "Financial Times": "ft.com",
     "Foreign Policy": "foreignpolicy.com",
     CNBC: "cnbc.com",
@@ -164,11 +162,10 @@ test("Bloomberg and BI sitemaps use news publication dates instead of last updat
   }
 });
 
-test("curated NYT, FT, Axios and CNBC feeds retain editor order instead of a timestamp sort", () => {
+test("curated NYT, FT and CNBC feeds retain editor order instead of a timestamp sort", () => {
   for (const [site, domain] of [
     ["NY Times", "nytimes.com"],
     ["Financial Times", "ft.com"],
-    ["Axios", "axios.com"],
     ["CNBC", "cnbc.com"],
   ]) {
     const candidates = parseCandidates(
@@ -186,7 +183,7 @@ test("curated NYT, FT, Axios and CNBC feeds retain editor order instead of a tim
   }
 });
 
-test("Economist removes podcasts and old backlog; Hill Premium and CNBC Club articles remain eligible", () => {
+test("Economist removes podcasts and old backlog; CNBC Club articles remain eligible", () => {
   const economist = parseCandidates(
     rss([
       { title: "Podcast", url: "https://www.economist.com/podcasts/episode", hours: 1 },
@@ -197,21 +194,6 @@ test("Economist removes podcasts and old backlog; Hill Premium and CNBC Club art
     NOW,
   );
   assert.equal(economist.length, 1);
-  assert.equal(
-    parseCandidates(
-      rss([
-        {
-          title: "Premium reporting",
-          url: "https://thehill.com/news/reporting",
-          categories: ["Premium"],
-          hours: 1,
-        },
-      ]),
-      feed("The Hill"),
-      NOW,
-    ).length,
-    1,
-  );
   assert.equal(
     parseCandidates(
       rss([
