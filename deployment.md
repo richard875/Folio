@@ -97,7 +97,9 @@ concurrency is 1, feed concurrency 2, and the article cache is capped at 8 MiB.
 Do not raise concurrency on Free without measuring RSS.
 
 Builds explicitly include dev dependencies and run lint/tests/typecheck before
-building. All build-time commands get a scoped 4096 MiB heap on Render's 8 GB builder;
+building. Test commands preload `scripts/test-env.mjs` to remove inherited proxy
+settings and use only test fixtures; Render's runtime proxy settings are unchanged.
+All build-time commands get a scoped 4096 MiB heap on Render's 8 GB builder;
 the runtime stays at 256 MiB. Nitro handles SIGTERM with a 20-second drain,
 below Render's default 30-second termination delay. Free services cannot configure
 `maxShutdownDelaySeconds`; the Blueprint deliberately omits it. Jobs may still be cut short.

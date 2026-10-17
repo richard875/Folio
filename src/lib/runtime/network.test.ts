@@ -65,9 +65,9 @@ function fixtureDns(t: TestContext, address: string) {
 test("proxy configuration is optional, validated, and errors never echo secrets", () => {
   assert.equal(outboundProxyUrl(""), undefined);
   assert.equal(outboundProxyUrl("  "), undefined);
-  assert.equal(outboundProxyUrl("https://user:password@proxy.example:443/")?.protocol, "https:");
+  assert.equal(outboundProxyUrl("https://user:password@proxy.example:443/", "configured")?.protocol, "https:");
   for (const value of ["socks5://user:secret@proxy.example", "http://user:secret@proxy.example/path", "http://proxy.example/?secret", "http://proxy.example/#secret", "http://user:%zz@proxy.example", "secret"]) {
-    assert.throws(() => outboundProxyUrl(value), (error: Error) => {
+    assert.throws(() => outboundProxyUrl(value, "configured"), (error: Error) => {
       assert.match(error.message, /Invalid OUTBOUND_PROXY_URL/);
       assert.doesNotMatch(error.message, /secret|%zz/);
       return true;
@@ -79,6 +79,22 @@ test("proxy toggle defaults on, supports explicit off, and rejects typos", () =>
   for (const value of ["", "  ", "true", " TRUE "]) assert.equal(outboundProxyEnabled(value), true);
   for (const value of ["false", " FALSE "]) assert.equal(outboundProxyEnabled(value), false);
   for (const value of ["0", "1", "yes", "flase"]) assert.throws(() => outboundProxyEnabled(value), /Invalid OUTBOUND_PROXY_ENABLED/);
+});
+
+test("environment-selected rotation remains enforced while explicit generic fixtures stay independent", (t) => {
+  const previousMode = process.env.OUTBOUND_PROXY_MODE;
+  const previousUrl = process.env.OUTBOUND_PROXY_URL;
+  t.after(() => {
+    if (previousMode === undefined) delete process.env.OUTBOUND_PROXY_MODE;
+    else process.env.OUTBOUND_PROXY_MODE = previousMode;
+    if (previousUrl === undefined) delete process.env.OUTBOUND_PROXY_URL;
+    else process.env.OUTBOUND_PROXY_URL = previousUrl;
+  });
+  process.env.OUTBOUND_PROXY_MODE = "rotating";
+  process.env.OUTBOUND_PROXY_URL = "http://fixture-user:fixture-password@p.webshare.io:80/";
+  assert.equal(outboundProxyUrl()?.username, "fixture-user-rotate");
+  assert.throws(() => outboundProxyUrl("https://user:password@proxy.example/"), /requires the p.webshare.io gateway/);
+  assert.equal(outboundProxyUrl("https://user:password@proxy.example/", "configured")?.hostname, "proxy.example");
 });
 
 test("Webshare rotating mode selects the rotation username without duplicating its suffix", () => {
