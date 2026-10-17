@@ -29,6 +29,53 @@ Open `http://localhost:8080`, enter an article URL, and use the generated `ACCES
 
 See [`.env.example`](.env.example) for configuration options. Keep `VITE_AUTH_ENABLED=false` and leave `DATABASE_URL` unset for the current file-backed deployment. Never commit access keys or expose them through `VITE_` variables.
 
+### Optional outbound proxy (Webshare)
+
+Set the server-only `OUTBOUND_PROXY_URL` environment variable to your proxy URL,
+for example `http://USERNAME:PASSWORD@p.webshare.io:80/`. Use your current credentials
+privately; never commit them or put them in a `VITE_` variable. Percent-encode special
+characters in the username/password. HTTP and HTTPS proxy endpoints are supported.
+
+For local development, set the variable in the environment before `npm run dev`
+(for example, `export OUTBOUND_PROXY_URL='http://USERNAME:PASSWORD@p.webshare.io:80/'`,
+with your private values). For Render, add the same variable in the service's
+**Environment** settings and redeploy. Restart local development after changing it.
+Do not assume Vite's `.env` loading makes unprefixed values available to server code.
+
+Set `OUTBOUND_PROXY_ENABLED=false` to turn proxy routing off without deleting the
+URL; set it to `true` to turn routing back on. Unset/blank defaults to `true` for
+backward compatibility, but a nonblank `OUTBOUND_PROXY_URL` is still required.
+Invalid toggle values fail requests instead of silently switching to direct mode.
+Restart the server after changing either setting (redeploy on Render).
+
+When enabled and configured, feed downloads, Google News resolution, and article-fetch requests
+(including redirects and existing retrieval-service requests) use the proxy. Internal
+Folio API calls and unrelated platform integrations are not proxied. A failed proxy
+request **never falls back to a direct connection**. Unset/blank restores direct mode.
+Existing article caches can return results without making a network request.
+
+Each proxied request emits a server-side JSON log with event
+`outbound_proxy_request`, destination `site`, credential-free `proxy` address,
+HTTP `status` (null on connection failure), `outcome` (`response` or `error`), and
+`durationMs`. Redirect hops and retries are separate entries. A response can still
+be a publisher error such as 403; the log does not claim successful article extraction
+or report the proxy's exit IP. Destination paths/queries and proxy credentials are
+never included. Requests rejected before proxy dispatch and cached results do not
+emit this event. Logs appear in the local server output or Render logs.
+
+Private-network filtering, TLS verification, deadlines and response-size limits remain
+enabled. Publisher hostnames are resolved locally and CONNECT tunnels use validated
+public IPs, preventing a second DNS resolution at the proxy from changing the target.
+HTTP proxies receive proxy credentials over an unencrypted connection; HTTPS publisher
+content still uses verified end-to-end TLS. Prefer an HTTPS proxy endpoint if your
+provider supports one. Plain HTTP publisher traffic is not encrypted.
+
+Use a fixed Webshare exit IP for representative local/Render comparisons; a gateway
+hostname alone does not guarantee a fixed exit IP. Different DNS answers, rate limits,
+content changes and publisher policy can still produce different results. Shared
+datacenter proxies may also be blocked. Free-plan bandwidth is consumed by downloads
+and retries; this integration adds no scraping API and bypasses no login requirement.
+
 ## API
 
 The home page includes an **API documentation** control. Swagger is served at `/api/docs`, with the specification at `/api/openapi`; both require the access key.

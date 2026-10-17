@@ -1,6 +1,6 @@
 import { lookup } from "node:dns";
 import { BlockList, isIP, type LookupFunction } from "node:net";
-import { Agent } from "undici";
+import { Agent, Pool, ProxyAgent } from "undici";
 
 const blocked = new BlockList();
 for (const [address, prefix] of [
@@ -51,6 +51,63 @@ export const publicLookup: LookupFunction = (hostname, options, callback) => {
   });
 };
 
+/** Unset preserves URL-based opt-in; typos must not silently bypass the proxy. */
+export function outboundProxyEnabled(value = process.env.OUTBOUND_PROXY_ENABLED): boolean {
+  const flag = value?.trim().toLowerCase();
+  if (!flag || flag === "true") return true;
+  if (flag === "false") return false;
+  throw new Error("Invalid OUTBOUND_PROXY_ENABLED: expected true or false.");
+}
+
+/** Never include the supplied value (which may contain credentials) in errors. */
+export function outboundProxyUrl(value = process.env.OUTBOUND_PROXY_URL): URL | undefined {
+  if (!value?.trim()) return undefined;
+  try {
+    const url = new URL(value.trim());
+    if (!["http:", "https:"].includes(url.protocol) || !url.hostname ||
+        url.pathname !== "/" || url.search || url.hash) throw new Error();
+    // Validate percent escapes before passing credentials to Undici.
+    decodeURIComponent(url.username);
+    decodeURIComponent(url.password);
+    return url;
+  } catch {
+    throw new Error("Invalid OUTBOUND_PROXY_URL: expected an http(s) proxy URL without a path, query or fragment.");
+  }
+}
+
+async function proxyDispatcher(url: URL, proxy: URL, signal?: AbortSignal | null): Promise<ProxyAgent> {
+  signal?.throwIfAborted();
+  const host = url.hostname.replace(/^\[|\]$/g, "");
+  const address = isIP(host) ? host : await new Promise<string>((resolve, reject) => {
+    const abort = () => reject(signal?.reason ?? new Error("Request aborted"));
+    signal?.addEventListener("abort", abort, { once: true });
+    publicLookup(host, { family: 0, hints: 0 }, (error, resolved) => {
+      signal?.removeEventListener("abort", abort);
+      if (error) reject(error);
+      else resolve(resolved as string);
+    });
+  });
+  signal?.throwIfAborted();
+  const authority = `${isIP(address) === 6 ? `[${address}]` : address}:${url.port || (url.protocol === "https:" ? 443 : 80)}`;
+  const token = proxy.username || proxy.password
+    ? `Basic ${Buffer.from(`${decodeURIComponent(proxy.username)}:${decodeURIComponent(proxy.password)}`).toString("base64")}`
+    : undefined;
+  return new ProxyAgent({
+    uri: proxy.origin,
+    token,
+    connections: 1,
+    proxyTunnel: true,
+    proxyTls: { timeout: 10_000 },
+    requestTls: { timeout: 10_000 },
+    // Pin CONNECT to our validated IP, rather than allowing the proxy to resolve
+    // the hostname again (DNS rebinding). Origin, Host, TLS SNI and certificate
+    // verification retain the original publisher hostname.
+    clientFactory: (origin, options) => new Pool(origin, options).compose(
+      (dispatch) => (options, handler) => dispatch({ ...options, path: authority }, handler),
+    ),
+  });
+}
+
 /** Enforce the limit while streaming, including decoded compressed responses. */
 export async function boundedBytes(response: Response, maximum: number, signal?: AbortSignal): Promise<Uint8Array> {
   const length = Number(response.headers.get("content-length"));
@@ -89,18 +146,34 @@ export async function boundedBytes(response: Response, maximum: number, signal?:
  * Redirects are deliberately manual: each new destination is validated again. */
 export async function publicFetch(input: string | URL | Request, init: RequestInit = {}, maximumBytes = 8_000_000): Promise<Response> {
   const url = publicUrl(input instanceof Request ? input.url : String(input));
-  const agent = new Agent({ connect: { lookup: publicLookup, timeout: 10_000 }, connections: 1 });
+  const proxy = outboundProxyEnabled() ? outboundProxyUrl() : undefined;
+  const agent = proxy ? await proxyDispatcher(url, proxy, init.signal)
+    : new Agent({ connect: { lookup: publicLookup, timeout: 10_000 }, connections: 1 });
+  const started = Date.now();
+  let status: number | null = null;
+  let outcome = "error";
   try {
     const response = await fetch(url, { ...init, redirect: "manual", dispatcher: agent } as RequestInit);
+    status = response.status;
     if (!response.ok) {
       await response.body?.cancel();
+      outcome = "response";
       return new Response(null, { status: response.status, headers: response.headers });
     }
     const body = await boundedBytes(response, maximumBytes, init.signal ?? undefined);
     const buffered = new Response(body as BodyInit, { status: response.status, headers: response.headers });
     Object.defineProperty(buffered, "url", { value: url.href });
+    outcome = "response";
     return buffered;
   } finally {
+    if (proxy) console.info(JSON.stringify({
+      event: "outbound_proxy_request",
+      site: url.origin,
+      proxy: proxy.origin,
+      status,
+      outcome,
+      durationMs: Date.now() - started,
+    }));
     await agent.destroy();
   }
 }

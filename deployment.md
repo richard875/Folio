@@ -26,6 +26,18 @@ history and job statuses. Keep important output in a separate local archive.
    conflicting old Oracle A/AAAA records, and wait for verification and managed TLS.
    Stay within the two included custom domains. No Caddy, certbot or SSH is required.
 
+### Optional Webshare proxy
+
+Add `OUTBOUND_PROXY_URL` as a **secret environment variable** in the Render service
+and redeploy. Format: `http://USERNAME:PASSWORD@p.webshare.io:80/` (placeholder
+credentials only). Use the same setting locally for comparable routing. Never put
+the secret into `render.yaml`, Git, or a `VITE_` variable. Leave it unset for direct
+connections. Configured proxy failures do not fall back to Render's outbound IP.
+See the README's outbound-proxy section for scope, TLS and DNS behaviour.
+Set `OUTBOUND_PROXY_ENABLED=false` to disable the proxy while keeping its URL;
+set `true` to re-enable it, then redeploy. Unset/blank defaults to true and still
+requires a nonblank proxy URL. Invalid toggle values fail requests.
+
 ### Limits and costs
 
 - Free compute: **0.1 CPU / 512 MB**, shared **750 hours/month/workspace**.
