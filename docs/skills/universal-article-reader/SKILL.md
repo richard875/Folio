@@ -22,6 +22,7 @@ Paths below are relative to the repository root, not this skill directory.
 | Candidate selection and caches | `reader/read.ts` |
 | HTML parsing, images, Markdown and partial heuristic | `reader/extract.ts` |
 | Feed filtering, ranking and summaries | `src/lib/rss/selection.ts`, `src/lib/rss/summary.ts` |
+| Link-report JSON schema, serialization and validation | `src/lib/rss/report.ts`, `src/lib/rss/links.ts` |
 | Collection and selective save jobs | `src/lib/batch/jobs.ts`, `src/lib/batch/save-batch.ts` |
 | Saved-file snapshots and chunks | `src/lib/agent/articles.ts`, `src/lib/agent/api.ts` |
 | API contract | `src/lib/swagger/openapi.ts` |
@@ -104,6 +105,9 @@ can use the generic reader, but successful extraction is not guaranteed.
   or duplicate URL arrays. Collection jobs validate and read these JSON groups.
   Historical Markdown link reports are preserved but not consumed/imported by this
   workflow. Saved articles remain Markdown by default.
+  GET and POST both generate new reports; neither reads an old report by filename.
+  The import API validates JSON reports and their destination path; the archive
+  uploader warns and skips legacy Markdown reports rather than converting them.
 
 No automatic polling is scheduled. `FEED_CONCURRENCY` defaults to 2, up to 6.
 Feed retries have their own policy; do not confuse them with article-method caps.

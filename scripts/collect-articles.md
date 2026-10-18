@@ -12,7 +12,13 @@ and a `statusEndpoint` path. Add your hash when calling that status path.
 
 In the background, the server calls `/api/links`, reads the validated JSON file that
 request generated, and calls `/api/save` for each article. Each save receives
-the original website/section headings, URL, access hash, and `callId`.
+the website/section names from its JSON groups, URL, access hash, and `callId`.
+The link report is always `output/links/links_<UTC timestamp>.json`, regardless
+of the article format. Its shared schema validates the stored report before tasks
+are created; a malformed report or mismatched saved path fails the job before saving
+articles. Summaries remain in the report but are not part of saving tasks.
+The job uses its freshly generated report, never scans/replays older link files,
+and does not parse historical Markdown reports. See the [links report schema](fetch-links.md).
 Article output paths remain unchanged. Add `format=json` to the start request
 to save articles as JSON rather than the default Markdown. All batch articles
 use the folder for the job's UTC start date/hour/minute, regardless of when

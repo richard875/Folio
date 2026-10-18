@@ -8,7 +8,7 @@ Built with React 19, TypeScript, TanStack Start, Tailwind CSS, and Nitro. The cu
 
 - Browser-based article reading with title, author, publication date, and partial-content indicators.
 - RSS, Atom, and news-sitemap collection with publisher URL resolution.
-- Feed-provided article summaries in link reports, when available.
+- Versioned JSON link reports with feed-provided summaries or configured headline fallbacks.
 - Background collection jobs with progress polling and bounded execution.
 - Saved-article manifests and paginated agent retrieval with SHA-256 verification.
 - Interactive Swagger documentation and an OpenAPI specification.
@@ -183,7 +183,7 @@ The home page includes an **API documentation** control. Swagger is served at `/
 | --- | --- |
 | `/api/read` | Extract an article as Markdown or JSON |
 | `/api/save` | Extract and save an article |
-| `/api/links` | Collect and save a feed-links report |
+| `/api/links` | Collect, save and return a JSON-only feed-links report; prefer POST |
 | `/api/collect` | Start a background collection; prefer POST |
 | `/api/collect/status` | Poll a job using its `callId` |
 | `/api/save-batch` | POST selected URLs for background saving, without collecting feeds |

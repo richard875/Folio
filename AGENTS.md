@@ -15,6 +15,12 @@ greeting, audit or documentation request.
 - **Storage:** private temporary files under `output/articles/`, `output/links/`
   and `output/jobs/`. Render sleep, restart and redeploy can erase them. No durable
   disk, database, account system or automatic job replay is configured.
+- **Report formats:** `/api/links` saves and returns versioned JSON only, validated
+  by `src/lib/rss/report.ts`; collection jobs read those JSON groups, not Markdown.
+  Each article entry has `url` and optional `summary`. Bloomberg/Business Insider
+  use sitemap `news:title`; Reuters Google News uses cleaned HTML `description`.
+  Saved articles remain Markdown by default, with JSON optional. Preserve historical
+  output; legacy Markdown link reports are not replayed or accepted by JSON imports.
 - **Authentication:** server-side `ACCESS_HASH` protects private API operations;
   `/healthz` is public. `VITE_AUTH_ENABLED=false` disables optional account-auth
   scaffolding, **not** Folio's API authentication. Leave `DATABASE_URL` unset.

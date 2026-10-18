@@ -11,6 +11,9 @@ triggering a collection, since it creates a file. Every endpoint uses the
 `ACCESS_HASH` secret. Links reports are JSON only; omit `format` or use `format=json`.
 Other formats return HTTP 400 before collection. `X-Saved-File` supplies the saved path.
 Article read/save endpoints retain their separate Markdown/JSON format options.
+GET and POST share the same handler, parameters, lock and response format; the
+request body is ignored. Both start a fresh collection, not a read of an existing
+report. There is no API to list/read old link reports or save their articles by filename.
 
 Reports are stored in `output/links/links_YYYY-MM-DD_HH-mm-ss.json`. Timestamps are
 UTC. Existing files are never overwritten. The file and response share this schema:
@@ -48,8 +51,8 @@ Reuters' Google News RSS feed uses HTML `description` text as `summary`, even
 when short or headline-only. Tags/active content are removed, entities decoded,
 and whitespace normalized; publisher text is retained. Empty descriptions are
 omitted and the 1,000-character cap applies. Other feeds keep their normal filters.
-`available` is false if any feed in the
-section failed; an available empty section has no eligible articles. `linkCount`
+`available` is false if any feed in the section failed; an available empty section
+has no eligible articles. `linkCount`
 counts the actual deduplicated, capped article entries. Feed counts count sources,
 not sections. Array order preserves selection order. The shared runtime schema in
 `src/lib/rss/report.ts` validates reads, writes and imports, including version,
@@ -102,7 +105,8 @@ The npm `fetch:links` command and its CLI options have been removed.
 
 This replaces the former Markdown report/API format. Historical `.md` link reports
 are left untouched, but are not consumed or accepted by the JSON import workflow;
-new collections always generate fresh JSON reports. Saved articles remain Markdown
+the archive uploader warns and skips them without conversion or deletion.
+New collections always generate fresh JSON reports. Saved articles remain Markdown
 by default. Storage is temporary on Render Free; consume/archive
 reports before sleep, restart or redeploy. For async orchestration and status
 polling use the [collection API](collect-articles.md).

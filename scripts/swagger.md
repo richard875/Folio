@@ -32,3 +32,12 @@ introduced.
 
 The specification is maintained in `src/lib/swagger/openapi.ts`. Update it when
 API contracts change. No real access hash is included in the specification.
+
+`GET` and `POST /api/links` save and return JSON only: omit `format` or use
+`format=json`; `format=markdown` returns 400. `LinksReport` documents schema version
+1, UTC generation time, saved `.json` path, counts and publisher/section groups
+containing `articles: { url, summary? }[]`. Publisher summary exceptions are listed
+in the operation description and the [links guide](fetch-links.md). This does not
+change `/api/read`, `/api/save` or `/api/collect` article-format choices; saved
+articles remain Markdown by default. Import accepts validated JSON link reports,
+not historical Markdown reports, and never executes them.

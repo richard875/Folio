@@ -124,7 +124,7 @@ export const openApiDocument = {
       post: {
         tags: ["Operations"], summary: "Import one archived output file into temporary storage", operationId: "importOutput",
         security: agentAuth,
-        description: "Explicit restoration only. Never overwrites a different file or executes imported jobs. Imported history is lost on Render sleep, restart or redeploy. Use scripts/import-output.mjs from your local archive.",
+        description: "Explicit restoration only. Link reports must be version-1 JSON with savedFile matching the destination path; Markdown link reports are rejected. The archive uploader warns and skips legacy link-report filenames without modifying source files. Article Markdown/JSON/text and job JSON imports remain supported. Never overwrites a different file, executes imported jobs or starts saving from imported link reports. Imported history is lost on Render sleep, restart or redeploy. Use scripts/import-output.mjs from your local archive.",
         parameters: [parameter("path", "Logical output/articles, output/links or output/jobs file path.", true), { name: "X-Folio-Sha256", in: "header", required: true, schema: { type: "string", pattern: "^[a-f0-9]{64}$" } }],
         requestBody: { required: true, content: { "application/octet-stream": { schema: { type: "string", format: "binary" } } } },
         responses: { "200": response("Verified file imported or identical file already present.", { type: "object" }), "400": error("Invalid path, checksum or record."), "409": error("Different destination file exists or collection is active."), "413": error("File exceeds size limit."), "429": error("Another import is running."), ...commonErrors },
@@ -591,11 +591,11 @@ export const openApiDocument = {
         properties: {
           schemaVersion: { type: "integer", enum: [1] },
           generatedAt: { type: "string", format: "date-time" },
-          savedFile: string,
-          limit: { type: "integer", minimum: 1, maximum: 100 },
-          feedCount: integer,
-          failedFeedCount: integer,
-          linkCount: integer,
+          savedFile: { type: "string", description: "Relative JSON report path: output/links/links_YYYY-MM-DD_HH-mm-ss.json." },
+          limit: { type: "integer", minimum: 1, maximum: 100, description: "Maximum selected unique articles per publisher/section group." },
+          feedCount: { ...integer, description: "Number of feed sources collected, not publisher or section count." },
+          failedFeedCount: { ...integer, description: "Number of failed feed sources; never greater than feedCount." },
+          linkCount: { ...integer, description: "Total article entries across all sections after deduplication and capping." },
           websites: {
             type: "array",
             items: {
@@ -624,7 +624,7 @@ export const openApiDocument = {
                               type: "string",
                               minLength: 1,
                               maxLength: 1000,
-                              description: "Optional feed-provided plain-text summary; omitted when unavailable or insufficient.",
+                              description: "Optional feed-provided plain text. Bloomberg/Business Insider use news:title; Reuters Google News uses cleaned HTML description, retaining publisher labels. These exceptions accept short/headline-only text; other feeds filter stubs and repeated headlines. Omitted when unavailable; never AI-generated.",
                             },
                           },
                         },

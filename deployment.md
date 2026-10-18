@@ -133,6 +133,14 @@ different file. Interrupted job records are restored as errors, never executed.
 Imported article bytes/checksums are preserved. Imports consume bandwidth and
 are **temporary**: repeat after data loss if needed. No source files are deleted.
 
+Link reports must be version-1 JSON files named
+`output/links/links_YYYY-MM-DD_HH-mm-ss.json`. The import API validates their schema
+and requires their `savedFile` to match the destination path. The uploader warns
+and skips legacy Markdown or otherwise unsupported link-report filenames; it does
+not convert or delete them. Direct attempts to import a Markdown link report return
+400. Article `.md`, `.json` and `.txt` imports remain supported, and importing a
+link report never starts article saving. See the [report format](scripts/fetch-links.md).
+
 ### Local release verification
 
 Use the repository's Node **24.20.0** (`.node-version`). Existing dependencies

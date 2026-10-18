@@ -20,5 +20,9 @@ validation. Duplicate site/section/URL entries keep their first position.
 coverage ranking, and `feed` uses the existing publisher-profile fallback.
 
 This catalog does not configure article-retrieval services. For those, edit
-`reader/retrieval.config.ts` and `reader/methods.ts`. Link reports and saved
-articles keep their existing formats; this migration changes only the feed catalog.
+`reader/retrieval.config.ts` and `reader/methods.ts`.
+
+The catalog is configuration, not a collected report. Link reports are saved and
+returned as versioned JSON under `output/links/`; each publisher/section contains
+`articles: { url, summary? }[]`. See the [report format and summary rules](../scripts/fetch-links.md).
+Saved article files remain Markdown by default, with JSON optional.

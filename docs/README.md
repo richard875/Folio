@@ -22,7 +22,7 @@
 - [Deployment](../deployment.md): single-process Render Free and temporary storage.
 - [Reader overview](../reader/README.md) and [maintainer guide](../reader/AI-GUIDE.md).
 - [Feed catalog](../data/README.md) and [selection policy](../scripts/feed-selection.md).
-- [Links](../scripts/fetch-links.md), [collection](../scripts/collect-articles.md),
+- [JSON link reports and publisher summary rules](../scripts/fetch-links.md), [collection](../scripts/collect-articles.md),
   [save/save-batch](../scripts/save-articles.md), [agent reading](../scripts/agent-reader.md),
   and [Swagger](../scripts/swagger.md).
 - [App Builder reference scope](../.claude/README.md): optional generic recipes,
@@ -30,6 +30,9 @@
 
 Handovers, research and recovered prompts are historical context, not current
 configuration authorities. Follow executable code/configuration and the guides above.
+Current link-report storage and API responses are JSON only; saved articles remain
+Markdown by default. Older handovers describe the former Markdown reports and do
+not override the current report schema or publisher-specific summary rules.
 
 Private files are not published as documentation. Do not print, stage or commit
 their contents. Some logs and captures may also contain sensitive historical data;

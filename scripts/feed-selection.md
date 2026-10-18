@@ -32,6 +32,30 @@ text article **about** videos or video games is not rejected merely for that
 word, and images do not make a text article a video. An article may still have
 embedded media; the filter targets media-first pages, not all multimedia reporting.
 
+## Summary selection
+
+Link reports store selected entries as JSON `{ url, summary? }` objects. Summaries
+come only from the feed, never generated text or fetched article bodies:
+
+- Ordinary RSS prefers `description`, then `summary`, then `content:encoded`;
+  Atom prefers `summary`, then inline `content`. Strip HTML/active content, decode
+  entities and normalize whitespace. Reject stubs shorter than 40 characters and
+  descriptions repeating only the headline/publisher.
+- **Bloomberg and Business Insider news sitemaps:** use `news:title` as `summary`,
+  including short/headline-only titles. Missing or empty titles omit `summary`.
+  Other news sitemaps do not gain a headline fallback.
+- **Reuters Google News RSS:** use plain text from HTML `description`, including
+  short/headline-only text and publisher labels such as `Reuters`. Do not replace
+  a missing description with the title. The summary follows its URL through Google
+  resolution. This exception does not apply to other RSS/Atom sources or the
+  legacy, unconfigured Reuters JSON branch.
+
+All summaries are capped at 1,000 characters, with an ellipsis when truncated.
+Empty descriptions are omitted. These excerpts/headlines are not full article
+text or evidence of complete extraction. Publisher exceptions are keyed by the
+existing normalized publisher label; Reuters also requires a Google News feed host.
+See the [links API and JSON schema](fetch-links.md) for the stored report contract.
+
 ## Freshness and importance
 
 - Publication metadata is preferred: RSS `pubDate`, Atom `published`, or sitemap
