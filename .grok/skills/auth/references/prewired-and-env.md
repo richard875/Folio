@@ -1,5 +1,9 @@
 # What's pre-wired, and the env vars
 
+Optional account scaffold only; Folio currently uses `ACCESS_HASH`, not these
+sessions. See [reference scope](../../../README.md). The platform-specific
+injection below is not performed by the Render Blueprint.
+
 ## `src/lib/auth/`
 
 | File | Use it for |
@@ -43,7 +47,7 @@ these in a file you create):
 
 | Var | Where | Purpose |
 |---|---|---|
-| `VITE_AUTH_ENABLED` | client | `"false"` in the shipped `.grok/app-env.json` (dev user); drop the key to turn sign-in ON. Only client-visible auth flag |
+| `VITE_AUTH_ENABLED` | client/server | `"false"` in tracked `.grok/app-env.defaults.json`; optional local `.grok/app-env.json` overrides defaults, then process variables win. Explicitly set true only for an authorized account feature. |
 | `BETTER_AUTH_URL` | server | app's own public origin; unset in preview (origin is derived per-request) |
 | `BETTER_AUTH_SECRET` | server | signs this app's own sessions (process-stable fallback in preview; survives HMR) |
 | `GROK_AUTH_ISSUER` | server | the shared broker (defaults to `https://auth.grok.me`) |

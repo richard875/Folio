@@ -15,20 +15,27 @@ user-invocable: false
 
 # xAI API (Grok)
 
+**Optional recipe, not an active Folio feature.** Folio currently makes no runtime
+xAI calls. See [reference scope](../../README.md). Render does not automatically
+inject an xAI key; adding a paid API feature requires explicit scope and spend
+authorization. Endpoint/model examples below must be checked against the current
+[official documentation](https://docs.x.ai) before implementing them.
+
 When `XAI_API_KEY` is present in the environment, this app has **real xAI API
 access** — use it for AI features instead of mocking responses or reaching for
-another provider. The same variable is injected into the **deployed** app at
-publish, so code built against it works identically in preview and production.
+another provider, when that provider matches the requested feature. On Grok-managed
+deployments a key may be injected; on Render configure secrets explicitly only
+for an authorized feature. Local key presence does not establish deployed access.
 
 **The key is the app owner's personal key: every call spends their quota and
 credits.** Be deliberate about usage — see [Spend responsibly](#spend-responsibly)
 before wiring AI calls into anything that runs automatically or is open to
 visitors.
 
-The key unlocks the **full API surface**, not just chat:
+Depending on the account/key's permissions, the API can provide more than chat:
 
-- **Chat / LLM** — **latest model: `grok-4.5`**; default to it unless the
-  user asks otherwise.
+- **Chat / LLM** — choose an available model from the current official catalog;
+  do not treat a model named in a template as the latest or universally accessible.
 - **Imagine (images & video)** — generate and edit images, generate video,
   at runtime inside the app.
 - **Voice** — text-to-speech with expressive voices (and transcription).
@@ -41,7 +48,8 @@ The key unlocks the **full API surface**, not just chat:
 
 | Var | Where | Purpose |
 |---|---|---|
-| `XAI_API_KEY` | server | Injected by the platform (preview and deploy). Never write, hardcode, or ask the user for it. |
+| `XAI_API_KEY` | server | May be injected by a supporting host; Render requires explicit authorized configuration. Never hardcode it or expose it to the browser. |
+| `XAI_MODEL` | server | Example explicit model selection for the optional chat recipe; not a configured Folio variable. |
 
 The key is **server-only**: read it with `process.env.XAI_API_KEY` inside
 `createServerFn` handlers / server code, never in client components, and never
@@ -66,16 +74,19 @@ export const askGrok = createServerFn({ method: "POST" })
   .validator((input: { prompt: string }) => input)
   .handler(async ({ data }) => {
     const apiKey = process.env.XAI_API_KEY;
-    if (!apiKey) return { ok: false as const, error: "AI is not available" };
+    const model = process.env.XAI_MODEL;
+    if (!apiKey || !model) return { ok: false as const, error: "AI is not configured" };
 
     const res = await fetch("https://api.x.ai/v1/chat/completions", {
       method: "POST",
+      signal: AbortSignal.timeout(20_000),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "grok-4.5",
+        model,
+        max_tokens: 500,
         messages: [{ role: "user", content: data.prompt }],
       }),
     });
@@ -129,6 +140,10 @@ List voices at `GET /v1/tts/voices` (custom voices supported); transcription
 (speech-to-text) is also available. Details: [docs.x.ai](https://docs.x.ai) →
 Voice API. Serve the audio to the client from your server function — never
 call the API from the browser (that would expose the key).
+
+Media model IDs, reference-image counts, duration/resolution limits and voice
+names are illustrative, not checked Folio capabilities or a promise of current
+service limits. Confirm them in the current API docs and validate responses.
 
 ## Spend responsibly
 

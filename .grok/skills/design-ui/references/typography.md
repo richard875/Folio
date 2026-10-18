@@ -6,7 +6,10 @@ Typography rendering details that make interfaces feel better.
 
 ### text-wrap: balance
 
-Distributes text evenly across lines, preventing orphaned words on headings and short text blocks. **Only works on blocks of 6 lines or fewer** (Chromium) or 10 lines or fewer (Firefox) — the balancing algorithm is computationally expensive, so browsers limit it to short text.
+Distributes text evenly across lines, reducing orphaned words on headings and
+short text blocks. Browsers can limit balancing to short blocks; exact limits
+depend on browser/version. Use it for headings and test target browsers rather
+than relying on a fixed line-count guarantee.
 
 ```css
 /* Good — even line lengths on short text */

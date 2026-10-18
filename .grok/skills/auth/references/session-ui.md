@@ -1,5 +1,9 @@
 # Reading the user, protecting routes, and preventing flicker
 
+Optional account UI patterns, not Folio's access-key form. Gate identity applies
+only on a supporting Grok host with accounts enabled; see
+[reference scope](../../../README.md). Do not add login UI during documentation work.
+
 ## When sign-in UI may render (hard rules)
 
 - **Connector / owner-data apps: never gate the data fetch behind a session.**
@@ -22,8 +26,8 @@
 
 ## Reading the user / protecting routes
 
-`@/lib/auth/use-current-user` (with auth on these reflect the REAL session, so a
-preview visitor is signed out until they sign in):
+`@/lib/auth/use-current-user` reflects the real session when auth is on. A valid
+gate identity can create it without a click; otherwise fallback sign-in is needed:
 
 - `useCurrentUser()` → `AppUser | null` — for display. `null` means *loading OR
   signed out*, so never redirect on it alone.

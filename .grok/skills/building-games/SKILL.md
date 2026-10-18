@@ -16,6 +16,9 @@ user-invocable: false
 
 # Building Games
 
+Optional recipe: Folio is not a game. Apply only to an explicitly requested game
+feature; check [reference scope](../../README.md) for host/tool availability.
+
 Build a **playable, correct** browser game — not a static screenshot. A game is
 just a React route with a `<canvas>` (or `<Canvas>` for R3F) plus DOM overlay UI.
 Style the overlay (start screen, HUD, menus) with the **`design-ui`** skill; this
@@ -197,7 +200,7 @@ forward = (-sin(yaw), 0, -cos(yaw))
 - **2D →** native Canvas 2D is enough for snake/tetris/flappy/platformer; reach for
   Phaser only when the genre needs it.
 - These game deps are **not preinstalled** — `npm install` them (and make sure they
-  land in `package.json` so the Vercel build has them).
+  land in `package.json` so the production build has them).
 
 ## Finish criteria (before "done")
 - Loads with **no console errors**; visible gameplay (not a blank canvas).

@@ -8,7 +8,7 @@ for when they are listed.
 ## Illustration
 
 When the product needs illustration (heroes, empty states, textures, icons),
-generate **2D** assets via the image tools — follow the **`imagine`** skill
+generate **2D** assets via available image tools — follow the **`imagine-grok-build`** skill
 (`imagine_text_to_image` / `imagine_image_to_image` / `imagine_text_to_video` /
 `imagine_image_to_video` path-based stack; show results with `render_file`).
 Image tools do **not** create 3D models; use geometry/glTF for interactive 3D

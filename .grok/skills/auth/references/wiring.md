@@ -1,5 +1,9 @@
 # Wiring the routes (do this once)
 
+**Optional future feature only:** Folio deliberately has neither route below.
+Do not create them without an authorized account/database deployment change.
+See [reference scope](../../../README.md) and the auth skill's explicit flag step.
+
 **Live-preview popup is PRE-WIRED — do not create it.**
 `signIn` opens `/auth/popup`; the template Vite plugin
 (`authPopupPlugin` in `vite.config.ts`) serves it via `popup.server.ts`.

@@ -3,14 +3,15 @@
 `AGENTS.md` § "Execution loop" states the mandatory pass. This is the menu of
 capabilities and the depth judgment around it.
 
-Everything here runs **in the sandbox** against `http://127.0.0.1:8080` — it is
-**not** the user's Grok chat tab. Use whatever browser capability you have
-**yourself**, so quality beats curl-only.
+Run checks against the actual Folio checkout's `http://127.0.0.1:8080`, locally
+or in a hosted sandbox as appropriate — **not** against the user's chat tab.
+Use Node 24.20.0. UI/runtime changes require browser verification; Markdown-only
+changes need documentation/contract checks, not new screenshots or network reads.
 
 1. **Grok browser / computer-use / MCP browser tools**, if listed — open
    `http://127.0.0.1:8080`, glance at the UI, screenshot if supported.
 2. **`web_fetch`** on that URL for an HTML-only check.
-3. **Playwright helper (preinstalled)** — one run loads desktop **and** mobile,
+3. **Playwright helper** — one run loads desktop **and** mobile,
    screenshots both, and prints a JSON verdict.
 
 ```bash
@@ -26,11 +27,26 @@ body text, horizontal overflow) on stdout and next to the PNG (`.json`). It
 writes under `docs/qa/screenshots/` relative to the project root by default; pass an explicit path only
 for a different name **under that directory**.
 
-4. **`agent-browser` (preinstalled)** — the interactive pass: click, type, hold
+Playwright is a dev dependency, but its browser binary is separate: if Chromium
+is missing, `npx playwright install chromium` installs it. Do not reinstall
+dependencies or browsers when they already work.
+
+4. **`agent-browser` (if installed)** — the interactive pass: click, type, hold
    keys, read state back out. § "Interactive QA" below; it is also what the
    `controls` §5c self-test runs.
 
 ## Built output
+
+**Current macOS workflow:** after `npm run build`, run
+`PRODUCTION_SMOKE_COMPARE_DEV=1 npm run test:production` with dev running (omit
+the baseline flag otherwise). It owns a disposable standalone test server,
+synthetic API/storage fixtures and its own desktop/mobile captures; it does not
+modify real `output/`. Rebuild after later source edits. This is the preferred
+cross-platform built-server check.
+
+**Linux sandbox alternative only:** the following `preview:restart` helper uses
+`/proc`; it is not a macOS process manager. Check the QA port's ownership first
+because the helper terminates its existing owner, not just its own prior child.
 
 Serve the build with `npm run preview:restart` (loopback `127.0.0.1:8081`) and
 reuse the dev verdict as a baseline — the JSON reports `divergesFromBaseline`, so
@@ -160,7 +176,9 @@ hangs, `agent-browser close` and retry.
 
 ### Fallback
 
-`agent-browser` is the tool for interactive QA. If it fails **twice on the same
+Check `command -v agent-browser` before relying on it. If unavailable, use an
+available browser tool or a short Playwright flow, keeping captures private.
+When present, `agent-browser` is the preferred CLI for interactive QA. If it fails **twice on the same
 step** — daemon wedged, a command it does not support — fall back to a short
 Playwright script (still installed) and say so in one line of your summary.
 

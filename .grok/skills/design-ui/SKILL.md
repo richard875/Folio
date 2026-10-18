@@ -15,6 +15,10 @@ user-invocable: false
 
 # Design & UI
 
+Apply to requested UI changes in the existing app, not as a reason to redesign
+Folio during audits/docs work. See [reference scope](../../README.md); check
+available tools and preserve the current shell and platform branding.
+
 Make interfaces that look intentional and premium, not template-generic. This is
 the single biggest quality lever in the app builder. Apply it to **DOM / overlay
 UI** — pages, chrome, HUD, menus, forms. (For a 3D game's gameplay canvas, see
@@ -78,8 +82,9 @@ Define the system once, then compose from it. **Never** sprinkle ad-hoc values.
 
 - **No gradient-blob filler**, no giant hero gradients as a substitute for content.
 - **No emoji as icons** — use a real icon set (`lucide-react`).
-- **No hand-drawn SVG** illustrations/maps/charts — use real libraries (`recharts`
-  for charts) or real generated images.
+- Use real libraries (`recharts` for charts) or available image tools for detailed
+  illustrations. When image tools are unavailable, polished CSS/SVG/canvas art is
+  valid; never invent tool access or ship a generated mock instead of working UI.
 - **No placeholder images / lorem-gray boxes** in the final product — generate
   real images or use real content; set `crossOrigin="anonymous"` on canvas images.
 - **Avoid the overused-font look** (default system-only, or Comic Sans-tier picks).

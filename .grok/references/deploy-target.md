@@ -1,47 +1,47 @@
-# Build & deploy target
+# Folio build and deploy target
 
-You never trigger the deploy yourself, **but the app you build is eventually
-deployed to Vercel** by the platform — so your output must build cleanly under
-Vercel's process. `npm run build` must succeed and emit valid output, and code
-that works under `npm run dev` but breaks a production / SSR build is a bug.
-Watch for dev-only deps, server-only Node APIs run at import time, runtime
-filesystem writes, and hard-coded ports / hosts / secrets.
+The active target is **Render Free**, not Vercel: `render.yaml` defines one Node
+web service in Singapore. See [deployment.md](../../deployment.md) for setup,
+limits, environment configuration and temporary-storage caveats. Deploy only when
+authorized; a successful local build does not verify the deployed commit.
 
-Vercel installs with `npm install --omit=dev` (`vercel.json`), so anything the
-production build imports — Vite plugins, PostCSS/Tailwind plugins, type-only
-packages a `vite.config` imports — must be in `dependencies`. Only lint, format
-and test tooling belongs in `devDependencies`; a package added with
-`npm install -D` will be missing on deploy and the build fails with
-"Cannot find package".
+## Build and dependencies
 
-## A passing `npm run build` does not mean the deployed app renders
+- Use Node **24.20.0** and the existing npm scripts. The Render build installs
+  with `npm ci --include=dev`, then runs lint, tests, typecheck and build.
+- `npm run build` uses `scripts/with-app-env.mjs` and emits
+  `.output/server/index.mjs` plus client assets. Its `db:migrate` step is a no-op
+  without `DATABASE_URL`/top-level app migrations. Do not enable a database for Folio.
+- Runtime imports belong in `dependencies`; test/lint tools can remain in
+  `devDependencies`. Do not reinstall/upgrade packages without a task-specific need.
+- Render starts `scripts/start-production.mjs` with the Blueprint's constrained
+  memory settings and provider `PORT`. Locally, `npm start` supplies memory flags
+  and loads an existing ignored `.env`.
+- Runtime filesystem writes are intentional here but **not durable**. Do not
+  re-target this file-backed app to serverless Vercel merely because the retained
+  `vercel.json` exists. It is not used by the Render Blueprint.
 
-The most common blank-deploy failure is
-`Failed to load module script … MIME type "text/html"`: the built `index.html`
-requests JS assets that 404 in prod, so the server returns the HTML fallback
-(wrong MIME) and the page is blank. Fix the asset base path / build output so
-`/assets/*` resolve, and ensure the SPA/SSR fallback doesn't shadow real asset
-requests — then re-verify the served build renders.
+## Preserve `vite.config.ts`
 
-If you edited source after kicking off the build, re-run `npm run build` first,
-then `npm run preview:restart` — it frees `:8081` before serving, so you never
-smoke the previous build's output.
+Do not replace it or `tsconfig.json`, or import a vendored config preset. Keep:
 
-## What `vite.config.ts` already does
+- Dev binding **`0.0.0.0:8080`** and QA preview **`127.0.0.1:8081`**.
+- Nitro gated on `command === "build" || isPreview`, with
+  **`preset: "node-server"`** and **`serverDir: "./server"`**. The server directory
+  registers PWA/head/manifest/install middleware; disabling it loses those routes.
+- `grokPwaPlugin()`, the preview bridge/path rewrite and existing auth-env wrapper.
+- Server secrets out of `VITE_` variables and client imports.
 
-The workspace ships a ready `vite.config.ts` and `tsconfig.json` — don't
-recreate them, and don't import a vendored `vite-tanstack-config` preset. The
-config:
+## Verify the output, not just dev
 
-- binds the dev port `0.0.0.0:8080`;
-- pins `vite preview` to loopback `127.0.0.1:8081`, so the built output can
-  never be picked up as the user's live preview;
-- gates `nitro({ preset: "vercel" })` on `command === "build" || isPreview`, so
-  it never runs in dev — left on in dev, nitro opens a second dev-server port,
-  which breaks the single-port 8080 live preview — but still serves the built
-  output under `vite preview`;
-- mounts `grokPwaPlugin()`.
+For runtime/UI changes, build first and use `npm run test:production`: it starts
+a disposable standalone Node server with synthetic fixtures, checks APIs/storage
+and desktop/mobile rendering, then stops its own server. Add
+`PRODUCTION_SMOKE_COMPARE_DEV=1` only with dev already running. Never substitute
+real saved output or live publisher requests for disposable fixtures.
 
-If you edit it, preserve both port contracts, the build/preview-gated nitro
-plugin **including its `serverDir: "./server"` option** (without it the deployed
-app loses the Home Screen install page), and `grokPwaPlugin()`.
+On **Linux only**, `npm run preview:restart` can serve built-output QA on 8081;
+the helper uses `/proc` and can terminate the existing port owner. Check ownership
+first. Do not use it as a macOS process-manager workaround. Rebuild after source
+edits before testing a build. A module response with MIME `text/html`, a missing
+asset, hydration error, or blank page is a failure despite an HTTP 200.

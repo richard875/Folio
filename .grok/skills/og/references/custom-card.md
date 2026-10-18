@@ -1,7 +1,7 @@
 # Custom card: generate `public/og.jpg`
 
 For prompt-craft, composition, and blind read-back verification, follow the
-`imagine` and `game-asset-core` skills — this file owns the **card-specific**
+`imagine-grok-build` and `game-asset-core` skills — this file owns the **card-specific**
 contract only (size, lockup, wiring).
 
 1. **Set the canvas with `aspect_ratio: "16:9"`.** The call looks like
@@ -49,17 +49,17 @@ contract only (size, lockup, wiring).
      the canvas comes back off-ratio — an edit that pinned to its input's
      ratio, or a model miss — so **check the raw canvas dimensions before
      cropping**, and re-ratio first if it isn't ~16:9 or 2:1.
-3. **Verify glyphs *and* layout on read-back** (see `imagine` / `game-asset-core`
+3. **Verify glyphs *and* layout on read-back** (see `imagine-grok-build` / `game-asset-core`
    for the blind-describe loop). On a garble or layout miss, **regenerate with a
    corrected prompt** — never try to move a logo with `imagine_image_to_image` (frame
    translation / seams). After two failed attempts, ship the card **artwork-only**
    (titleless).
 
-   **Intentional exception vs `imagine`'s "rebuild text with code" rule:** the
-   share card is a single static PNG; there is no reliable in-sandbox path to
-   composite crisp code-drawn lettering onto generative art for this asset, so
+   **Intentional exception vs `imagine-grok-build`'s "rebuild text with code" rule:** the
+   share card is a single static JPEG; this optional generated-art path does not require
+   compositing code-drawn lettering onto generative art for this asset, so
    a clean titleless card is the correct fallback after two glyph failures.
-4. **Normalize to exactly 1200×630 JPEG** with the baked-in ffmpeg (cover-crop —
+4. **Normalize to exactly 1200×630 JPEG** with ffmpeg when installed (cover-crop —
    from 16:9 this shaves ~3% top/bottom; from 2:1 ~2.4% per side and
    nothing vertical). **JPEG, not PNG**: the card is
    photographic generative art, and a PNG of it lands at 1–2 MB — heavy
@@ -70,7 +70,7 @@ contract only (size, lockup, wiring).
    ```sh
    ffmpeg -y -i card-raw.jpg \
      -vf "scale=1200:630:force_original_aspect_ratio=increase,crop=1200:630" \
-     -q:v 4 /workspace/.grok/og.jpg.tmp
+     -frames:v 1 -update 1 -f image2 -c:v mjpeg -q:v 4 /workspace/.grok/og.jpg.tmp
    node scripts/write-atomic.mjs /workspace/.grok/og.jpg.tmp public/og.jpg
    ```
 
@@ -85,7 +85,10 @@ contract only (size, lockup, wiring).
    from the file if the flag is missing, but brand-check still requires the
    field. The injector emits the absolute `https://${host}/og.jpg` URL. Do not
    add `og:image` to `__root.tsx`.
-6. **Verify before finishing** (Pillow is installed; `ffprobe` is **not**):
+   The explicit image format/codec is necessary because the staging suffix is
+   `.tmp`, not `.jpg`; otherwise ffmpeg cannot infer the output container.
+
+6. **Verify before finishing** (the example requires Pillow; check local availability):
 
    ```sh
    python3 -c "

@@ -15,6 +15,10 @@ user-invocable: false
 
 # Three.js (official LLM reference)
 
+Optional recipe, not an installed Folio engine. See
+[reference scope](../../README.md); the vendored API dump is a pinned snapshot,
+so check an installed version's API before implementing a future 3D feature.
+
 This skill vendors the **official** Three.js LLM documentation pack so the agent
 can generate correct modern three.js without inventing outdated CDN/r128 APIs.
 
@@ -26,7 +30,7 @@ You are in a **TanStack Start + React** workspace, not a bare HTML page:
 | --- | --- |
 | `<script type="importmap">` + CDN three | **`npm install three`** (+ `@types/three` if needed); import from `"three"` / `"three/addons/…"` |
 | Raw HTML canvas bootstrap | Prefer **@react-three/fiber + drei** for games/UI integration (`building-games` + `3d-libs.md`) |
-| Standalone `WebGLRenderer` demo | Fine for a self-contained canvas module; still install three via npm so Vercel build has it |
+| Standalone `WebGLRenderer` demo | Fine for a self-contained canvas module; still install three via npm so the production build has it |
 | Always “latest” CDN version | Pin via **package.json** so dev and deploy match |
 
 **three is not preinstalled** — add it with npm and leave it in `package.json`.

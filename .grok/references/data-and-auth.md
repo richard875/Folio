@@ -1,5 +1,11 @@
 # Data & auth — implementation
 
+**Inactive optional scaffold in Folio.** Its APIs use server `ACCESS_HASH`;
+`VITE_AUTH_ENABLED=false`, no app migrations or `DATABASE_URL`. Render startup
+rejects a database URL. Account/database examples below apply only after an
+explicitly authorized architecture change; Grok provisioning descriptions apply
+only on that platform, not Render. See [reference scope](../README.md).
+
 Read this **after** `AGENTS.md` §0.5 has already said the app needs a database
 and/or sign-in. The decision (auth OFF by default, the closed trigger list, "no
 migrations / no `@/lib/db` unless triggered") lives in `AGENTS.md`, not here.
@@ -22,8 +28,9 @@ Full guides + snippets: the **`neon` skill** (database) and the **`auth` skill**
 ## Migrations
 
 - `migrations/*.sql` is the single schema source: applied to **Neon on deploy**
-  (`npm run build` runs `npm run db:migrate`, so Vercel ships with the schema
-  ready) and to the **PGLite** preview automatically on startup.
+  (`npm run build` runs `npm run db:migrate` when a database is configured)
+  and to the **PGLite** preview automatically on startup. Render does not
+  provision Neon based on these files; Folio's current migration step is a no-op.
 - Add the app's tables as ordered files (`migrations/0002_*.sql`), not inline.
 - An app that needs no database adds no `.sql` file, and then no migration runs
   anywhere.
@@ -65,8 +72,11 @@ and `auth` skills.
 
 ## Turning sign-in on (at scaffold or later)
 
-`.grok/app-env.json` (`{"VITE_AUTH_ENABLED": "false"}`) is the switch, read by
-`npm run dev` / `build` / `preview` alike through `scripts/with-app-env.mjs` —
+The tracked `.grok/app-env.defaults.json` sets `VITE_AUTH_ENABLED=false`.
+Optional ignored `.grok/app-env.json` overrides those defaults; process variables
+override both. Set an explicit `"VITE_AUTH_ENABLED": "true"` only when accounts
+are authorized; deleting an override key leaves Folio's false default intact.
+These files are read by `npm run dev` / `build` / `preview` through `scripts/with-app-env.mjs` —
 which is why Vite is never started outside those scripts. Follow the `auth`
 skill's **"Turning sign-in on"** (flag, schema, then routes) in that order: the
 routes alone render the disabled branch. `npm run check:auth`, run against a
@@ -75,7 +85,7 @@ flag (exit 0 agree, 1 diverged, 2 could not observe).
 
 ## Env
 
-On deploy the platform injects `DATABASE_URL` + per-app auth creds; live preview
+On a Grok-managed deployment the platform can inject `DATABASE_URL` + per-app auth creds; live preview
 needs neither (baked preview client, PGLite fallback). Deployed behind the gate,
 signed-in Grok viewers get the app session automatically from `x-grok-identity`
 (see the `auth` skill — `references/grok-identity.md`); the broker federation
@@ -95,6 +105,8 @@ covers anonymous viewers and no-gate contexts.
 SDK → public connectors host (`connectors.grok.me`, **auth required**) → gate.
 Unauthenticated hits on the connectors host redirect to gate OIDC sign-in.
 
-If you need Drive / Gmail / calendar / connector data, load the **`app-data`
-skill** (`.grok/skills/app-data/SKILL.md`) and follow it exactly. Do not invent
-a client-side connector client.
+If viewer connector data is requested, read the existing backend SDK/types/errors
+under `src/lib/app-data/` and a harness-provided **`app-data` skill** if available.
+There is no bundled `app-data/SKILL.md` in this checkout; do not invent that path
+or assume Render has Grok gate grants. Keep connector credentials backend-only
+and do not invent a client-side connector client.

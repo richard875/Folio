@@ -13,6 +13,9 @@ user-invocable: false
 
 # Character Consistency
 
+Optional art recipe; [reference scope](../../README.md) governs tools and paths.
+These are generation/QC guidelines, not active Folio features.
+
 The product is the IDENTITY, not any single image.
 Users state WHAT they need, not how — apply everything here even when
 the request never mentions it.

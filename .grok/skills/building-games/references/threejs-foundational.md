@@ -116,7 +116,9 @@ The canonical reference is the official `misc_controls_pointerlock` example (htt
 
 - Distinguish the **canvas drawing buffer** (`canvas.width/height`) from **CSS display size**; account for `devicePixelRatio` to avoid blurry/tiny output. Rendering at a smaller internal resolution + CSS upscale is a valid perf win; `image-rendering: pixelated` for pixel art.
 - Choose a **base design resolution** + aspect ratio; **letterbox (FIT)** to avoid stretching. Phaser: `scale: { mode: Phaser.Scale.FIT, autoCenter: CENTER_BOTH, width, height }` and handle the `resize` event; listen for `orientationchange`.
-- Viewport meta: `width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no`; CSS `touch-action: none` and `preventDefault()` on touch to stop scroll/zoom.
+- Viewport meta: `width=device-width, initial-scale=1`. Preserve browser zoom for
+  accessibility; constrain gesture handling on the gameplay surface with
+  `touch-action: none` and appropriate Pointer Events, not page-wide zoom bans.
 - **Touch controls:** virtual joystick (e.g. **nipplejs**, `mode:'static'` or `'dynamic'`), split screen (left = move, right = actions/aim), normalize input to −1..1 and apply with delta time, visual feedback on active. **Minimum touch/hit target 44px** (Claude/Apple HIG). Unify keyboard + touch + Gamepad API into one input state.
 - Test on real iOS Safari (audio unlock on gesture, WebGL context loss, touch coalescing) and low-end Android.
 

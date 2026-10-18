@@ -20,9 +20,9 @@ publisher with Googlebot, Bingbot, Facebook, then Twitter user agents.
 WallHop uses normal HTML pages, never `/raw` or `/api`. Listed services are
 attempts, not guarantees of working or complete articles.
 
-**Routing is separate from order:** with the configured bypass list,
-`wallhop.io` and `freedium-mirror.cfd` connect directly; other hosts use Webshare
-when enabled. Redirect destinations are checked separately.
+**Routing is separate from order:** explicitly bypassing `wallhop.io` and
+`freedium-mirror.cfd` makes those hosts direct; others use the configured proxy
+when enabled. No hosts bypass it by default. Redirects are checked separately.
 
 **Configure:** [retrieval.config.ts](retrieval.config.ts) for order;
 [methods.ts](methods.ts) for service URLs and settings.

@@ -15,6 +15,9 @@ user-invocable: false
 
 # Animation Frames — video-first
 
+Optional generated-art recipe. See [reference scope](../../README.md): generation
+tools must actually be available; this is not implemented Folio functionality.
+
 The image generator draws poses; the VIDEO generator understands motion —
 leg alternation, arc continuity, cloth and fire dynamics come free because
 video must animate them. So don't ask the image model to imagine

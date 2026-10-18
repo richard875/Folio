@@ -12,6 +12,9 @@ user-invocable: false
 
 # Tilesets
 
+Optional art recipe; [reference scope](../../README.md) governs tools and paths.
+These are generation/QC guidelines, not active Folio features.
+
 A tile's job is invisibility in repetition.
 Users state WHAT they need, not how — apply everything here even when
 the request never mentions it.

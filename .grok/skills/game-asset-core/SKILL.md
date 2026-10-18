@@ -15,6 +15,9 @@ user-invocable: false
 
 # Asset Core
 
+Optional generated-art recipe. Check [reference scope](../../README.md) and actual
+tool availability before using any pipeline; Folio has no game-asset feature.
+
 Game developers ask for WHAT they need, not HOW to make it engine-ready.
 The how is your job. Apply these defaults whenever the request doesn't say
 otherwise — an asset that needs manual cleanup is a miss even if the user

@@ -41,9 +41,10 @@ useEffect(() => { listTodos().then(setTodos).catch(() => setTodos([])); }, []);
 Semantics: signed out → the middleware throws `UnauthorizedError` (message
 `"Unauthorized"`, `status` 401 — match it to send the visitor to sign-in), in the
 live preview too (real auth). With auth disabled (`VITE_AUTH_ENABLED=false`) it
-resolves the dev user (`"dev-user"`) in dev and preview only — the deployed flag
-comes from the deployer (today always `"true"`), so deployed it rejects every
-visitor — which is why an app without sign-in must not use the middleware at all
-(see the `neon` skill). Keep `user_id` columns
+   resolves the shared dev user (`"dev-user"`) only without a configured database
+or gate session. Auth disabled with `DATABASE_URL` fails closed instead. Render
+keeps Folio's account flag false; account-free Folio APIs must keep using
+`ACCESS_HASH`, not account middleware. See `src/lib/auth/verify.server.ts` for
+the exact server semantics. Keep `user_id` columns
 `TEXT` (Better Auth uses text ids; the disabled dev user is `'dev-user'`). Never
 trust a client-supplied user id — only the middleware / `requireUserId()` result.

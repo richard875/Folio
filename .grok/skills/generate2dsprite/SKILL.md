@@ -15,6 +15,9 @@ user-invocable: false
 
 # Generate2dsprite
 
+Optional pipeline; see [reference scope](../../README.md). Verify image tools and
+local Python dependencies before using it; Folio has no sprite-generation feature.
+
 Use this skill for self-contained 2D sprite or animation assets in the
 **app-builder sandbox** (TanStack Start + browser games).
 
@@ -29,14 +32,14 @@ code-drawn placeholders.
 | --- | --- |
 | Skill dir | `.grok/skills/generate2dsprite/` |
 | Scripts | `python3 .grok/skills/generate2dsprite/scripts/<script>.py …` |
-| Image tools | `imagine_text_to_image` / `imagine_image_to_image` (path-based; see **`imagine`** skill for prompt craft) |
+| Image tools | `imagine_text_to_image` / `imagine_image_to_image` if available (see **`imagine-grok-build`** for prompt craft) |
 | Inspect images | `read_file` on the PNG path (not Codex view_image) |
 | Generated image path | `imagine_text_to_image` returns a sandbox `file_path`; copy that path into your run dir before processing |
 | Python deps | Pillow + numpy (preinstalled in the image) |
 | Output home | Prefer `assets/sprites/<name>/` under `/workspace` so the app can import them |
 | Engine target | Browser: Canvas 2D, Phaser, or DOM/`<img>` — not Godot/Unity unless the user asks |
 
-Related skills: **`imagine`** (image tool usage), **`game-asset-core`** (+
+Related skills: **`imagine-grok-build`** (image tool usage), **`game-asset-core`** (+
 `game-animation-frames` / `game-character-consistency` for QC and engine-ready
 defaults), **`generate2dmap`** (maps/props), **`video2dsprite`** (denser motion
 via `imagine_image_to_video`), **`building-games`** (game loop / integration).

@@ -14,14 +14,16 @@ Same JPEG / size discipline as `og.jpg` (keep it well under 600 KB).
 app is a game**. Non-games omit the file — the injector then emits no
 `x:game:image`. Do not paste `og.grok.me/v1/banner.png` (or any
 `x:game:image`) into `__root.tsx`; the injector strips those tags.
-Generate the art at 50:11 (`aspect_ratio: "50:11"` on
-`imagine_text_to_image` — that ratio is on the Imagine schema; do **not**
-substitute 16:9 and crop). Then normalize:
+Generate at 50:11 when the available tool schema supports that ratio; do not
+assume every host exposes it. Otherwise reframe from available artwork without
+clipping the lockup; never silently substitute a destructive 16:9 crop. The
+ffmpeg example requires a local installation; its explicit format/codec supports
+the `.tmp` staging suffix:
 
 ```sh
 ffmpeg -y -i banner-raw.jpg \
   -vf "scale=1200:264:force_original_aspect_ratio=increase,crop=1200:264" \
-  -q:v 4 /workspace/.grok/x-banner.jpg.tmp
+  -frames:v 1 -update 1 -f image2 -c:v mjpeg -q:v 4 /workspace/.grok/x-banner.jpg.tmp
 node scripts/write-atomic.mjs /workspace/.grok/x-banner.jpg.tmp public/x-banner.jpg
 ```
 

@@ -9,14 +9,16 @@ Redis, persistent disk, cron or paid worker is provisioned. Everything created
 under `output/` is lost on **sleep, restart and redeploy**, including imported
 history and job statuses. Keep important output in a separate local archive.
 
-1. Publish `chore/migrate-to-render` to your Git provider when ready. No main push
-   is required: create the Blueprint from this branch. Merge later through your
-   normal review process, then change the linked deployment branch if desired.
+1. When a release is authorized, push the branch you intend Render to deploy
+   (normally `main`). There is no remaining migration-branch prerequisite.
 2. In Render, create **New → Blueprint**, connect the repository and select the
    branch containing `render.yaml`. Review **Free** and **Singapore** before creating.
 3. Enter `ACCESS_HASH`: a new random secret of at least 32 characters (for example,
    generate with `openssl rand -hex 32`). Do not paste it into Git or shared URLs.
-   All other deployment variables are supplied by the Blueprint. Render supplies
+   The Blueprint also prompts for `READ_CONCURRENCY`, `SAVE_CONCURRENCY` and
+   `RSS_LINKS_PER_SECTION` (`sync: false`); use **1**, **1** and **5** respectively.
+   Fixed settings, including `VITE_AUTH_ENABLED=false` and `FEED_CONCURRENCY=2`,
+   are supplied by the Blueprint. Render supplies
    `PORT`; do not replace it with a fixed value. Never set `DATABASE_URL`.
 4. Render builds and starts the app, terminates HTTPS, and checks public `/healthz`.
    This probe has no secrets or downstream calls. `/api/health` remains authenticated
@@ -24,7 +26,9 @@ history and job statuses. Keep important output in a separate local archive.
 5. Use the assigned `https://…onrender.com` address. A custom domain is optional:
    add it in Render Settings, create the DNS records Render specifies, remove any
    conflicting old Oracle A/AAAA records, and wait for verification and managed TLS.
-   Stay within the two included custom domains. No Caddy, certbot or SSH is required.
+   Check your workspace's current custom-domain allowance. No Caddy, certbot or SSH
+   is required. `autoDeployTrigger: commit` deploys commits on the linked branch;
+   the YAML does not pin a branch. Check the actual linked branch in Render.
 
 ### Optional Webshare proxy
 
@@ -45,14 +49,18 @@ credentials unchanged. Set these values in the service environment, then redeplo
 
 If third-party retrieval services work directly but not through the proxy, set
 `OUTBOUND_PROXY_BYPASS_HOSTS` to a comma-separated list of their exact hostnames.
-Use `freedium-mirror.cfd` to bypass only the working mirror. Keep archive.is,
+The intended value is `freedium-mirror.cfd,wallhop.io`, explicitly bypassing the
+working mirror and WallHop (not a hardcoded default). Keep archive.is,
 archive.today and archive.ph out of this list unless direct access has been verified
 from Render itself. This explicitly
 uses Render's IP for those hosts and logs each bypass; all other hosts still use
 the proxy. Empty (default) bypasses nothing. Redirect destinations are checked
 independently and there is never automatic direct fallback. Proxy-enabled article
-extraction tries the publisher first and caps each method at six seconds/one retry
-to preserve time for alternate methods. See README for diagnostics and limitations.
+extraction uses the orders in [reader/README.md](reader/README.md): WallHop precedes
+the publisher for WSJ, Foreign Policy and CNBC; the publisher precedes WallHop for
+the other seven. Ordinary proxy-active methods get at most six seconds/one retry;
+WallHop gets up to 25 seconds, still limited by the article/pass deadline.
+See [README.md](README.md#optional-outbound-proxy-webshare) for diagnostics.
 
 ### Limits and costs
 
@@ -60,7 +68,9 @@ to preserve time for alternate methods. See README for diagnostics and limitatio
 - Idle services sleep after **15 minutes**; the next request takes about **one
   minute** to wake. API clients should allow for this and verify JSON responses,
   not mistake a platform loading page for a completed operation.
-- **5 GB outbound bandwidth/month** and **500 build minutes/month**. Without a
+- Outbound bandwidth and build-pipeline allowances depend on the workspace plan;
+  check **Billing → Monthly Included Usage** rather than assuming a fixed quota.
+  Without a
   payment method, exceeding limits suspends services/builds rather than buying
   additional usage. With a card, overages can cost money: keep the workspace
   free-only, review billing/spend controls, and do not authorize paid overages.
@@ -93,13 +103,15 @@ at **16 MiB** (approximately 48 MiB total young generation). This bounds V8's
 overall heap around 304 MiB, leaving headroom below 512 MB for buffers, native
 libraries, DOM parsing and Node itself. A heap
 limit is **not** a total RSS limit or proof against leaks. Extraction/save
-concurrency is 1, feed concurrency 2, and the article cache is capped at 8 MiB.
+concurrency should be configured to 1, feed concurrency is 2 in the Blueprint,
+and the article cache is capped at 8 MiB. The batch helper's fallback is 5 when
+`SAVE_CONCURRENCY` is absent/invalid; that is not the recommended Free setting.
 Do not raise concurrency on Free without measuring RSS.
 
 Builds explicitly include dev dependencies and run lint/tests/typecheck before
 building. Test commands preload `scripts/test-env.mjs` to remove inherited proxy
 settings and use only test fixtures; Render's runtime proxy settings are unchanged.
-All build-time commands get a scoped 4096 MiB heap on Render's 8 GB builder;
+All build-time commands get a scoped 4096 MiB heap via the Blueprint;
 the runtime stays at 256 MiB. Nitro handles SIGTERM with a 20-second drain,
 below Render's default 30-second termination delay. Free services cannot configure
 `maxShutdownDelaySeconds`; the Blueprint deliberately omits it. Jobs may still be cut short.
@@ -123,6 +135,16 @@ are **temporary**: repeat after data loss if needed. No source files are deleted
 
 ### Local release verification
 
+Use the repository's Node **24.20.0** (`.node-version`). Existing dependencies
+need not be reinstalled for a documentation-only change. Export server settings
+before `npm run dev`: Vite explicitly loads only `ACCESS_HASH`, `FETCH_RETRY_LIMIT`,
+`RSS_LINKS_PER_SECTION` and `SAVE_CONCURRENCY` from `.env`; it does not make arbitrary
+unprefixed settings (such as proxy credentials or `FEED_CONCURRENCY`) available to
+server code. Process variables take precedence. `npm start` uses Node's
+`--env-file-if-exists=.env`; Render normally supplies settings in its environment.
+
+Run the existing verification commands from the repository root:
+
 ```sh
 NODE_OPTIONS=--max-old-space-size=4096 sh -c 'npm ci --include=dev && npm run lint && npm test && npm run typecheck && npm run build'
 PRODUCTION_SMOKE_PORT=8765 npm run test:production
@@ -132,8 +154,23 @@ The smoke test starts a disposable server, checks non-default-port operation,
 auth, agent checksums, memory, Swagger refresh and desktop/mobile rendering,
 then stops it. Browser QA needs Playwright Chromium installed locally; it is not
 installed or run as part of Render's build. The local dev preview remains on 8080.
-Legacy `scripts/*.md` describe earlier workflows; this README is the deployment
-source of truth for temporary-storage behaviour. Platform helpers are preserved.
+For a dev baseline, start the app with `sh startup.sh`, then use
+`PRODUCTION_SMOKE_COMPARE_DEV=1 npm run test:production`. The production smoke uses
+disposable storage, synthetic feeds/articles and generated credentials; it does not
+rewrite real `output/` or benchmark live publisher availability. Its generated QA
+artifacts are ignored under `docs/qa/`.
+
+The `scripts/*.md` guides describe the current APIs; this document owns deployment
+and temporary-storage behaviour. The Linux-only `npm run preview:restart` helper
+uses `/proc`; on macOS prefer `npm run test:production` for built-server QA.
+Platform helpers remain preserved, but the retained `vercel.json` is not the active
+file-backed deployment target. Do not claim a remote release was verified merely
+because local tests passed.
+
+Hosting limits and billing are controlled by Render, not this repository. Consult
+[Free services](https://render.com/docs/free),
+[Blueprint fields](https://render.com/docs/blueprint-spec), and your dashboard for
+current terms and actual settings.
 
 ### Retiring Oracle — manual only
 

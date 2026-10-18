@@ -12,6 +12,9 @@ user-invocable: false
 
 # Game UI & Icons
 
+Optional art recipe; [reference scope](../../README.md) governs tools and paths.
+These are generation/QC guidelines, not active Folio features.
+
 UI is a SYSTEM: the set matters more than any piece.
 Users state WHAT they need, not how — apply everything here even when
 the request never mentions it.

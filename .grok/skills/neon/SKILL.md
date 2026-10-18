@@ -12,6 +12,11 @@ user-invocable: false
 
 # Neon Postgres
 
+**Optional scaffold, inactive in Folio.** Render startup rejects `DATABASE_URL`;
+article/job storage is file-backed. The platform provisioning instructions below
+apply only to an authorized Grok-managed app, not the current Render deployment.
+See [reference scope](../../README.md); do not turn this on for documentation work.
+
 **The database is opt-in** (AGENTS.md §0.5): use it only when the app needs data
 that outlives a browser session or is shared across devices. Otherwise ship no
 migrations, don't import `@/lib/db`, and keep state in `localStorage` / zustand.
@@ -95,10 +100,10 @@ export const listTodos = createServerFn({ method: "GET" })
 ```
 
 **Without sign-in (the default), do NOT use `authMiddleware` / `requireUserId`.**
-The dev user they fall back to is a preview-only convenience. A deployed app's
-`VITE_AUTH_ENABLED` is set by the platform, not by this workspace (today the
-deployer always sets it to `"true"`), so deployed, both reject every visitor —
-and an auth-off app ships no sign-in route for them to recover with. A
+With auth disabled and `DATABASE_URL` set, these helpers fail closed; without a
+database/gate they can return a shared dev id. Neither behaviour is authorization
+for public access to private rows. Process settings override local flag files;
+Folio's Render Blueprint keeps account auth false. A
 database-only app keeps its rows unowned: no `user_id` column, or one literal
 constant. Add the middleware as part of turning sign-in on (the `auth` skill's
 upgrade steps), and re-scope or drop those rows then.
@@ -111,8 +116,8 @@ about a person) in this mode, and leave out destructive bulk mutations
 ## Migrations
 
 `migrations/*.sql` are the single schema source. They apply to **Neon on deploy**
-(`npm run build` runs `db:migrate` against `DATABASE_URL`, so Vercel ships with
-the schema ready) and to the **PGLite** preview **automatically on startup**, so
+(`npm run build` runs `db:migrate` against an explicitly configured `DATABASE_URL`)
+and to the **PGLite** preview **automatically on startup**, so
 dev matches prod.
 
 Neither applier descends into subdirectories, so the Better Auth schema at

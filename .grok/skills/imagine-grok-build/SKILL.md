@@ -16,6 +16,10 @@ user-invocable: false
 
 # Imagine
 
+Optional host-tool recipe, not a Folio integration. Check
+[reference scope](../../README.md) and the live tool list first. The names and
+schemas below apply only when that native stack is actually available.
+
 Grok Build uses the **split Imagine computer stack** (`grok_computer` variants).
 There is **no** consolidated `imagine_image` or `imagine_video` tool — always
 call the modality-specific name from the table below.
@@ -102,7 +106,7 @@ Generate a new image from a text prompt.
 Inputs:
 
 - `prompt` (required) - full description of the desired image.
-- `aspect_ratio` - one of `1:1`, `3:4`, `4:3`, `2:3`, `3:2`, `9:16`, `16:9`, `21:9`, `5:2`, `50:11`, or `unknown`. Use `16:9` for OG share cards and `50:11` for the X feed banner when generating a custom `public/x-banner.jpg` for **games** (every app wires `x:game:image`; only games call Imagine for it — see the `og` skill); for a true 2:1 canvas, call the xAI Images API.
+- `aspect_ratio` - values depend on the live schema; the original stack included `1:1`, `3:4`, `4:3`, `2:3`, `3:2`, `9:16`, `16:9`, `21:9`, `5:2`, `50:11`, and `unknown`. Use a supported wide ratio for OG share cards. `50:11` is the X feed-banner target for **games**; non-games emit no `x:game:image` (see the `og` skill). An API alternative requires explicit access/spend authorization, not an assumed injected key.
 
 To produce multiple variations, make multiple `imagine_text_to_image` calls with distinct prompts. The tool does not expose `n` or `count` parameters.
 

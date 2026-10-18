@@ -14,13 +14,19 @@ user-invocable: false
 
 # Multiplayer (WebRTC peer-to-peer)
 
+**Optional recipe, not a Folio endpoint.** Only the client primitive is bundled;
+no `/api/rtc` route or signaling relay is mounted. The relay requires a database,
+which the current Render startup rejects. Implementing it needs an authorized
+architecture change. See [reference scope](../../README.md).
+
 All visitors on the same deployed domain join one default room, opening a
 native WebRTC data channel directly to every other visitor — game traffic
 itself never touches a server. A tiny relay at `/api/rtc` handles only the
 routing of the connection handshake (SDP/ICE) while peers connect. What you
 use from the kit is client-side only; the relay is yours.
 
-Latency is browser↔browser (often 5–40ms) with zero per-tick server cost.
+Game payload latency is browser↔browser and depends on network/geography; the
+signaling server does not relay per-tick payloads. This is not a latency guarantee.
 
 | Piece | Path |
 |---|---|
@@ -38,8 +44,8 @@ Competitive or cheat-sensitive play is not supported in this template: push
 back in product terms rather than shipping it on P2P.
 
 Practical limits: a full mesh is O(N²) connections — cap rooms at ~8 peers.
-Roughly 10–20% of peer pairs sit behind strict NATs and cannot connect; the
-kit surfaces this per peer as `connectionState: "failed"` — show it in the
+Some peer pairs behind strict NATs/firewalls cannot connect with STUN alone;
+the kit surfaces this per peer as `connectionState: "failed"` — show it in the
 UI rather than hanging.
 
 ## Setup (once)
@@ -74,7 +80,7 @@ const p2p = new P2PRoom({
 });
 await p2p.join();
 p2p.broadcast(state); // unreliable "state" channel — game-rate, stale drops
-p2p.send(event, to); // reliable channel — exactly-once events (to optional)
+p2p.send(event, to); // reliable ordered channel while connected (to optional)
 p2p.close();
 ```
 
@@ -86,7 +92,9 @@ Patterns:
 
 1. `broadcast()` = unreliable/unordered, for continuously-refreshed state
    (positions, cursors). `send()` = reliable/ordered, for events that must
-   arrive exactly once. Never stream game-rate state on `send()`; interpolate
+   arrive in order while connected. This is not durable exactly-once delivery
+   across disconnect/reconnect; add application acknowledgements/deduplication
+   if that is required. Never stream game-rate state on `send()`; interpolate
    between broadcasts for smooth motion.
 2. Late joiners know nothing: on a new peer appearing in `p2p.peers`, an
    existing peer should `send()` it the current shared state. Exactly one

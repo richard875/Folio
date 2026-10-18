@@ -19,7 +19,8 @@ operational caveats. Executable configuration remains the source of truth.
 | `save.ts`, `save-api.ts` | Safe file persistence and save-request handling. |
 | `types.ts` | Article response types. |
 
-This refactor changes organization, not retrieval behavior, network routing or saved data.
+These configuration files organize the existing retrieval behavior; editing their
+orders/templates changes future requests, not historical saved data.
 
 ## Publisher order at a glance
 
@@ -168,6 +169,28 @@ gets at most 25 seconds total in either mode. Caller/pass deadlines can shorten
 any of these, and bypassed services still use the proxy-active budget rules.
 `FETCH_RETRY_LIMIT` still controls retries subject to these caps. Response buffering
 still defaults to 8 MB, configurable up to 16 MB through `ARTICLE_MAX_RESPONSE_BYTES`.
+
+The direct-mode article fetcher defaults to eight retries when unset (up to ten);
+feed collection has a separate default of five. Proxy-active ordinary methods
+reduce that to at most one. These are configured budgets, not guarantees every
+scheduled method gets time to run. Parsing time can exceed a fetch deadline.
+
+## Auth, cache and persistence boundaries
+
+`reader/auth.ts` reads server `ACCESS_HASH`; there is no hardcoded Folio access
+key in the current reader. Account-auth scaffolding is disabled separately.
+`readArticle()` enforces a shared 24-requests/minute rate limit before cache lookup
+and an extraction concurrency limit (default 1, maximum 10). Cache hits avoid
+fetches but still count toward that request rate.
+
+Article cache: ten entries, 8 MiB, roughly 30 minutes. Resolved archive URLs:
+up to 500 entries, roughly 24 hours. Both are process memory and reset on restart;
+clearing them does not require deleting saved output. `save-api.ts` can use a
+cached extraction but still writes a new file with `X-Saved-File` on success.
+Markdown is the default; JSON also stores derived Markdown. See
+[save/save-batch](../scripts/save-articles.md) and [agent reading](../scripts/agent-reader.md).
+Render Free files are temporary; no checksum or successful save proves durable
+storage, correct source selection, publisher completeness or factual accuracy.
 
 ## Verification
 

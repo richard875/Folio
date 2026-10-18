@@ -24,7 +24,8 @@ history, bookmarks and HTTP access logs. Do not share the URL or expose the key.
 Use HTTPS outside local development.
 
 Authentication is documented as the `AccessHash` API-key security scheme.
-Agent/documentation endpoints additionally support the `BearerHash` scheme;
+Agent/documentation, authenticated health and import endpoints additionally
+support the `BearerHash` scheme;
 the original read/save/collection endpoints continue using their existing query
 hash interface. No accounts, database or additional authentication service were
 introduced.

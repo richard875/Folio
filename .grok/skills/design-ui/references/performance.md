@@ -4,7 +4,10 @@ Transition specificity and GPU compositing hints.
 
 ## Transition Only What Changes
 
-Never use `transition: all` or Tailwind's `transition` shorthand (which maps to `transition-property: all`). Always specify the exact properties that change.
+Avoid `transition: all`. Tailwind v4's `transition` utility also selects a broad
+default property set, but **does not map to `all`**. Prefer utilities or explicit
+property lists matching what actually changes; this prevents unrelated state
+changes from animating unexpectedly.
 
 ### Why
 

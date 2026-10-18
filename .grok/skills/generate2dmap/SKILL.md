@@ -14,15 +14,18 @@ user-invocable: false
 
 # Generate2dmap
 
+Optional pipeline; see [reference scope](../../README.md). Verify image tools and
+local Python dependencies before using it; Folio has no map-generation feature.
+
 ## App-builder / Grok environment
 
 | Item | Value |
 | --- | --- |
 | Skill dir / scripts | `.grok/skills/generate2dmap/`, run as `python3 .grok/skills/generate2dmap/scripts/<script>.py …` |
-| Image tools | `imagine_text_to_image` / `imagine_image_to_image` (path-based; see **`imagine`**); inspect output with `read_file` on the PNG path (not Codex view_image) |
+| Image tools | `imagine_text_to_image` / `imagine_image_to_image` only if available (see **`imagine-grok-build`**); inspect output with the current host's image-reading tool |
 | Generated image path | `imagine_text_to_image` → sandbox `file_path` → copy into `assets/map/`; Pillow is preinstalled |
 | Default `engine_target` | `raw_canvas` or `Phaser` for this TanStack browser sandbox — only use Godot/Unity/Tiled when the user explicitly wants those exports |
-| Related skills | **`generate2dsprite`** (character/FX sprites; prop packs still use this skill's extract script), **`building-games`**, **`imagine`** |
+| Related skills | **`generate2dsprite`** (character/FX sprites; prop packs still use this skill's extract script), **`building-games`**, **`imagine-grok-build`** |
 
 ## Decide the pipeline first
 

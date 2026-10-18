@@ -49,6 +49,8 @@ is still available or that its current environment matches local settings.
 | Discover saved articles | `GET /api/agent/latest` | Authenticated, paginated snapshot manifest |
 | Read saved content | `GET /api/agent/read` | Follow manifest `readUrl` and chunk `nextUrl` |
 | Inspect API docs | `/api/docs`, `/api/openapi` | Authenticated Swagger and JSON specification |
+| Restore output | `POST /api/import` | Explicitly authorized byte-preserving import; never overwrite different files |
+| Purge older articles | `POST /api/purge` | Destructive; explicit authorization required, never part of routine validation |
 | Health | `/healthz`, `/api/health` | Only `/healthz` is public |
 
 Authentication is the server-only `ACCESS_HASH`, not database-backed accounts.
@@ -96,6 +98,12 @@ can use the generic reader, but successful extraction is not guaranteed.
 No automatic polling is scheduled. `FEED_CONCURRENCY` defaults to 2, up to 6.
 Feed retries have their own policy; do not confuse them with article-method caps.
 See `scripts/feed-selection.md` for filtering and ranking details.
+
+Both background job types share one per-process lock and a one-hour deadline.
+Terminal statuses are `completed`, `partial` and `error`; job-level `partial`
+means save/feed failures, distinct from a saved article's extraction flag.
+Configure `SAVE_CONCURRENCY=1` on Render Free (the helper's unset fallback is 5,
+valid range 1–10). See `scripts/collect-articles.md` and `scripts/save-articles.md`.
 
 ## Publisher-specific article retrieval order
 
@@ -255,3 +263,7 @@ than broad live collections or real proxy spending. Use Node 24.20.0 and existin
 npm scripts; keep the test-only proxy-environment preload. Run `npm test`,
 `npm run typecheck`, `npm run build`, and appropriate browser/production checks.
 Do not claim new validations, remote deployment state or image checks you did not do.
+Tracked `.grok/app-env.defaults.json` and the Render Blueprint keep accounts off;
+process settings override local JSON flags. The generic `.grok/` recipes do not
+describe additional active Folio integrations. Consult `deployment.md` for actual
+environment loading and temporary-storage operation.

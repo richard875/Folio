@@ -15,6 +15,10 @@ user-invocable: false
 
 # Controls (player-visible signs — do not ship inverted)
 
+Optional game recipe, not an existing Folio feature. See
+[reference scope](../../README.md) for paths/tool availability. In the example
+below, use project-relative `docs/qa/screenshots/controls.png` outside `/workspace`.
+
 **Read this end-to-end before writing movement/steer/flight code** for any game
 that uses WASD, arrows, a chase camera, or a flying craft. Do **not** skip this
 and only open `racing-kart` or `fps` — those genre files assume you already
@@ -209,7 +213,7 @@ Wire `window.__controlsTest` from the game loop when `import.meta.env.DEV` or a
 
 ### 5c. Automated smoke (run it)
 
-Drive the §5b probe with the preinstalled **`agent-browser`** CLI — that is the
+Drive the §5b probe with **`agent-browser`** if installed — that is the
 first move, not a hand-written script. **A thrown `eval` exits non-zero; a
 merely falsy one does not**, so assert by throwing. Run it as one `batch` — one
 CLI call, not one per verb — taking JSON on stdin; `--bail` stops at the first

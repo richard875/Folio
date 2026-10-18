@@ -15,6 +15,10 @@ user-invocable: false
 
 # Video2dsprite (Grok Build only)
 
+Optional pipeline, not a Folio feature. See [reference scope](../../README.md).
+Gate on actual tool capabilities, not the agent's brand; verify ffmpeg/Python
+dependencies locally rather than assuming the App Builder image is present.
+
 Convert a **base 2D character image** into **dense animation sprites** using Grok Build's native video tools.
 
 ## App-builder / Grok environment
@@ -38,7 +42,7 @@ base still → imagine_image_to_video (in-place motion) → extract frames → c
 | Runtime | Supported? |
 | --- | --- |
 | **Grok Build** (xAI) | **Yes** — requires an image generator + an image→video tool |
-| Codex / Claude / other agents | **No** — they lack Grok video tools. Tell the user this skill is Grok Build only and offer `$generate2dsprite` instead |
+| Other hosts/agents | Only if equivalent image/video tools are actually listed; otherwise offer an available alternative without inventing tool access |
 
 **Gate on the capability, not the exact tool name.** Image generation appears
 as `imagine_text_to_image` / `imagine_image_to_image`; video as `imagine_image_to_video`
@@ -73,7 +77,9 @@ Infer from the user request:
 
 ## Agent rules
 
-1. **Grok-only.** Refuse on non-Grok runtimes with a short explanation + `$generate2dsprite` alternative.
+1. **Capability gate.** Use only with available image/video tools. Without them,
+   explain this pipeline is unavailable; offer `generate2dsprite` only if its
+   image-generation requirements can actually be met.
 2. **Still → video, never text-to-video alone.** Stage frame 1 as a clean still with `imagine_text_to_image` (from a prompt, or from a reference `file_path`). Then call `imagine_image_to_video` with that still's `file_path`.
 3. **In-place motion.** Prompt for run/walk **in place** facing a fixed direction. No camera pan, no background scroll, no scene change. Subject stays roughly centered.
 4. **Solid magenta background** on the base and preserved in the video prompt (`#FF00FF` / pure magenta). Required for flood-fill chroma.

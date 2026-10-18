@@ -54,6 +54,8 @@ For WSJ, WallHop's normal page loads article HTML from the same URL with
 `X-Wallhop-Load: 1`; Folio sends that header only to WallHop, without executing
 page scripts. WallHop gets at most **25 seconds total**, bounded by the existing
 48-second article budget, because its WSJ loading page advertises 10–20 seconds.
+Query-bearing URLs split the normal passes into roughly 24 seconds each, so the
+remaining pass deadline can shorten that 25-second allowance.
 It uses the same transport and response limits as other HTML retrieval services
 and is not automatically exempted from proxy routing. Availability
 and article completeness are not guaranteed; existing cached results may skip fetching.
@@ -113,12 +115,15 @@ If a service works directly but performs poorly through Webshare, explicitly lis
 its hostname in `OUTBOUND_PROXY_BYPASS_HOSTS`, for example:
 
 ```text
-OUTBOUND_PROXY_BYPASS_HOSTS=freedium-mirror.cfd
+OUTBOUND_PROXY_BYPASS_HOSTS=freedium-mirror.cfd,wallhop.io
 ```
 
 This intentionally uses your machine/Render's IP for **those exact hosts only**;
-other sites still use the proxy. The example configuration bypasses only the working
-mirror; archive.is, archive.today and archive.ph remain proxied. An unset/empty list
+other sites still use the proxy. The intended configuration bypasses the working
+mirror and WallHop; archive.is, archive.today and archive.ph remain proxied.
+This is an explicit example, not a hardcoded default or a verified deployment export.
+The older `.env.example` lists only the mirror; set both hosts explicitly when using
+the intended routing above. An unset/empty list
 bypasses nothing. Do not bypass archive sites based on local-only access tests. No
 automatic direct fallback is introduced. Subdomains do not match implicitly, and
 redirects are routed again by destination hostname. Private-network protections
@@ -181,10 +186,22 @@ The home page includes an **API documentation** control. Swagger is served at `/
 | `/api/links` | Collect and save a feed-links report |
 | `/api/collect` | Start a background collection; prefer POST |
 | `/api/collect/status` | Poll a job using its `callId` |
+| `/api/save-batch` | POST selected URLs for background saving, without collecting feeds |
+| `/api/save-batch/status` | Poll a selective-save job |
 | `/api/agent/latest` | Retrieve a saved-article manifest |
 | `/api/agent/read` | Retrieve checksum-verifiable article content |
+| `/api/docs`, `/api/openapi` | Authenticated Swagger UI and OpenAPI specification |
+| `/api/import` | POST an explicitly authorized output-file restoration |
+| `/api/purge` | POST to delete article folders older than the current UTC date; destructive |
+| `/api/health` | Authenticated runtime and storage health |
+| `/healthz` | Public deployment health probe |
 
 Most endpoints authenticate through the `hash` query parameter; agent endpoints also accept Bearer authentication. Treat URLs containing the key as secrets. `/healthz` is public; `/api/health` is authenticated.
+
+See the [collection guide](scripts/collect-articles.md),
+[save and save-batch guide](scripts/save-articles.md), and
+[agent reading protocol](scripts/agent-reader.md) for request formats and statuses.
+Saved-file verification proves exact retrieval, not correct or complete extraction.
 
 ### Feed summaries
 
@@ -208,7 +225,20 @@ npm start
 
 `npm start` serves the production build on `PORT` (default `3000`) and requires an `ACCESS_HASH` of at least 32 characters. `npm run test:production` runs a disposable production smoke test; browser checks require Playwright Chromium.
 
-Source routes live in `src/routes/`, extraction and collection logic in `src/lib/`, and operational tools in `scripts/`. Generated articles, link reports, and job records are written under `output/`.
+Source routes live in `src/routes/`, article extraction in root `reader/`, feed
+collection/runtime/agent helpers in `src/lib/`, and operational tools in `scripts/`.
+Generated articles, link reports, and job records are written under `output/`.
+
+The existing `sh startup.sh` starts development idempotently using `npm run dev`
+and logs to `.grok/dev.log`. The wrapper reads tracked
+`.grok/app-env.defaults.json`, then optional local `.grok/app-env.json`; the process
+environment takes precedence. Only `VITE_` string flags are read from those JSON
+files. They are not secret stores. `npm start` loads an existing ignored `.env`;
+development loads only selected server variables from it, so export other server
+settings before starting development (see [deployment.md](deployment.md)).
+
+The [`.grok/` reference library](.grok/README.md) contains optional App Builder
+recipes, not additional Folio features or the active deployment configuration.
 
 The Render Blueprint is defined in [`render.yaml`](render.yaml). **Render Free storage is temporary:** articles and job history can be lost on sleep, restart, or redeployment. Collections are best-effort and do not automatically resume after interruption. Archive important output separately.
 

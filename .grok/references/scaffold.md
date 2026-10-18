@@ -1,7 +1,10 @@
 # First-scaffold snippets
 
-Copy-paste bodies for the four entry files `AGENTS.md` § "First scaffold"
-requires. They match the **installed** TanStack Start: `src/router.tsx` is
+**Optional new-app examples, not a reset procedure for Folio.** Its four entry
+files already exist; inspect and extend them rather than copying these bodies
+over them. See [the reference scope](../README.md) and root `AGENTS.md`.
+
+The examples match the installed TanStack Start contract: `src/router.tsx` is
 resolved by a **named `getRouter` export**, and older
 `createRouter`-default-export / `app/`-directory conventions are rejected by the
 plugin.

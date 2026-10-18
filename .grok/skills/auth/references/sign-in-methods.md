@@ -1,5 +1,9 @@
 # Supported sign-in methods (Google, X, email/password — and nothing else)
 
+Optional account scaffold; Folio has no account login. Apply only after an
+authorized architecture change and schema setup. See
+[reference scope](../../../README.md); Grok provisioning is not Render setup.
+
 Use **only** these three — no other method is supported:
 
 - **Google** and **X** — federated through the Grok broker (pre-wired here). The
@@ -22,8 +26,9 @@ Use **only** these three — no other method is supported:
   pre-wired; "fixing" it by regenerating Better Auth config breaks live-preview
   sign-in.
 
-  The pre-applied schema already has the `account.password` column — no migration
-  needed. Then build sign-up / sign-in forms with `authClient.signUp.email(...)`
+  Once the account schema has been applied, it includes `account.password` — no
+  additional password-specific migration is needed. Folio has not applied that
+  optional schema. Then build forms with `authClient.signUp.email(...)`
   and `authClient.signIn.email(...)` from `@/lib/auth/client`.
 
   **Do not** add `emailAndPassword` as a plugin entry (that is a syntax/type

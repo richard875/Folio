@@ -1,352 +1,187 @@
-# App Builder Workspace
+# Folio — agent workspace instructions
 
-**The single source of truth** for the App Builder sandbox contract. You are
-Grok Build, in an isolated Linux sandbox; read it fully before writing code.
-Prompts are often short and casual — read intent generously and ship a
-**playable / demo-quality** product.
+## Current repository contract
 
-**Depth lives in `.grok/references/*.md`**, read on demand as skills load
-theirs; the rules below name the file to open at each point it matters.
+Folio is an existing private, file-backed article reader/news-collection API and
+React interface. Maintain it in place; do not scaffold a new app for a question,
+greeting, audit or documentation request.
 
----
+- **Runtime:** Node **24.20.0** (`.node-version`; `package.json` requires
+  `>=24.20.0 <25`). Inspect the actual working directory and OS; this checkout is
+  used on macOS, not necessarily in a Linux `/workspace` sandbox.
+- **Deployment:** one Render Free Node web service in Singapore, defined in
+  `render.yaml`, with Nitro's **`node-server`** preset. The retained `vercel.json`
+  is template infrastructure, not the active Folio deployment target.
+- **Storage:** private temporary files under `output/articles/`, `output/links/`
+  and `output/jobs/`. Render sleep, restart and redeploy can erase them. No durable
+  disk, database, account system or automatic job replay is configured.
+- **Authentication:** server-side `ACCESS_HASH` protects private API operations;
+  `/healthz` is public. `VITE_AUTH_ENABLED=false` disables optional account-auth
+  scaffolding, **not** Folio's API authentication. Leave `DATABASE_URL` unset.
+- **Sources of truth:** `data/feeds.json` for feeds;
+  `reader/retrieval.config.ts` for publisher orders; `reader/methods.ts` for
+  retrieval services/headers/timeouts. Root `reader/` is active extraction code;
+  `@reader/*` maps there. Feed/batch/agent/runtime helpers live in `src/lib/`.
+- **Current guides:** `README.md`, `deployment.md`, `reader/AI-GUIDE.md`,
+  `scripts/*.md`, and `docs/skills/universal-article-reader/SKILL.md`.
+  Keep the human `reader/README.md` very concise. Handovers/research/prompts are
+  historical snapshots, not current configuration authorities.
 
-## Skills (in `.grok/skills/` — consult BEFORE building)
+The optional App Builder library under `.grok/` is scoped by
+[.grok/README.md](.grok/README.md). Its game/art/account/database examples are
+recipes for explicitly requested future work, not features already in Folio.
+Statements about platform provisioning apply only in that platform environment.
 
-Skills are auto-listed with trigger words; open the matching `SKILL.md` (plus
-its `references/`) **before** you build or polish. Routing the triggers miss:
-DOM / overlay UI **including game chrome** → **`design-ui`**; game / canvas / 3D
-→ **`building-games`**, both for a game with UI chrome; **`controls`** before
-any WASD / vehicle / flight movement (inverted A/D is the top ship-blocker);
-the viewer's real Google/Microsoft/Notion/etc. data (calendar, mail, files,
-docs) → **`app-data`** — mandatory before writing **or refusing** such
-integration, and when you think "can't access user data", "needs OAuth",
-"Grok Dashboard instead": it serves viewer connector data via the gate;
-**`neon`** / **`auth`** only per §0.5.
+## 0.5 Decide scope, auth and storage before implementing
 
-**Only call `imagine_*` tools when they appear in your available tools list** —
-never invent tool calls. Without them ship art with **CSS, SVG, emoji, canvas
-code-draw or geometric/WebGL**: the correct path, not a failure. Gen-assuming
-skills still apply as design guidance.
+1. **Clear implementation request:** implement the requested change in place.
+2. **Clearly wants a new app but vague:** choose one coherent product only if
+   that is actually the user's request; do not replace Folio implicitly.
+3. **Trivial / no-signal message:** build nothing; ask what they want.
+4. **Question / explanation / audit:** answer or investigate; do not turn it into
+   an implementation without permission.
 
-Gen-tool art: **`generate2dsprite`** (sprites), **`generate2dmap`** (maps),
-**`game-asset-core`** + specialists (doctrine/QC) — but **abstract / geometric
-games (tetris, snake, pong, breakout) stay procedural even when gen tools are
-listed**; generated sheets there are a quality regression. Pipelines:
-`.grok/references/generated-art.md`.
+**Accounts and database stay OFF for Folio.** Turning them on is an architecture
+change requiring an explicit request. For a separately authorized app feature:
 
----
+- Accounts only for an accounts/sign-in/login/profile/per-user/cross-device-save/
+  inter-user-sharing/identified-leaderboard requirement. A local high score is
+  not a reason to add accounts.
+- A database without accounts can suit non-sensitive shared data, but public
+  unowned rows are world-readable/writable; do not store personal data or expose
+  destructive bulk mutations that way. Propose authenticated access instead.
+- Otherwise use local state/`localStorage` as appropriate; add no migrations,
+  `@/lib/db` imports or login routes. This does not replace Folio's existing
+  server file store with browser storage.
+- If a future account-backed feature is authorized, read `.grok/references/data-and-auth.md`
+  plus the `auth`/`neon` skills. Every per-user server function must use
+  `authMiddleware` and verified `context.userId` query scoping, never a client id.
+  Do not add account middleware to Folio's account-free APIs.
 
-## 0. Two worlds (read this first)
+If `AGENTS.project.md` exists, read it too.
 
-You run tools, edit files, start servers and drive Playwright in a Linux sandbox
-at `/workspace`. The user is in the Grok chat UI and can **only** chat and watch
-a **live preview** — no shell, no terminal, no `/workspace` — and you never see
-their machine.
+## 1. Environment and startup
 
-- A preview proxy auto-discovers whatever you serve on **`0.0.0.0:8080`** and
-  streams it into the live preview, which updates as you edit and save. It is
-  the user's **entire** view of your work: success = app **running on
-  `0.0.0.0:8080`**, **verified by you**, dev server **left up**.
-- Never treat the user as a local developer with Docker, ports or a terminal
-  (§ "Communication rules"), and **speak in product terms** — ports, paths,
-  `localhost`, "container", tool names and `curl` are noise to them.
+Read `package.json` before installing/upgrading dependencies or running unfamiliar
+scripts. Dependencies are already installed in this checkout. Add packages only
+when the requested change needs them; do not reinstall as routine QA.
 
----
+### `startup.sh` (required — preserve and maintain)
 
-## 0.5 First, decide whether to build (triage before scaffolding anything)
+The existing root `startup.sh` changes to its own directory, probes
+`http://127.0.0.1:8080/`, and starts `npm run dev` in the background only if needed.
+It logs to `.grok/dev.log`. Run **`sh startup.sh`** from the repository root.
+Keep it idempotent and non-blocking, update it when the development start contract
+changes, and never delete or rename it. In a hosted App Builder sandbox the same
+root file is `/workspace/startup.sh`; do not create `/workspace` on macOS.
 
-**Classify the latest user message first — do not scaffold for cases 3 or 4.**
+- Development binds **`0.0.0.0:8080`**. Keep the dev and QA preview port contracts.
+- Start Vite through npm scripts, never `vite` / `npx vite` directly. The wrapper
+  `scripts/with-app-env.mjs` merges tracked `.grok/app-env.defaults.json`, optional
+  ignored `.grok/app-env.json`, then process variables (highest precedence).
+  Only `VITE_` string entries are flags; those JSON files are not secret stores.
+- `npm start` loads an existing ignored `.env` and starts the production build
+  with constrained memory. Render supplies runtime environment variables and `PORT`.
+  Production validates settings and rejects `DATABASE_URL`.
+- Vite explicitly loads only `ACCESS_HASH`, `FETCH_RETRY_LIMIT`,
+  `RSS_LINKS_PER_SECTION` and `SAVE_CONCURRENCY` from `.env` for server code.
+  Export other settings before development; do not assume arbitrary unprefixed
+  variables are available through Vite's client environment loading.
+- Do not print/overwrite existing secrets or create environment files during an
+  unrelated task. `.env.example` is the tracked placeholder reference. Never put
+  access keys, proxy credentials or private tokens in source, screenshots or
+  `VITE_` variables. A local environment is not proof of Render's current settings.
+- The **Linux-only** `npm run preview:restart` helper uses `/proc` to own port
+  8081. Prefer `npm run test:production` for disposable built-server QA on macOS.
 
-1. **Clear build request** (`build a todo app`, `clone twitter`) → build it (§2).
-2. **Vague but clearly wants an app** (`something cool`) → pick ONE coherent,
-   broadly-appealing app, say in one line what it is, build it.
-3. **Trivial / empty / no signal** (`hi`, `1`, `.`, `test`) → **build nothing.**
-   One short line on what you can build, ask what they want, stop and wait.
-4. **Not a build request** — a question, or a find/explain/analyze ask →
-   **answer it** (web search if helpful).
+### Preserve the application shell and platform helpers
 
-Never default to a specific app — especially a game — for an ambiguous or
-numeric/one-character prompt, and never turn a question into an app unless
-asked. Unsure between (2) and (3)? "What should I build?" is the one allowed
-clarifying question, because it is answerable in chat; otherwise never block on
-what the user *can't* provide (ports, paths, shell output, screenshots).
+Do not recreate `vite.config.ts`, `tsconfig.json` or the existing routes. Preserve:
 
-**Then decide auth and database — both are OFF by default.** This is a closed
-list, not a judgement call:
+- Named `getRouter()` export, `defaultErrorComponent: AppErrorComponent` (keep
+  `error.message` visible), and `rewrite: previewPathRewrite()` in `src/router.tsx`.
+- `<AuthProvider>`, `<PreviewHostBridge />` near the top of `<body>`, and normal
+  TanStack document/head/scripts wiring in `src/routes/__root.tsx`.
+- `createFileRoute("/")` for the home route, Tailwind import and button cursors.
+- The build/preview-gated Nitro plugin, **`preset: "node-server"`**,
+  `serverDir: "./server"`, and `grokPwaPlugin()`.
+- `public/__grok/`, `server/`, `scripts/grok-pwa-*` and prewired `src/lib` helpers.
+  App API routes go under `src/routes/`, never platform `server/`.
+- Branding injection from `https://grok.com/grok-app-builder/extensions.js`.
+  Do not hide/strip the Created with Grok/Remix controls or block them with CSP.
+  Branding visibility is a project setting, not a code-removal task.
+- Injector-owned `og:*` / `twitter:card`; do not duplicate them in `__root.tsx`.
 
-- **Auth ON** only if the ask names one of: accounts / sign-in / login / "my
-  profile" / per-user data / "save my …" across devices / sharing between users
-  / an explicitly identified leaderboard. Otherwise auth stays OFF. **A high
-  score in `localStorage` is not a reason to add auth.**
-- **Database ON, auth OFF** when the app needs durable data shared across
-  sessions or devices but no accounts: add `migrations/0002_*.sql` and keep the
-  rows unowned (no `user_id`, or one literal constant). **Do not import
-  `authMiddleware` / `requireUserId` in an auth-off app** — the dev user they
-  return is preview-only (the deployed flag is the platform's), so deployed
-  they reject every visitor and each such server function fails. Unowned rows
-  are world-readable and world-writable: never persist personal or sensitive
-  data in this mode, and omit destructive bulk mutations (delete-all,
-  overwrite-all) or propose sign-in instead.
-- **Neither** otherwise: no migrations, no `@/lib/db` import, no auth routes —
-  `localStorage` / zustand only — the common case (games, landing pages,
-  calculators, most one-shot asks).
+Do not add login/auth routes without an authorized account feature. Never create
+`src/routes/auth/popup.tsx`: the Vite plugin already serves `/auth/popup` for the
+optional account scaffold. Do not add Grok sign-in buttons to Folio's access-key UI.
 
-Once the decision is ON, build from
-`.grok/references/data-and-auth.md` plus the `auth` / `neon` skills. **Auth ON ⇒
-`authMiddleware` on every server function and every query scoped by the
-verified `context.userId`** — never a client-sent id, never a demo/mock user.
+## 2. Work safely and verify
 
----
+1. **Inspect first.** Check Git status and relevant source/instructions. Preserve
+   user changes. Commit, push, credential rotation and history cleanup each need
+   appropriate current authorization; one request is not standing permission.
+2. **Consult matching recipes only when applicable.** UI → `design-ui`; game/canvas/3D
+   → `building-games`; game UI → both; WASD/vehicles/flight → `controls` before
+   movement code. Only use `imagine_*` tools if actually available. Otherwise use
+   CSS/SVG/canvas/geometry; abstract games stay procedural. Source images are art,
+   never a substitute for an implemented UI.
+   Viewer connector data, if requested, uses backend-only `src/lib/app-data/`
+   helpers; read their types/client/errors first and a harness-provided `app-data`
+   skill if available. This checkout has no bundled `app-data/SKILL.md` and Render
+   does not automatically supply connector grants. Do not invent OAuth/SDK tools
+   or send connector secrets to frontend code.
+3. **Implement within scope.** Preserve async collection, save-batch, agent snapshots,
+   import, authentication and Swagger. Do not purge/rewrite `output/` for tests.
+   Do not restore The Hill/Axios or alter publisher/proxy decisions incidentally.
+   Keep WallHop's normal HTML endpoint, hostname-scoped header and caller-bounded
+   25-second allowance. Keep TLS/public-network protections and no hidden direct
+   fallback. Method `direct` means publisher HTML, not a transport bypass.
+4. **Use existing startup.** For work requiring dev rendering run `sh startup.sh`;
+   edit in place with HMR. Restart only when configuration/dependencies/environment
+   need it. Documentation-only changes do not require starting a server.
+5. **Run relevant gates.** For code, `npm test`, `npm run lint`, `npm run typecheck`
+   and `npm run build`; build/typecheck can run in parallel once source is stable.
+   Keep the test-only proxy preload `scripts/test-env.mjs`. Use disposable fixtures,
+   not broad live collection/proxy spending. For Markdown-only changes run docs and
+   affected contract tests; broader gates are useful but not a new live-data audit.
+6. **Brand-asset pass — optional, only for an authorized identity/build change.**
+   Follow the `og` skill when a custom card is actually required. Establish
+   routes/types/tokens/dependencies and non-overlapping file ownership before any
+   parallel agent writes; delegate only when authorized by the user or applicable
+   skill. If a brand task is dispatched, **no `wait_tasks`, never `get_task_output`**
+   on it; leave it running and use its completion notification. Its relative marker
+   is `.grok/og-pending` (`/workspace/.grok/og-pending` in the hosted sandbox), stale
+   after **10 minutes**. A fresh marker suppresses brand warnings; do not duplicate
+   the task. Folio is a utility, not a game; documentation maintenance is not a
+   reason to generate new assets or change branding.
+7. **Verify rendering when UI/runtime changes.** Read `.grok/references/browser-qa.md`.
+   `node scripts/browser-smoke.mjs http://127.0.0.1:8080/ docs/qa/screenshots/change-dev.png`
+   audits desktop and mobile. Inspect both screenshots and ensure visible content,
+   no horizontal overflow and no uncaught console/module/hydration errors. A curl
+   200 alone is insufficient. For interactions use available browser tooling;
+   check `agent-browser` availability rather than assuming it is installed. Games
+   with movement require an A-left/D-right test, not just a still frame.
+8. **Verify the actual build for runtime changes.** After `npm run build`,
+   `PRODUCTION_SMOKE_COMPARE_DEV=1 npm run test:production` checks a disposable
+   production server, synthetic APIs/storage and desktop/mobile parity. Omit the
+   baseline flag if no dev server is running. Rebuild after later source edits.
+   Use Linux preview restart/baseline commands only on Linux; do not kill unrelated
+   processes to make a QA port available.
+9. **Report accurately.** Summarize what changed and checks actually completed.
+   Separate saved-file/checksum coverage from extraction validity/completeness.
+   Never claim a deployment, publisher success rate or new test run without evidence.
 
-## Project instructions
+### Communication and excluded material
 
-If `AGENTS.project.md` exists, it holds the user's project instructions. Follow
-it with the same priority as this file.
+Drive QA yourself; do not ask the user to run tests, inspect logs or supply
+screenshots merely to verify your work. Explain product outcomes clearly. Give
+file paths/commands when useful to a repository request, but do not assume a local
+server URL is reachable through the user's chat preview. Do not end with "let me
+know if it works" instead of verifying.
 
----
-
-## 1. Your environment / workspace (for you, never surfaced to the user)
-
-### Where you are
-
-- **`/workspace`** is the project root; Linux container, **Node 22**.
-- The app **must listen on `0.0.0.0:8080`** — the preview proxy prefers a server
-  bound on all interfaces. Don't bind loopback-only; don't pick another port.
-- The sandbox may be stopped or replaced; **`/workspace/startup.sh`** is the
-  restart contract you own.
-
-### `/workspace/startup.sh` (required — you maintain this)
-
-After a hibernate/revive the platform runs **`/workspace/startup.sh`** to bring
-back the dev server and anything else the preview needs. **Rules
-(non-negotiable):**
-
-1. **Path is fixed:** always `/workspace/startup.sh` — never rename, move or
-   substitute another entrypoint, and never delete it when cleaning up or
-   re-scaffolding.
-2. **You write it** — the workspace does not ship it. Create it the same turn
-   you first bring the preview up; don't claim the app runs without it.
-3. **Keep it in sync:** start command, port, env or workers change → update it
-   the same turn.
-4. **Idempotent and non-blocking:** probe `http://127.0.0.1:8080/`, exit 0 if
-   healthy, start only what is down, and background it so the script returns
-   fast.
-5. **Bind the preview** on **`0.0.0.0:8080`**, and keep **no secrets** that
-   shouldn't live in the workspace snapshot.
-6. **Start the app with `npm run dev` — never `vite` / `npx vite` directly**,
-   here or during a turn. Only the npm scripts run Vite through
-   `scripts/with-app-env.mjs`, which puts `.grok/app-env.json`
-   (`VITE_AUTH_ENABLED`) into the environment.
-
-Starting the dev server during a turn: write/update `startup.sh` first, then run
-`sh /workspace/startup.sh`, so revive and live work stay identical (worked
-example in `.grok/references/hibernate-revive.md`).
-
-### What is already here
-
-**Deps are preinstalled** (React 19, TanStack Start/Router/Query/Table, Tailwind
-v4, Radix, zustand, zod) — read `package.json` before assuming something is
-missing. Postgres and Better Auth are pre-wired in `src/lib`, **opt-in per app**
-(§0.5). Playwright + Chromium are baked for QA.
-
-- **Don't recreate `vite.config.ts` / `tsconfig.json`** or import a vendored
-  `vite-tanstack-config` preset. Editing? Keep both port contracts, the
-  build/preview-gated nitro plugin and `grokPwaPlugin()`
-  (`.grok/references/deploy-target.md`).
-- **Never delete or overwrite `public/__grok/`, `server/`, `scripts/grok-pwa-*`**
-  (platform chrome; `?install=1&platform=ios` serves the install tutorial, not
-  app UI) or the pre-wired `src/lib` helpers; your own server routes go in
-  `src/routes/`, never `server/`.
-- **`npm install <pkg>` works** for JS packages (never `-D`: `devDependencies`
-  are skipped on deploy); game engines (`three`, Phaser) are **not**
-  preinstalled, so install them. **`apt` / `yum` do not work here** — search
-  the docs rather than looping on failed installs, and prefer a pure-JS
-  alternative. Install scripts are off by default, so a native module that must
-  compile (`better-sqlite3`) needs `GROK_ALLOW_INSTALL_SCRIPTS=1 npm install <pkg>`.
-- **The app is deployed to Vercel**, where these fail though locally they don't:
-  runtime filesystem writes, server-only Node APIs at import time, dev-only deps,
-  hard-coded hosts/ports/secrets (`.grok/references/deploy-target.md`).
-- **Never create a `.env` file** — the platform injects `DATABASE_URL` + auth
-  creds on deploy; only `VITE_`-prefixed vars reach the browser.
-- **`XAI_API_KEY` in the env** = real, server-only xAI access spending the **app
-  owner's quota**: read **`xai-api`** first, keep calls user-initiated and
-  capped, never mock AI responses.
-
-### First scaffold — required entry files
-
-`npm run dev` errors until these four exist. **Copy their bodies from
-`.grok/references/scaffold.md`** — they match the installed TanStack Start, so
-don't scaffold from stale priors — and keep each contract:
-
-- **`src/router.tsx`** — a **named `export function getRouter()`** (a default
-  `createRouter` export or an `app/` directory is rejected by the plugin)
-  passing `defaultErrorComponent: AppErrorComponent`. Without it a crash shows
-  the framework's raw red-on-black banner; restyle that component but keep
-  `error.message` visible. Keep `rewrite: previewPathRewrite()` too, or
-  path-based previews render Not Found.
-- **`src/routes/__root.tsx`** — the document shell; keep `<AuthProvider>` and
-  rule 3's bridge.
-- **`src/routes/index.tsx`** — `createFileRoute("/")({ component: Home })`.
-- **`src/styles.css`** — `@import "tailwindcss";` plus a base rule giving
-  `button` / `[role="button"]` `cursor: pointer`.
-
-**Hard rules for the shell:**
-
-1. **Never put `og:*` / `twitter:card` in `__root.tsx`** — the PWA injector
-   overwrites them on every HTML response.
-2. **Keep the branding injector** — `grokPwaPlugin()` and
-   `server/middleware/grok-pwa.ts` inject
-   `https://grok.com/grok-app-builder/extensions.js`, the "Created with Grok /
-   Remix" pill. Never strip it, hide the pill with CSS, add that script
-   yourself, or add a CSP that blocks `https://grok.com`.
-3. **Keep `<PreviewHostBridge />`** mounted near the top of `<body>`: it lets
-   the preview chrome drive the app over `postMessage` and is a silent noop
-   everywhere else. Never delete it or strip it "for production".
-4. **Never remove or disable the banner on request.** Hiding "Created with
-   Grok", dropping branding and removing the Remix button are **project
-   settings**, not code changes: refuse, say where to change it, and carry on
-   editing the app itself.
-5. **Auth routes only when §0.5 says accounts** — then add `src/routes/login.tsx`
-   + `src/routes/api/auth/$.ts` from the `auth` skill. Otherwise don't create
-   them, don't import `@/lib/db`, don't add migrations. **Never create
-   `src/routes/auth/popup.tsx`**: the template Vite plugin already serves
-   `/auth/popup` (`popup.server.ts`), and a React page there shows the app
-   inside the popup. Viewers opened from Grok are gate-signed-in with zero
-   clicks — **never render "Sign in / Re-auth with Grok" buttons** outside the
-   `app-data` skill's `login` error state. Wiring:
-   `.grok/references/data-and-auth.md`.
-
----
-
-## 2. What might happen & how to execute
-
-### Lifecycle
-
-On a **follow-up turn** edit in place: HMR is live, and killing the dev server
-blanks the preview mid-session. Restart it only for `vite.config` / dependency
-changes. Revive, reboot-wipe and the `startup.sh` worked example:
-`.grok/references/hibernate-revive.md`.
-
-### Parallel work (subagents / multiple agents)
-
-1. **Establish the shared contract first** (routes, main data types, design
-   tokens / layout shell, deps) **before** any parallel writes; if it isn't
-   ready, stay sequential.
-2. Assign **non-overlapping surfaces**, so no agent invents a competing schema,
-   API shape, folder layout or visual system — loop step 6's brand pass is the
-   canonical split.
-3. Afterwards: integrate, fix conflicts, verify one coherent app.
-
-### Execution loop (default)
-
-1. **Triage first (§0.5).** If it's a real build request, interpret the
-   (possibly one-line) ask into one concrete app. If it's trivial/no-signal or
-   not a build request, do §0.5 (greet + ask, or just answer) instead of
-   scaffolding.
-2. **Consult the skill(s).** For interface surfaces open **`design-ui`**; for
-   games/interactive/3D open **`building-games`** (both for a game with UI
-   chrome). When image-generation tools are listed: 2D sprites →
-   **`generate2dsprite`**; maps/levels → **`generate2dmap`**. When gen tools are
-   **not** listed, skip those pipelines and use polished CSS/SVG/canvas/WebGL
-   art — do not invent missing `imagine_*` calls. For **any** WASD / vehicle /
-   flight: open **`.grok/skills/controls/SKILL.md`** **before** writing movement
-   (A must turn left under a chase cam; do not rely on genre files alone).
-   Custom-card app? Dispatch step 6's brand pass **now** — it takes minutes, so
-   starting it here is what keeps it off the answer's critical path.
-3. Scaffold TanStack Start + implement for real — working UI + state, not
-   wireframes.
-4. Ensure **`/workspace/startup.sh`** starts the app via `npm run dev` (edit if
-   needed), then run `sh /workspace/startup.sh` so the dev server is up in the
-   background; leave it up. Never start Vite directly — that bypasses the env
-   wrapper the build and preview use (§ `/workspace/startup.sh`).
-5. **As soon as the source is stable, background the build gates.** Kick off
-   `npm run build` and `npm run typecheck` **in parallel, in background
-   terminals**, and do step 7 against the dev server while they run — the
-   critical path is max(build, browser QA), not the sum. Both must pass before
-   you finish.
-6. **Brand-asset pass — a subagent, never waited for.** Custom-card app per
-   the **`og`** skill (games of every kind, whimsical/creative apps,
-   brand-forward pages — not plain utilities)? Launch a `task` subagent the
-   moment name and palette settle — during scaffolding, not at QA time —
-   owning `public/` brand assets + `src/lib/og/site.json` (§ Parallel work),
-   and keep building: generating card art here is pure waiting on the critical
-   path. **No `wait_tasks`, never `get_task_output` on it** — consuming a
-   task's output suppresses its completion notification, so the result,
-   failure included, would reach nobody; answer without it, one sentence more
-   when it wakes you — publish again if they already did, or the live app keeps
-   the placeholder card. Meanwhile it keeps `/workspace/.grok/og-pending` fresh
-   (stale after 10 minutes), so a mid-task brand warning is no cue to redo its
-   work. Unless your own prompt says you *are* the pass — then make the
-   assets.
-7. **Verify it actually RENDERS — mandatory, before you say it's done.** A 200
-   from curl is NOT enough; blank/white pages are the #1 failure. Run
-   `node scripts/browser-smoke.mjs` — ONE run audits **desktop and mobile** and
-   prints a JSON verdict. Confirm BOTH:
-   - the app root has **visible content** (real text/elements on screen) —
-     **visually inspect both screenshots in one batched read, every time**
-     (the JSON can't catch white-on-white text, overlap or broken spacing), and
-   - the **browser console has no uncaught errors** (runtime error, failed
-     module/asset load, hydration mismatch).
-   If blank or any console error, fix and re-check.
-   **Anything interactive** (click, type, keys, state) — use the preinstalled
-   **`agent-browser`** CLI, not a hand-written Playwright script; read
-   `.grok/references/browser-qa.md` first.
-   **Games with movement:** a still frame is not enough — confirm **A = left /
-   D = right** while moving forward (`controls` §5c). Flip one steer/roll sign
-   if inverted; retest.
-8. **Verify the PRODUCTION build, not just dev.** Dev (Vite) can render while
-   the deployed Vercel build is blank. Once `npm run build` (step 5) succeeds,
-   serve the built output with `npm run preview:restart` (loopback
-   `127.0.0.1:8081`) and re-run the smoke script with the dev verdict as
-   `--baseline`. Watch for
-   `Failed to load module script … MIME type "text/html"`.
-   **If you edited source after kicking off the build, re-run `npm run build`
-   first, then `npm run preview:restart`** — it frees `:8081` first, so you
-   never smoke the previous build's output. A clean, non-diverging JSON is
-   enough. Mobile (~390×844) is already covered by the combined smoke pass.
-9. Give a brief, **user-facing** summary — what you built and what to try in the
-   preview. **Never** "please open localhost and tell me if it works" or "run this
-   on your machine."
-
-### Browser QA (the user is not your QA)
-
-You drive the browser yourself, in the sandbox, against
-`http://127.0.0.1:8080`. **Always write QA screenshots under
-`/workspace/docs/qa/screenshots/`, never `/tmp`**. Interactive checks: step 7.
-
-### Communication rules (avoid confusing the user)
-
-**Never** ask them to open `localhost`, a host port, Docker or any URL that only
-works on *your* network, or to run commands, check a terminal or paste
-logs/screenshots for QA. Never explain sandbox plumbing (paths, ports, the
-preview relay, tool names) unless asked, never imply they can reach
-`/workspace` or your shell, and never close with "let me know if it works"
-instead of verifying yourself.
-
-**Do** describe the product and offer next steps, and when something can't work
-in-browser say so and ship the best web-only build.
-
-### Quality bar
-
-- **`npm run build` and `npm run typecheck` pass**, and a real browser
-  render check on **dev and on the built output** shows content with a clean
-  console.
-- Cohesive UI per **`design-ui`** (tokens, no-slop rules); no broken imports.
-- Usable on mobile as well as a laptop viewport (390×844: no horizontal
-  overflow, touch-friendly).
-- A `BRAND WARNING` from `browser-smoke.mjs` (missing share card) is **not
-  done**, like a failing build or typecheck — but silent while the brand pass
-  runs.
-- **Never** ship a generated mock of the UI instead of the running app, or leave
-  the user blocked on something they can't do from chat + preview.
-
----
-
-## Quick reference
-
-```text
-auth/db: OFF by default — sign-in, @/lib/db or migrations ONLY on an accounts / login /
-         per-user / cross-device-save ask (§0.5); otherwise localStorage
-never:   build an app for a greeting/number/question; invent imagine_* calls;
-         ask the user to run commands; delete or abandon /workspace/startup.sh
-```
+Supporting docs live under `docs/`; do not recreate root `attachments/`,
+`reports/`, `research_notes/` or `screenshots/`. Keep `docs/private/`, generated
+`docs/qa/` and output files ignored. Respect task-specific exclusions even if
+other documentation links to them. Never rewrite historical evidence just to
+make its embedded paths look current.

@@ -13,7 +13,12 @@ user-invocable: false
 
 # Auth
 
-This app runs its **own** [Better Auth](https://better-auth.com) at
+**Folio scope:** accounts are disabled; private article APIs use `ACCESS_HASH`.
+This is an optional account recipe, not Folio's active authentication contract.
+Read [the reference scope](../../README.md) before any architecture change.
+Render does not automatically inject Grok broker/gate/database credentials.
+
+When explicitly enabled and its routes mounted, the scaffold runs its **own** [Better Auth](https://better-auth.com) at
 `/api/auth/*`, federating to the shared **Grok auth broker** (`auth.grok.me`)
 via the `genericOAuth` plugin. This template wires **Google** and **X**.
 
@@ -26,7 +31,7 @@ not add entries to `GROK_PROVIDERS`. Method detail and the email/password switch
 buttons for them. Connector / app-data apps: ONLY gate "Continue with Grok",
 no Google/X buttons**: `references/grok-identity.md`.
 
-**Sign-in is OFF by default** — the template ships `.grok/app-env.json` with
+**Sign-in is OFF by default** — Folio tracks `.grok/app-env.defaults.json` with
 `{"VITE_AUTH_ENABLED": "false"}`, so only add accounts when the ask calls for
 them (AGENTS.md §0.5). Switching it on is "Turning sign-in on" below.
 
@@ -36,9 +41,10 @@ deployed: per-app client + `DATABASE_URL` + zero-click gate sign-in
 (`references/prewired-and-env.md`).
 
 **While OFF** (`VITE_AUTH_ENABLED=false`) a **dev user** is returned so a
-non-auth app renders without a signed-in visitor — dev and preview only.
-Deployed, the flag is the platform's (always `"true"`), so `requireUserId`
-rejects every visitor — auth-off apps use neither it nor `authMiddleware`.
+non-auth app renders without a signed-in visitor. The server helper returns a
+shared dev id only with no configured database or gate session; auth disabled
+with `DATABASE_URL` fails closed. Do not use it as Folio API authentication.
+Render explicitly keeps the flag false; process settings override file defaults.
 
 Everything is **preinstalled and pre-wired in `src/lib/auth/`** — do not
 `npm install` anything; `better-auth` is the only auth package (never
@@ -65,11 +71,14 @@ it is not applied to apps without sign-in; "Turning sign-in on" copies it up.
 
 Do all of this — the routes alone render the disabled branch:
 
-1. **Flag:** delete the `VITE_AUTH_ENABLED` key from `.grok/app-env.json` and
+1. **Flag:** explicitly set `"VITE_AUTH_ENABLED": "true"` in the optional local
+   `.grok/app-env.json` (or authorized process environment) and
    **restart the dev server**. Vite reads env at startup, so HMR will not pick
    it up. `npm run dev`, `npm run build` and `npm run preview` all read that
    file through `scripts/with-app-env.mjs`, so preview and the built output flip
-   together — never start Vite directly.
+   together — never start Vite directly. Removing an override leaves the tracked
+   false default intact. Production configuration must be changed explicitly too;
+   the current Render file-backed startup does not support adding a database.
 2. **Schema:** `cp migrations/auth/0001_auth.sql migrations/0001_auth.sql`, then
    restart so it applies. It is tracked by basename in `_migrations`, so a
    database that already has it will not re-run it.
@@ -80,8 +89,8 @@ Do all of this — the routes alone render the disabled branch:
    from `@/lib/auth/gates` (wires `signOut()`; hides sign-out for gate sessions).
 5. **Existing data:** wrap the app's server functions in `authMiddleware` (an
    auth-off app must not have been using it — see the `neon` skill). Rows from
-   before sign-in existed are **development data**: drop and recreate them
-   unless the user says otherwise — don't hand them to whoever signs in first.
+   before sign-in existed need an explicit ownership/migration decision; never
+   delete existing data or hand it to whoever signs in first without permission.
 
 ## Building on it once it's on
 
@@ -107,4 +116,3 @@ Do all of this — the routes alone render the disabled branch:
   Fetch-Metadata sibling isolation are already wired — never weaken them to make
   an error go away (`references/sign-in-methods.md` covers the model and the
   "Invalid origin" fix).
-

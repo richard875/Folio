@@ -21,6 +21,11 @@ user-invocable: false
 
 # Share cards, favicon, and app icons
 
+**Folio scope:** this is an optional branding recipe. Folio is a plain utility
+and currently has no custom `public/og.jpg` or `src/lib/og/site.json`. Do not
+launch a brand pass for documentation maintenance. Sandbox paths and native tool
+names below are conditional; see [reference scope](../../README.md).
+
 A deployed app (`https://{name}.grok.me`) unfurls with a 1200×630 card; every app (preview included) shows a
 favicon in the tab. **Share-card `<meta>` tags are not authored in `__root.tsx`** — the injector
 (`scripts/grok-pwa-shared.mjs`) overwrites `og:*` and `twitter:card` on every HTML response. Identity data is

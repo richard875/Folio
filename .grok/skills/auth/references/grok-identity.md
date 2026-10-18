@@ -1,5 +1,9 @@
 # Sign in with Grok (deployed apps — zero clicks)
 
+**Grok-hosted account scaffold only.** Folio's Render deployment keeps
+`VITE_AUTH_ENABLED=false`; none of the gate/session provisioning below is an
+active Folio authentication flow. See [reference scope](../../../README.md).
+
 Behind the edge gate, every proxied request from a signed-in Grok viewer
 carries an unforgeable `x-grok-identity` JWT (EdDSA, minted per request; the
 gate strips any client-supplied copy). The pre-wired `gateIdentitySessions`

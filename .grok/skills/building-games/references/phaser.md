@@ -1,4 +1,8 @@
-# Phaser 3 / 4 — Deep Engine Guide (scenes, physics, scale, tilemaps, pooling, architecture)
+# Phaser 3 API — Engine Guide (scenes, physics, scale, tilemaps, pooling, architecture)
+
+Optional game recipe, not a Folio dependency. Examples target the Phaser 3 API;
+pin the engine version and verify its APIs before adapting to another major
+version. Do not assume installing the latest package makes these snippets valid.
 
 Phaser is the default choice for **2D browser games**. This file goes deep on the parts that actually break in generated games. It assumes the general loop/mobile/perf rules in `threejs-foundational.md` and does **not** repeat them.
 

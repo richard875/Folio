@@ -2,7 +2,7 @@
 
 | Location | Contents |
 | --- | --- |
-| [handovers/2026-10-18_2.md](handovers/2026-10-18_2.md) | Detailed continuation handover for WallHop, reader/JSON refactors, documentation cleanup and stash recovery |
+| [handovers/2026-10-18_2.md](handovers/2026-10-18_2.md) | Historical continuation snapshot of WallHop, reader/JSON refactors, documentation cleanup and stash recovery |
 | [skills/universal-article-reader/SKILL.md](skills/universal-article-reader/SKILL.md) | Current Folio workflow for AI agents |
 | [prompts/daily-news-brief.md](prompts/daily-news-brief.md) | Recovered daily-brief example; credentials and service address replaced with placeholders |
 | [handovers/2026-10-12.md](handovers/2026-10-12.md) | Recovered historical handover; credentials redacted and outdated claims labelled |
@@ -14,6 +14,21 @@
 | `qa/logs/` | Historical build, test and server logs; ignored |
 | `qa/feed-samples/` | Historical feed response samples, not the active feed catalog; ignored |
 | `private/oracle/` | Private deployment PDFs, key files and warning capture; local-only and ignored |
+
+## Current implementation guides
+
+- [Root README](../README.md): setup, API map and proxy operation.
+- [Deployment](../deployment.md): single-process Render Free and temporary storage.
+- [Reader overview](../reader/README.md) and [maintainer guide](../reader/AI-GUIDE.md).
+- [Feed catalog](../data/README.md) and [selection policy](../scripts/feed-selection.md).
+- [Links](../scripts/fetch-links.md), [collection](../scripts/collect-articles.md),
+  [save/save-batch](../scripts/save-articles.md), [agent reading](../scripts/agent-reader.md),
+  and [Swagger](../scripts/swagger.md).
+- [App Builder reference scope](../.grok/README.md): optional generic recipes,
+  not the active Folio architecture or deployment.
+
+Handovers, research and recovered prompts are historical context, not current
+configuration authorities. Follow executable code/configuration and the guides above.
 
 Private files are not published as documentation. Do not print, stage or commit
 their contents. Some logs and captures may also contain sensitive historical data;
