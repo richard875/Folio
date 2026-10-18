@@ -3,6 +3,8 @@
 | Location | Contents |
 | --- | --- |
 | [skills/universal-article-reader/SKILL.md](skills/universal-article-reader/SKILL.md) | Current Folio workflow for AI agents |
+| [prompts/daily-news-brief.md](prompts/daily-news-brief.md) | Recovered daily-brief example; credentials and service address replaced with placeholders |
+| [handovers/2026-10-12.md](handovers/2026-10-12.md) | Recovered historical handover; credentials redacted and outdated claims labelled |
 | [handovers/2026-10-18.md](handovers/2026-10-18.md) | Historical continuation handover; not a current configuration source |
 | [research/proxy-options/overview.md](research/proxy-options/overview.md) | Proxy research report |
 | [research/proxy-options/](research/proxy-options/) | Supporting managed-proxy, public/hosted-proxy and scraping-API notes |
