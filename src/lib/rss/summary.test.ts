@@ -122,6 +122,58 @@ test("Reuters JSON descriptions use the shared summary cleanup and omission rule
   assert.deepEqual(articles, [{ url: "https://www.reuters.com/world/story/", summary }]);
 });
 
+const reutersGoogleFeed = {
+  site: "Reuters", section: "Main feed",
+  url: "https://news.google.com/rss/search?q=when:24h+site:reuters.com&ceid=US:en&hl=en-US&gl=US",
+};
+const reutersHeadline = "Romanian F-16 fighter jets shoot down two drones over Romanian territorial waters";
+const reutersWrapper = "https://news.google.com/rss/articles/CBMiReutersDescription";
+const reutersDescriptionHtml = `<a href="${reutersWrapper}" target="_blank">${reutersHeadline}</a>&nbsp;&nbsp;<font color="#6f6f6f">Reuters</font>`;
+const reutersRss = (description: string) => rss(`<item><title>${reutersHeadline} - Reuters</title><link>${reutersWrapper}</link>${description}<source url="https://www.reuters.com">Reuters</source></item>`);
+
+test("Reuters Google descriptions preserve headline text after HTML cleanup in all XML representations", () => {
+  for (const description of [
+    `<description>${reutersDescriptionHtml}</description>`,
+    `<description><![CDATA[${reutersDescriptionHtml}]]></description>`,
+    `<description>${reutersDescriptionHtml.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</description>`,
+  ]) {
+    const [candidate] = parseCandidates(reutersRss(description), reutersGoogleFeed);
+    assert.equal(candidate.summary, `${reutersHeadline} Reuters`);
+  }
+  const short = reutersRss("<description><![CDATA[<a>Markets &amp; rates</a><script>bad()</script><style>hidden</style>]]></description>");
+  assert.equal(parseCandidates(short, reutersGoogleFeed)[0].summary, "Markets & rates");
+  const long = parseCandidates(reutersRss(`<description>${"x".repeat(1001)}</description>`), reutersGoogleFeed)[0].summary!;
+  assert.equal(long.length, 1000);
+  assert.ok(long.endsWith("…"));
+  for (const description of ["", "<description/>", "<description><![CDATA[<script>bad()</script><img src='image'>]]></description>"]) {
+    assert.equal(parseCandidates(reutersRss(description), reutersGoogleFeed)[0].summary, undefined);
+  }
+  assert.equal(parseCandidates(reutersRss(`<description><![CDATA[${reutersDescriptionHtml}]]></description>`), { ...reutersGoogleFeed, site: "Other" })[0].summary, undefined);
+  assert.equal(parseCandidates(reutersRss(`<description><![CDATA[${reutersDescriptionHtml}]]></description>`), { ...reutersGoogleFeed, url: "https://www.reuters.com/feed" })[0].summary, undefined);
+});
+
+test("Reuters HTML description survives Google resolution, JSON storage and API response", async (t) => {
+  const outputDir = await mkdtemp(join(tmpdir(), "folio-reuters-google-description-"));
+  t.after(() => rm(outputDir, { recursive: true, force: true }));
+  const url = "https://www.reuters.com/world/europe/romanian-fighter-jets-down-drones/";
+  const catalog = [{ ...reutersGoogleFeed, ordering: "google-ranked", format: "rss" }];
+  const report = await generateLinks(catalog, {
+    outputDir, retryLimit: 0,
+    fetchImpl: async (input) => String(input) === reutersGoogleFeed.url
+      ? new Response(reutersRss(`<description><![CDATA[${reutersDescriptionHtml}]]></description>`))
+      : new Response(null, { status: 302, headers: { location: url } }),
+  });
+  const articles = [{ url, summary: `${reutersHeadline} Reuters` }];
+  assert.deepEqual(report.websites[0].sections[0].articles, articles);
+  assert.deepEqual(parseLinksReport(await readFile(join(outputDir, report.savedFile.split("/").pop()!), "utf8")), report);
+  const oldHash = process.env.ACCESS_HASH;
+  process.env.ACCESS_HASH = "reuters-description-test-key";
+  t.after(() => { if (oldHash === undefined) delete process.env.ACCESS_HASH; else process.env.ACCESS_HASH = oldHash; });
+  const response = await createLinksHandler(catalog, async () => report)(new Request("https://folio.example/api/links?hash=reuters-description-test-key"));
+  assert.equal(response.status, 200);
+  assert.deepEqual((await response.json()).websites[0].sections[0].articles, articles);
+});
+
 test("oversized Reuters descriptions cannot fail JSON report generation or lose other feeds", async (t) => {
   const outputDir = await mkdtemp(join(tmpdir(), "folio-reuters-summary-"));
   t.after(() => rm(outputDir, { recursive: true, force: true }));

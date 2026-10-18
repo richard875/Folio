@@ -14,7 +14,12 @@ function markup(value: unknown): string {
 }
 
 /** Feed-provided text only: no article fetches, generated prose, or HTML in the report. */
-export function feedSummary(values: unknown[], title: string, source: string): string | undefined {
+export function feedSummary(
+  values: unknown[],
+  title: string,
+  source: string,
+  { filterStubs = true }: { filterStubs?: boolean } = {},
+): string | undefined {
   const comparable = (value: string) => value.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
   const headline = comparable(title);
   const publisher = comparable(source);
@@ -29,12 +34,16 @@ export function feedSummary(values: unknown[], title: string, source: string): s
     });
     const text = (document.body.textContent || "").replace(/\s+/gu, " ").trim();
     const normalized = comparable(text);
-    // Short stubs and headline/publisher-only Google News descriptions aren't summaries.
+    // Most feeds reject stubs and headline-only text. Explicit publisher rules
+    // may preserve a description verbatim after HTML cleanup instead.
     if (
-      text.length < 40 ||
-      normalized === headline ||
-      normalized === headline + publisher ||
-      normalized + publisher === headline
+      !text ||
+      (filterStubs && (
+        text.length < 40 ||
+        normalized === headline ||
+        normalized === headline + publisher ||
+        normalized + publisher === headline
+      ))
     ) continue;
     if (text.length <= 1000) return text;
     const excerpt = text.slice(0, 999).replace(/\s+\S*$/u, "").trimEnd();

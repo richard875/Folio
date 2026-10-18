@@ -44,6 +44,10 @@ UTC. Existing files are never overwritten. The file and response share this sche
 `summary` is omitted when unavailable. For Bloomberg's news sitemap only,
 `news:title` supplies `summary` (even for short/headline-only text), capped at
 1,000 characters; empty titles are omitted. Other sitemaps are unchanged.
+Reuters' Google News RSS feed uses HTML `description` text as `summary`, even
+when short or headline-only. Tags/active content are removed, entities decoded,
+and whitespace normalized; publisher text is retained. Empty descriptions are
+omitted and the 1,000-character cap applies. Other feeds keep their normal filters.
 `available` is false if any feed in the
 section failed; an available empty section has no eligible articles. `linkCount`
 counts the actual deduplicated, capped article entries. Feed counts count sources,

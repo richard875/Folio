@@ -213,6 +213,8 @@ See [`data/README.md`](data/README.md) for the catalog format.
 
 Bloomberg's news sitemap is an explicit exception to headline-only summary rejection: its `news:title` is saved as `summary`, including short headlines. Other news sitemaps do not gain a headline fallback. Empty titles are omitted and titles exceeding 1,000 characters are capped.
 
+Reuters' Google News RSS feed uses the plain text of its HTML `description` as `summary`, including headline-only or short descriptions and any publisher label in that text. HTML tags and active content are removed, entities are decoded, whitespace is normalized, and the 1,000-character cap still applies. Empty descriptions are omitted; this exception does not apply to other feeds.
+
 Link reports are saved and returned as JSON only. Each publisher/section group has an `articles` array of `{ "url": "…", "summary": "…" }` objects; `summary` is omitted when unavailable. Reports include schema version 1, a UTC generation timestamp, the saved path, counts and section availability. Background collection validates and reads these JSON groups. There is no embedded Markdown or duplicate URL-only array. Omit `format` or use `format=json`; other link-report formats return 400. Historical Markdown reports are left untouched, but new collections and link-report imports use JSON. Saved articles remain Markdown by default. See the [report schema and example](scripts/fetch-links.md).
 
 ## Development and deployment

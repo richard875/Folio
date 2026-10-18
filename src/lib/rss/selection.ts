@@ -220,14 +220,18 @@ export function parseCandidates(xml: string, feed: Feed, now = Date.now()): Cand
       continue;
     if (seen.has(url)) continue;
     seen.add(url);
+    const reutersDescription = !sitemap && !atom && site === "reuters" &&
+      new URL(feed.url).hostname === "news.google.com";
     candidates.push({
       url,
       title,
       ...(!sitemap && {
         summary: feedSummary(
-          atom ? [item.summary, item.content] : [item.description, item.summary, item.encoded],
+          reutersDescription ? [item.description] :
+            atom ? [item.summary, item.content] : [item.description, item.summary, item.encoded],
           title,
           feed.site,
+          { filterStubs: !reutersDescription },
         ),
       }),
       // Bloomberg's news sitemap supplies headlines, not descriptions. Preserve

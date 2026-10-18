@@ -93,6 +93,10 @@ can use the generic reader, but successful extraction is not guaranteed.
   Exception: Bloomberg's news sitemap uses `news:title` as `summary`, including
   short/headline-only titles, capped at 1,000 characters; missing titles are omitted.
   This fallback does not apply to other publishers' sitemaps.
+  Reuters' Google News RSS feed uses plain text from HTML `description`, including
+  short/headline-only text and the publisher label. Strip HTML/active content,
+  decode entities, normalize whitespace and cap at 1,000; omit empty descriptions.
+  This exception does not change other feeds' summary filters.
 - `/api/links` saves and returns JSON only (`format=json` is optional; other formats
   return 400). Files use `output/links/links_<UTC timestamp>.json` and include
   `schemaVersion: 1`, `generatedAt`, `savedFile`, counts and website/section groups.
