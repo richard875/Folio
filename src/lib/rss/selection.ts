@@ -234,9 +234,9 @@ export function parseCandidates(xml: string, feed: Feed, now = Date.now()): Cand
           { filterStubs: !reutersDescription },
         ),
       }),
-      // Bloomberg's news sitemap supplies headlines, not descriptions. Preserve
-      // its news:title as the requested summary, including short headlines.
-      ...(sitemap && site === "bloomberg" && title && {
+      // These news sitemaps supply headlines, not descriptions. Preserve their
+      // news:title as the requested summary, including short headlines.
+      ...(sitemap && (site === "bloomberg" || site === "businessinsider") && title && {
         summary: title.length > 1000 ? `${title.slice(0, 999)}…` : title,
       }),
       creator,

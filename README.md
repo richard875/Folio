@@ -211,7 +211,7 @@ See [`data/README.md`](data/README.md) for the catalog format.
 
 `/api/links` includes an optional `summary` field with each article URL when its RSS description or Atom summary contains useful text. RSS `content:encoded` and Atom inline content are fallbacks. HTML is converted to plain text; short stubs (under 40 characters) and headline/publisher-only descriptions are omitted. Summaries are capped at 1,000 characters with an ellipsis; they are feed excerpts, not generated summaries or full-article extractions. Missing summaries leave an object containing only `url`, including news sitemaps without descriptions.
 
-Bloomberg's news sitemap is an explicit exception to headline-only summary rejection: its `news:title` is saved as `summary`, including short headlines. Other news sitemaps do not gain a headline fallback. Empty titles are omitted and titles exceeding 1,000 characters are capped.
+Bloomberg and Business Insider news sitemaps are explicit exceptions to headline-only summary rejection: their `news:title` is saved as `summary`, including short headlines. Other news sitemaps do not gain a headline fallback. Empty titles are omitted and titles exceeding 1,000 characters are capped.
 
 Reuters' Google News RSS feed uses the plain text of its HTML `description` as `summary`, including headline-only or short descriptions and any publisher label in that text. HTML tags and active content are removed, entities are decoded, whitespace is normalized, and the 1,000-character cap still applies. Empty descriptions are omitted; this exception does not apply to other feeds.
 

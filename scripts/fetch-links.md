@@ -41,7 +41,7 @@ UTC. Existing files are never overwritten. The file and response share this sche
 }
 ```
 
-`summary` is omitted when unavailable. For Bloomberg's news sitemap only,
+`summary` is omitted when unavailable. For Bloomberg and Business Insider news sitemaps,
 `news:title` supplies `summary` (even for short/headline-only text), capped at
 1,000 characters; empty titles are omitted. Other sitemaps are unchanged.
 Reuters' Google News RSS feed uses HTML `description` text as `summary`, even

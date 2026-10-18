@@ -78,7 +78,7 @@ const linksOperation = {
   operationId: "collectLinks",
   description:
     "Reuters's Google News RSS feed uses cleaned HTML description text as summary, including short/headline-only text and publisher labels; empty descriptions are omitted and text is capped at 1000 characters. " +
-    "Bloomberg's news sitemap uses news:title as summary, including short headlines (capped at 1000 characters); missing titles are omitted. Other sitemaps have no headline fallback. " +
+    "Bloomberg and Business Insider news sitemaps use news:title as summary, including short headlines (capped at 1000 characters); missing titles are omitted. Other sitemaps have no headline fallback. " +
     "Collects configured RSS/Atom/news-sitemap sources and saves and returns a versioned JSON report. Publisher/section groups contain articles with url and optional feed-provided plain-text summary (maximum 1000 characters). No article pages are fetched for summaries. Filters non-articles before the limit, preserves curated editor order, and ranks unranked sources using publication time and cross-publisher support. Google News selections are resolved to publisher URLs. RSS_LINKS_PER_SECTION defaults to 5. Waits for completion; use /api/collect for background collection. JSON is the only link-report format; saved articles remain Markdown by default. Creates a file; POST is preferred.",
   parameters: [parameter("format", "Optional; only json is supported.", false, { type: "string", enum: ["json"], default: "json" })],
   responses: {

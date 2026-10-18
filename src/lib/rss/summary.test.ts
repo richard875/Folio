@@ -76,7 +76,7 @@ test("long feed content is truncated to a bounded excerpt", () => {
   assert.ok(candidate.summary!.endsWith("…"));
 });
 
-test("Bloomberg news sitemap titles become summaries only for Bloomberg", () => {
+test("Bloomberg news sitemap titles become summaries without changing unrelated sitemaps", () => {
   const bloomberg = { ...feed, site: "Bloomberg", url: "https://www.bloomberg.com/sitemaps/news/latest.xml" };
   const xml = (title: string) => `<urlset xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"><url><loc>https://www.bloomberg.com/news/articles/2026-10-18/peace-meeting</loc><news:news><news:title>${title}</news:title></news:news></url></urlset>`;
   for (const title of ["Zelenskyy Says Discussing New Talks With Witkoff, Kushner", "Markets Rise", "Markets &amp; Rates", "x".repeat(1001)]) {
@@ -85,10 +85,45 @@ test("Bloomberg news sitemap titles become summaries only for Bloomberg", () => 
     assert.equal(candidate.summary, expected.length > 1000 ? `${expected.slice(0, 999)}…` : expected);
   }
   assert.equal(parseCandidates(xml(""), bloomberg)[0].summary, undefined);
-  const otherXml = xml("Other publisher headline").replaceAll("www.bloomberg.com", "www.businessinsider.com");
-  assert.equal(parseCandidates(otherXml, { ...feed, site: "Business Insider" })[0].summary, undefined);
+  const otherXml = xml("Other publisher headline").replaceAll("www.bloomberg.com", "example.com");
+  assert.equal(parseCandidates(otherXml, feed)[0].summary, undefined);
   const bloombergRss = rss(item("<description>Headline</description>")).replaceAll("example.com", "www.bloomberg.com");
   assert.equal(parseCandidates(bloombergRss, bloomberg)[0].summary, undefined);
+});
+
+test("Business Insider news titles supply bounded summaries, but missing titles and RSS stay unchanged", () => {
+  const source = { ...feed, site: "Business Insider", url: "https://www.businessinsider.com/sitemap/google-news.xml" };
+  const xml = (title: string) => `<urlset xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"><url><loc>https://www.businessinsider.com/carrefour-ceo-france-riots-2026-10</loc><news:news>${title}</news:news></url></urlset>`;
+  for (const [title, expected] of [
+    ["Stores &amp; supermarkets", "Stores & supermarkets"],
+    ["Markets Rise", "Markets Rise"],
+    ["x".repeat(1001), `${"x".repeat(999)}…`],
+  ]) assert.equal(parseCandidates(xml(`<news:title>${title}</news:title>`), source)[0].summary, expected);
+  for (const title of ["", "<news:title/>", "<news:title>  </news:title>"])
+    assert.equal(parseCandidates(xml(title), source)[0].summary, undefined);
+  const biRss = rss(item("<description>Headline</description>")).replaceAll("example.com", "www.businessinsider.com");
+  assert.equal(parseCandidates(biRss, source)[0].summary, undefined);
+});
+
+test("Business Insider news:title survives selection, JSON storage and the links API", async (t) => {
+  const outputDir = await mkdtemp(join(tmpdir(), "folio-business-insider-title-"));
+  t.after(() => rm(outputDir, { recursive: true, force: true }));
+  const url = "https://www.businessinsider.com/carrefour-ceo-france-riots-2026-10";
+  const title = "Carrefour CEO says 50 of its stores and almost 20 supermarkets were ransacked during riots in France";
+  const catalog = [{ site: "Business Insider", section: "Main feed", url: "https://www.businessinsider.com/sitemap/google-news.xml", ordering: "newest", format: "news-sitemap" }];
+  const report = await generateLinks(catalog, {
+    outputDir, retryLimit: 0, now: () => Date.parse("2026-10-18T15:00:00Z"),
+    fetchImpl: async () => new Response(`<urlset xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"><url><loc>${url}</loc><news:news><news:publication><news:name>Business Insider</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-10-18T14:55:22.384Z</news:publication_date><news:title>${title}</news:title></news:news></url></urlset>`),
+  });
+  const articles = [{ url, summary: title }];
+  assert.deepEqual(report.websites[0].sections[0].articles, articles);
+  assert.deepEqual(parseLinksReport(await readFile(join(outputDir, report.savedFile.split("/").pop()!), "utf8")), report);
+  const oldHash = process.env.ACCESS_HASH;
+  process.env.ACCESS_HASH = "business-insider-title-test-key";
+  t.after(() => { if (oldHash === undefined) delete process.env.ACCESS_HASH; else process.env.ACCESS_HASH = oldHash; });
+  const response = await createLinksHandler(catalog, async () => report)(new Request("https://folio.example/api/links?hash=business-insider-title-test-key"));
+  assert.equal(response.status, 200);
+  assert.deepEqual((await response.json()).websites[0].sections[0].articles, articles);
 });
 
 test("Bloomberg news:title survives selection, JSON storage and the links API", async (t) => {
