@@ -12,7 +12,7 @@ was extracted, that it is complete, or that its reporting is factually correct.
 
 ## Sources of truth
 
-Paths below are relative to the repository root, not this attachment directory.
+Paths below are relative to the repository root, not this skill directory.
 
 | Concern | Authoritative files |
 | --- | --- |

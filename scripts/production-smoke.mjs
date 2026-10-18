@@ -199,10 +199,10 @@ try {
   const compareDev = process.env.PRODUCTION_SMOKE_COMPARE_DEV === "1";
   const renders = [
     ...(compareDev ? [["render-dev", "http://127.0.0.1:8080/", null]] : []),
-    ["render-production", `${origin}/`, compareDev ? join(project, "screenshots/render-dev.json") : null],
+    ["render-production", `${origin}/`, compareDev ? join(project, "docs/qa/screenshots/render-dev.json") : null],
   ];
   for (const [name, url, baseline] of renders) {
-    const args = [join(project, "scripts/browser-smoke.mjs"), url, join(project, `screenshots/${name}.png`)];
+    const args = [join(project, "scripts/browser-smoke.mjs"), url, join(project, `docs/qa/screenshots/${name}.png`)];
     if (baseline) args.push("--baseline", baseline);
     const smoke = spawn(process.execPath, args, { cwd: project, stdio: "inherit" });
     const code = await new Promise((resolve) => smoke.once("exit", resolve));

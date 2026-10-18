@@ -279,7 +279,7 @@ test("baselineComparison fails closed on malformed or wrong-shape baselines", ()
 test("parseSmokeArgs defaults", () => {
   assert.deepEqual(parseSmokeArgs([], {}), {
     url: "http://127.0.0.1:8080/",
-    outPng: "/workspace/screenshots/app-builder-preview.png",
+    outPng: "docs/qa/screenshots/app-builder-preview.png",
     baseline: "",
   });
 });
@@ -377,7 +377,7 @@ test("browser-smoke wires the guard and verdict helpers", () => {
   assert.match(src, /from "\.\/browser-smoke-verdict\.mjs"/);
   assert.match(src, /const args = parseSmokeArgs\(process\.argv\.slice\(2\), process\.env\)/);
   assert.match(src, /const url = checkedUrl\(args\.url\)/);
-  assert.match(src, /const allowedOutputDirs = \["\/workspace", fileURLToPath\(new URL\("\.\.\/screenshots", import\.meta\.url\)\)\]/);
+  assert.match(src, /const allowedOutputDirs = \["\/workspace", fileURLToPath\(new URL\("\.\.\/docs\/qa", import\.meta\.url\)\)\]/);
   assert.match(src, /const outPng = checkedOutputPath\(args\.outPng, allowedOutputDirs\)/);
   assert.match(src, /const mobilePng = checkedOutputPath\(derived\.mobilePng, allowedOutputDirs\)/);
   assert.match(src, /const outJson = checkedOutputPath\(derived\.verdictJson, allowedOutputDirs/);

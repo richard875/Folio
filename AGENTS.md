@@ -312,7 +312,7 @@ changes. Revive, reboot-wipe and the `startup.sh` worked example:
 
 You drive the browser yourself, in the sandbox, against
 `http://127.0.0.1:8080`. **Always write QA screenshots under
-`/workspace/screenshots/`, never `/tmp`**. Interactive checks: step 7.
+`/workspace/docs/qa/screenshots/`, never `/tmp`**. Interactive checks: step 7.
 
 ### Communication rules (avoid confusing the user)
 

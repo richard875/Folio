@@ -19,8 +19,10 @@ node_modules/
 /.node_modules.lock
 
 # Browser QA captures
-/screenshots/*
-!/screenshots/.gitkeep
+/docs/qa/*
+!/docs/qa/screenshots/
+/docs/qa/screenshots/*
+!/docs/qa/screenshots/.gitkeep
 
 # Outputs
 /output/articles/*
@@ -39,4 +41,6 @@ pnpm-debug.log*
 Thumbs.db
 
 # Private attachments
+/docs/private/
+# Keep the legacy location protected if an old local tool recreates it.
 /attachments/private/*

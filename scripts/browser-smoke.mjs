@@ -28,7 +28,7 @@ if (args.error) {
 }
 
 const url = checkedUrl(args.url);
-const allowedOutputDirs = ["/workspace", fileURLToPath(new URL("../screenshots", import.meta.url))];
+const allowedOutputDirs = ["/workspace", fileURLToPath(new URL("../docs/qa", import.meta.url))];
 const outPng = checkedOutputPath(args.outPng, allowedOutputDirs);
 const derived = derivedPaths(outPng);
 const mobilePng = checkedOutputPath(derived.mobilePng, allowedOutputDirs);

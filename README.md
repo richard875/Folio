@@ -15,6 +15,10 @@ Built with React 19, TypeScript, TanStack Start, Tailwind CSS, and Nitro. The cu
 
 Article extraction relies on third-party archive and retrieval services; availability and completeness vary.
 
+Documentation, the article-reader skill, historical handovers, research and QA
+artifacts are organized under **[docs/](docs/README.md)**. Private deployment files
+and generated QA captures stay Git-ignored.
+
 ## Getting started
 
 Use **Node.js 24.20.0** (see `.node-version`) and npm.

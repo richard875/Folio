@@ -26,7 +26,7 @@ test("executable source has no dependency on the historical Markdown catalog or 
 });
 
 test("Folio skill names the actual data/configuration files and all configured publishers", async () => {
-  const skill = await readFile(new URL("attachments/SKILL.md", root), "utf8");
+  const skill = await readFile(new URL("docs/skills/universal-article-reader/SKILL.md", root), "utf8");
   assert.match(skill, /^---\nname: universal-article-reader\n/m);
   assert.match(skill, /version: 2\.0\.0/);
   for (const path of ["data/feeds.json", "reader/retrieval.config.ts", "reader/methods.ts", "reader/AI-GUIDE.md", "src/lib/agent/api.ts"]) {
@@ -40,7 +40,7 @@ test("Folio skill names the actual data/configuration files and all configured p
 });
 
 test("Folio skill records real limits, headers and saved-file reading safeguards", async () => {
-  const skill = await readFile(new URL("attachments/SKILL.md", root), "utf8");
+  const skill = await readFile(new URL("docs/skills/universal-article-reader/SKILL.md", root), "utf8");
   assert.equal(METHODS.wallhop.totalBudgetMs, 25000);
   assert.equal(METHOD_DEFAULTS.proxyBudgetMs, 6000);
   for (const fact of [

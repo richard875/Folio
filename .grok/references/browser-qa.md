@@ -14,8 +14,8 @@ Everything here runs **in the sandbox** against `http://127.0.0.1:8080` — it i
    screenshots both, and prints a JSON verdict.
 
 ```bash
-mkdir -p /workspace/screenshots
-node scripts/browser-smoke.mjs http://127.0.0.1:8080/ /workspace/screenshots/app-builder-preview.png
+mkdir -p docs/qa/screenshots
+node scripts/browser-smoke.mjs http://127.0.0.1:8080/ docs/qa/screenshots/app-builder-preview.png
 # Writes app-builder-preview.png (desktop), -mobile.png, and .json (verdict).
 # Then Read BOTH PNGs in one batched read if you have an image tool, and iterate if either looks wrong.
 ```
@@ -23,7 +23,7 @@ node scripts/browser-smoke.mjs http://127.0.0.1:8080/ /workspace/screenshots/app
 One run audits desktop (1280×800) **and** mobile (390×844): two PNGs (mobile
 gets a `-mobile` suffix) plus a JSON verdict (per-viewport console/page errors,
 body text, horizontal overflow) on stdout and next to the PNG (`.json`). It
-writes under `/workspace/screenshots/` by default; pass an explicit path only
+writes under `docs/qa/screenshots/` relative to the project root by default; pass an explicit path only
 for a different name **under that directory**.
 
 4. **`agent-browser` (preinstalled)** — the interactive pass: click, type, hold
@@ -38,7 +38,7 @@ you only re-read the built screenshots when it flags.
 
 ```bash
 npm run preview:restart   # built output on 127.0.0.1:8081 — QA only, never the live preview
-node scripts/browser-smoke.mjs http://127.0.0.1:8081/ /workspace/screenshots/app-builder-built.png --baseline /workspace/screenshots/app-builder-preview.json
+node scripts/browser-smoke.mjs http://127.0.0.1:8081/ docs/qa/screenshots/app-builder-built.png --baseline docs/qa/screenshots/app-builder-preview.json
 npm run preview:stop      # frees :8081 when the built-output QA is done
 ```
 
@@ -59,7 +59,7 @@ agent-browser press Enter                        # a tap; holding: see "Keys"
 agent-browser wait --fn "window.__ready === true"   # or: wait 500 (ms)
 agent-browser eval "document.querySelectorAll('.card').length"
 agent-browser console                            # or: errors (page errors)
-agent-browser screenshot /workspace/screenshots/step.png
+agent-browser screenshot docs/qa/screenshots/step.png
 agent-browser close
 ```
 
@@ -77,7 +77,7 @@ agent-browser batch --bail <<'JSON'
  ["press","Enter"],
  ["wait","300"],
  ["eval","if (![...document.querySelectorAll('li')].some(n => n.textContent.includes('Grocery list'))) throw Error('note did not appear in the list')"],
- ["screenshot","/workspace/screenshots/note-added.png"]]
+ ["screenshot","docs/qa/screenshots/note-added.png"]]
 JSON
 ```
 
@@ -154,7 +154,7 @@ snapshots: prefer `snapshot -i | grep -i "<thing>"` or `snapshot -s "#sel"`,
 and keep a bare `snapshot` for a page you cannot otherwise navigate.
 
 **Operating notes** (conventions, not enforcement): loopback targets and
-screenshots under `/workspace/screenshots/`, the same rules as everywhere else
+screenshots under `docs/qa/screenshots/` from the project root, the same rules as everywhere else
 here; a `--session <name>` per flow if you ever run two at once; if a command
 hangs, `agent-browser close` and retry.
 
