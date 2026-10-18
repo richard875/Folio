@@ -2,6 +2,7 @@
 
 | Location | Contents |
 | --- | --- |
+| [handovers/2026-10-19.md](handovers/2026-10-19.md) | Shared Claude Code/OpenCode resources, duplicate audit, migration commit, validation, and maintenance caveats |
 | [handovers/2026-10-18_2.md](handovers/2026-10-18_2.md) | Historical continuation snapshot of WallHop, reader/JSON refactors, documentation cleanup and stash recovery |
 | [skills/universal-article-reader/SKILL.md](skills/universal-article-reader/SKILL.md) | Current Folio workflow for AI agents |
 | [prompts/daily-news-brief.md](prompts/daily-news-brief.md) | Recovered daily-brief example; credentials and service address replaced with placeholders |
