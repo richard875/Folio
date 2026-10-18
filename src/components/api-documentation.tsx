@@ -101,10 +101,10 @@ export function ApiDocumentation({ accessHash = "" }: { accessHash?: string }) {
                 <p>
                   Links API: <code className="break-all text-ink">GET /api/links?hash=…</code>.
                   Collects article links from RSS and news sitemaps, filters media/non-articles
-                  before the limit, and saves a timestamped Markdown file in{" "}
-                  <code className="text-ink">output/links</code>. Add{" "}
-                  <code className="text-ink">format=json</code> for grouped links and a saved-file
-                  summary. The default is 5 links per subsection; change{" "}
+                  before the limit, and saves a timestamped JSON file in{" "}
+                  <code className="text-ink">output/links</code>. Returns JSON with publisher/section
+                  groups and article URLs with optional feed summaries.
+                  The default is 5 links per subsection; change{" "}
                   <code className="break-all text-ink">RSS_LINKS_PER_SECTION</code> in your server
                   environment. Collection runs on demand and may take several minutes. Only one
                   collection runs at a time. Curated feeds preserve editor order; other sources use

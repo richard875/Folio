@@ -7,6 +7,7 @@ import { jobManager, validCallId } from "../batch/jobs.ts";
 import { boundedBytes } from "./network.ts";
 import { WorkLimit } from "./limits.ts";
 import { writeNewFile } from "./storage.ts";
+import { linksReportPath, parseLinksReport } from "../rss/report.ts";
 
 const limit = new WorkLimit(() => 1);
 const headers = { "cache-control": "no-store", "referrer-policy": "no-referrer", "x-content-type-options": "nosniff" };
@@ -14,7 +15,7 @@ const headers = { "cache-control": "no-store", "referrer-policy": "no-referrer",
 export function validImportPath(path: string): boolean {
   const article = /^output\/articles\/([^/]+)\/([A-Za-z0-9_-][A-Za-z0-9_.-]{0,230}\.(?:md|json|txt))$/.exec(path);
   if (article) return validArticleFolder(article[1]);
-  if (/^output\/links\/links_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.md$/.test(path)) return true;
+  if (linksReportPath.test(path)) return true;
   const job = /^output\/jobs\/([a-f0-9-]+)\.json$/i.exec(path);
   return Boolean(job && validCallId(job[1]));
 }
@@ -43,6 +44,8 @@ export async function handleImport(request: Request, root = process.cwd()): Prom
           content = `${JSON.stringify(job, null, 2)}\n`;
           normalizedJob = true;
         }
+      } else if (path.startsWith("output/links/")) {
+        if (parseLinksReport(content).savedFile !== path) throw new Error("Link report path mismatch");
       } else if (path.endsWith(".json")) JSON.parse(content.replace(/^\uFEFF/, ""));
       const destination = resolve(root, path);
       // Refuse symlink components, including pre-existing destination files.

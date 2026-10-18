@@ -1,5 +1,5 @@
 import { mkdir, readFile } from "node:fs/promises";
-import { basename, resolve } from "node:path";
+import { resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { validateFeedCatalog, type Feed } from "./catalog.ts";
 import { articleUrl, parseCandidates, rankCandidates, type Candidate } from "./selection.ts";
@@ -7,6 +7,8 @@ import { isGoogleNewsArticle, resolveGoogleNewsUrl } from "./google-news.ts";
 import { boundedBytes, publicFetch, publicFetchRedirects } from "../runtime/network.ts";
 import { writeNewFile } from "../runtime/storage.ts";
 import { boundedInteger } from "../runtime/limits.ts";
+import { parseLinksReport, linksReportSchema, type LinksReport } from "./report.ts";
+import { feedSummary } from "./summary.ts";
 
 const USER_AGENT = "Mozilla/5.0 (compatible; FolioRSS/1.0)";
 
@@ -153,9 +155,10 @@ export function parseReutersJson(
     const validated = articleUrl(url, feed);
     if (!validated) continue;
     
+    const summary = feedSummary([article.description], title, feed.site);
     results.push({
       url: validated,
-      ...(article.description && { summary: article.description }),
+      ...(summary && { summary }),
     });
   }
   
@@ -248,10 +251,6 @@ export async function collectFeeds(
   });
 }
 
-function heading(text: string): string {
-  return text.replace(/[\r\n]/g, " ").replace(/[\\`*_[\]<>#]/g, "\\$&");
-}
-
 function sectionArticles(group: FeedResult[], limit: number): FeedArticle[] {
   const summaries = new Map<string, string>();
   for (const result of group)
@@ -263,35 +262,39 @@ function sectionArticles(group: FeedResult[], limit: number): FeedArticle[] {
   }));
 }
 
-export function renderLinksMarkdown(
+export function buildLinksReport(
   results: FeedResult[],
   generatedAt = new Date(),
   limit = 5,
-): string {
-  const lines = [`Generated: ${generatedAt.toISOString()} (UTC)`, ""];
-  for (const site of new Set(results.map((result) => result.site))) {
-    lines.push(`# ${heading(site)}`, "");
-    const sections = results.filter((result) => result.site === site);
-    for (const section of new Set(sections.map((result) => result.section))) {
-      lines.push(`## ${heading(section)}`, "");
-      const group = sections.filter((result) => result.section === section);
-      const articles = sectionArticles(group, limit);
-      for (const { url, summary } of articles) {
-        lines.push(`- <${url.replace(/</g, "%3C").replace(/>/g, "%3E")}>`);
-        if (summary) lines.push(`  Summary: ${heading(summary).replace(/([!|~])/g, "\\$1")}`);
-      }
-      if (group.some((result) => !result.ok))
-        lines.push("", "Some feeds were unavailable during this run.");
-      if (!articles.length && group.every((result) => result.ok))
-        lines.push("No article links available in this feed.");
-      lines.push("");
-    }
-  }
-  return `${lines.join("\n").trimEnd()}\n`;
+): LinksReport {
+  const websites = [...new Set(results.map((result) => result.site))].map((name) => {
+    const siteResults = results.filter((result) => result.site === name);
+    return {
+      name,
+      sections: [...new Set(siteResults.map((result) => result.section))].map((section) => {
+        const group = siteResults.filter((result) => result.section === section);
+        return {
+          name: section,
+          available: group.every((result) => result.ok),
+          articles: sectionArticles(group, limit),
+        };
+      }),
+    };
+  });
+  return linksReportSchema.parse({
+    schemaVersion: 1,
+    generatedAt: generatedAt.toISOString(),
+    savedFile: `output/links/${linksFilename(generatedAt)}`,
+    limit,
+    feedCount: results.length,
+    failedFeedCount: results.filter((result) => !result.ok).length,
+    linkCount: websites.reduce((total, site) => total + site.sections.reduce((sum, section) => sum + section.articles.length, 0), 0),
+    websites,
+  });
 }
 
 export function linksFilename(date: Date): string {
-  return `links_${date.toISOString().slice(0, 19).replace("T", "_").replace(/:/g, "-")}.md`;
+  return `links_${date.toISOString().slice(0, 19).replace("T", "_").replace(/:/g, "-")}.json`;
 }
 
 export async function saveLinks(
@@ -304,7 +307,7 @@ export async function saveLinks(
     const generatedAt = now();
     const path = resolve(outputDir, linksFilename(generatedAt));
     try {
-      await writeNewFile(path, renderLinksMarkdown(results, generatedAt, limit));
+      await writeNewFile(path, `${JSON.stringify(buildLinksReport(results, generatedAt, limit), null, 2)}\n`);
       return path;
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
@@ -325,29 +328,5 @@ export async function generateLinks(
   const results = await collectFeeds(feeds, { ...options, limit, retryLimit });
   const outputDir = options.outputDir ?? resolve(process.cwd(), "output/links");
   const path = await saveLinks(results, outputDir, { limit });
-  const markdown = await readFile(path, "utf8");
-  const failures = results.filter((result) => !result.ok).length;
-  return {
-    savedFile: `output/links/${basename(path)}`,
-    limit,
-    feedCount: feeds.length,
-    failedFeedCount: failures,
-    linkCount: results.reduce((count, result) => count + result.urls.length, 0),
-    markdown,
-    websites: [...new Set(results.map((result) => result.site))].map((name) => {
-      const siteResults = results.filter((result) => result.site === name);
-      return {
-        name,
-        sections: [...new Set(siteResults.map((result) => result.section))].map((section) => {
-          const group = siteResults.filter((result) => result.section === section);
-          return {
-            name: section,
-            links: sectionArticles(group, limit).map((article) => article.url),
-            articles: sectionArticles(group, limit),
-            available: group.every((result) => result.ok),
-          };
-        }),
-      };
-    }),
-  };
+  return parseLinksReport(await readFile(path, "utf8"));
 }

@@ -8,17 +8,79 @@ import { handleCollectRequest, handleCollectStatus } from "./api.ts";
 import { JobManager, parseLinksFile, saveConcurrency, type Job, type SaveBatchJob } from "./jobs.ts";
 import { handleSaveRequest } from "../../../reader/save-api.ts";
 import { saveArticle } from "../../../reader/save.ts";
+import { buildLinksReport, generateLinks } from "../rss/links.ts";
+import { createLinksHandler } from "../rss/api.ts";
+
+function reportFixture(groups: [string, string, string[]][]): string {
+  return JSON.stringify(buildLinksReport(groups.map(([site, section, urls]) => ({ site, section, urls, url: "https://example.com/feed", ok: true })), new Date("2026-10-11T12:34:56Z"), 100));
+}
+
+test("collection reads the real JSON report and keeps article saving in Markdown", async (t) => {
+  const root = await mkdtemp(join(tmpdir(), "folio-collection-json-"));
+  const old = process.env.ACCESS_HASH;
+  process.env.ACCESS_HASH = "collection-json-key";
+  t.after(async () => { if (old === undefined) delete process.env.ACCESS_HASH; else process.env.ACCESS_HASH = old; await rm(root, { recursive: true, force: true }); });
+  const catalog = [{ site: "News & More", section: "World", url: "https://example.com/feed", ordering: "feed", format: "rss" }];
+  const links = createLinksHandler(catalog, (source) => generateLinks(source, {
+    outputDir: join(root, "output/links"), retryLimit: 0,
+    fetchImpl: async () => new Response('<rss><channel><item><title>Story</title><link>https://example.com/story</link><description>A meaningful feed summary that stays in JSON but never becomes a task.</description></item></channel></rss>'),
+  }));
+  const saves: URL[] = [];
+  const manager = new JobManager({ root, fetchImpl: async (input, init) => {
+    const url = new URL(String(input));
+    if (url.pathname === "/api/links") return links(new Request(url, init));
+    saves.push(url);
+    return new Response("article", { headers: { "x-saved-file": "output/articles/story.md" } });
+  } });
+  const initial = await manager.start("collection-json-key");
+  assert.ok(initial);
+  const job = await finished(manager, initial.callId) as Job;
+  assert.equal(job.status, "completed");
+  assert.equal(job.total, 1);
+  assert.match(job.linksFile!, /\.json$/);
+  const stored = JSON.parse(await readFile(join(root, job.linksFile!), "utf8"));
+  assert.deepEqual(stored.websites, [{ name: "News & More", sections: [{ name: "World", available: true, articles: [{ url: "https://example.com/story", summary: "A meaningful feed summary that stays in JSON but never becomes a task." }] }] }]);
+  assert.equal(saves[0].searchParams.get("format"), "markdown");
+  assert.equal(saves[0].searchParams.get("website"), "News & More");
+  assert.equal(saves[0].searchParams.has("summary"), false);
+});
+
+test("collection fails closed on malformed or mismatched JSON reports and legacy paths", async (t) => {
+  const root = await mkdtemp(join(tmpdir(), "folio-collection-invalid-json-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(join(root, "output/links"), { recursive: true });
+  const path = "output/links/links_2026-10-11_12-34-56.json";
+  for (const [savedFile, content] of [
+    [path, "{invalid"], [path, "{}"],
+    [path, reportFixture([]).replace("12-34-56.json", "12-34-57.json")],
+    [path.replace(".json", ".md"), "# Legacy"],
+    ["output/links/../../secret.json", "{}"],
+  ]) {
+    await writeFile(join(root, path), content);
+    let saves = 0;
+    const manager = new JobManager({ root, fetchImpl: async (input) => {
+      if (new URL(String(input)).pathname === "/api/links") return Response.json({ savedFile });
+      saves++;
+      return new Response("unexpected");
+    } });
+    const initial = await manager.start("test");
+    assert.ok(initial);
+    assert.equal((await finished(manager, initial.callId)).status, "error");
+    assert.equal(saves, 0);
+    assert.equal(manager.isRunning, false);
+  }
+});
 
 const CALL_ID = "01234567-89ab-4cde-8012-3456789abcde";
 
 test("resolves only Google News wrappers before save and never saves an unresolved wrapper", async (t) => {
   const root = await mkdtemp(join(tmpdir(), "folio-batch-google-"));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const linksFile = "output/links/links_2026-10-11_12-34-56.md";
+  const linksFile = "output/links/links_2026-10-11_12-34-56.json";
   await mkdir(join(root, "output/links"), { recursive: true });
   await writeFile(
     join(root, linksFile),
-    "# Reuters\n## Main feed\n- <https://news.google.com/rss/articles/CBMiWorking>\n- <https://news.google.com/rss/articles/CBMiBroken>\n# NY Times\n## Main feed\n- <https://www.nytimes.com/story>\n",
+    reportFixture([["Reuters", "Main feed", ["https://news.google.com/rss/articles/CBMiWorking", "https://news.google.com/rss/articles/CBMiBroken"]], ["NY Times", "Main feed", ["https://www.nytimes.com/story"]]]),
   );
   const saves: URL[] = [];
   const manager = new JobManager({
@@ -71,9 +133,9 @@ async function finished(manager: JobManager, callId: string): Promise<Job | Save
   throw new Error("Job did not finish");
 }
 
-test("parses file headings, deduplicates within sections and keeps different sections", () => {
+test("parses JSON groups, deduplicates within sections and keeps different sections", () => {
   const tasks = parseLinksFile(
-    "# News \\& More\n## World\n- <https://example.com/story>\n- <https://example.com/story>\n## Tech\n- <https://example.com/story>\n# Other\n## World\n- <https://example.com/other>\n",
+    reportFixture([["News & More", "World", ["https://example.com/story", "https://example.com/story"]], ["News & More", "Tech", ["https://example.com/story"]], ["Other", "World", ["https://example.com/other"]]]),
   );
   assert.equal(tasks.length, 3);
   assert.equal(tasks[0].website, "News & More");
@@ -95,11 +157,11 @@ test("returns immediately, calls links then parallel saves, tracks progress and 
     if (oldConcurrency === undefined) delete process.env.SAVE_CONCURRENCY;
     else process.env.SAVE_CONCURRENCY = oldConcurrency;
   });
-  const linksFile = "output/links/links_2026-10-11_12-34-56.md";
+  const linksFile = "output/links/links_2026-10-11_12-34-56.json";
   await mkdir(join(root, "output/links"), { recursive: true });
   await writeFile(
     join(root, linksFile),
-    `# News Site\n## World News\n${Array.from({ length: 8 }, (_, index) => `- <https://example.com/story-${index}>`).join("\n")}\n`,
+    reportFixture([["News Site", "World News", Array.from({ length: 8 }, (_, index) => `https://example.com/story-${index}`)]]),
   );
   let releaseLinks!: () => void;
   const gate = new Promise<void>((done) => {
@@ -162,11 +224,11 @@ test("returns immediately, calls links then parallel saves, tracks progress and 
 test("retries rate limits, retains partial successes and continues past article errors", async (t) => {
   const root = await mkdtemp(join(tmpdir(), "folio-batch-errors-"));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const linksFile = "output/links/links_2026-10-11_12-34-56.md";
+  const linksFile = "output/links/links_2026-10-11_12-34-56.json";
   await mkdir(join(root, "output/links"), { recursive: true });
   await writeFile(
     join(root, linksFile),
-    "# Example\n## World\n- <https://example.com/limited>\n- <https://example.com/failed>\n",
+    reportFixture([["Example", "World", ["https://example.com/limited", "https://example.com/failed"]]]),
   );
   let limited = 0;
   const waits: number[] = [];
@@ -272,11 +334,11 @@ test("API returns 202 and checks authenticated statuses without waiting for back
 test("batch save passes callId through the real save handler and writes the article", async (t) => {
   const root = await mkdtemp(join(tmpdir(), "folio-batch-save-"));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const linksFile = "output/links/links_2026-10-11_12-34-56.md";
+  const linksFile = "output/links/links_2026-10-11_12-34-56.json";
   await mkdir(join(root, "output/links"), { recursive: true });
   await writeFile(
     join(root, linksFile),
-    "# Example News\n## World News\n- <https://example.com/story>\n",
+    reportFixture([["Example News", "World News", ["https://example.com/story"]]]),
   );
   const manager = new JobManager({
     root,

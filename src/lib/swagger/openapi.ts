@@ -77,23 +77,22 @@ const linksOperation = {
   summary: "Collect RSS links and save their report",
   operationId: "collectLinks",
   description:
-    "Fetches only configured RSS/Atom/news-sitemap sources, filters non-articles before the limit, preserves editor order for curated sources, and uses publication time plus cross-publisher headline support for unranked sources. Google News selections are resolved to publisher URLs and filtered before saving the report. Feed descriptions/summaries are included when meaningful (at least 40 characters, not just the headline/publisher), converted to plain text and capped at 1000 characters. No article pages are fetched for summaries. Markdown includes an optional Summary line under each URL; JSON preserves links and adds articles with url and optional summary. RSS_LINKS_PER_SECTION defaults to 5. This request waits for collection to finish; use /api/collect for a non-blocking workflow. Creates a file; POST is preferred.",
-  parameters: [format],
+    "Collects configured RSS/Atom/news-sitemap sources and saves and returns a versioned JSON report. Publisher/section groups contain articles with url and optional feed-provided plain-text summary (maximum 1000 characters). No article pages are fetched for summaries. Filters non-articles before the limit, preserves curated editor order, and ranks unranked sources using publication time and cross-publisher support. Google News selections are resolved to publisher URLs. RSS_LINKS_PER_SECTION defaults to 5. Waits for completion; use /api/collect for background collection. JSON is the only link-report format; saved articles remain Markdown by default. Creates a file; POST is preferred.",
+  parameters: [parameter("format", "Optional; only json is supported.", false, { type: "string", enum: ["json"], default: "json" })],
   responses: {
     "200": {
       description: "Links report saved.",
       headers: savedHeaders,
       content: {
         "application/json": { schema: ref("LinksReport") },
-        "text/markdown": { schema: string },
       },
     },
+    "400": error("Link reports support JSON only."),
     "409": error("A link collection is already running."),
     "502": {
       description: "All feeds failed, but a report was saved.",
       content: {
         "application/json": { schema: ref("LinksReport") },
-        "text/markdown": { schema: string },
       },
     },
     ...commonErrors,
@@ -585,41 +584,49 @@ export const openApiDocument = {
       },
       LinksReport: {
         type: "object",
+        additionalProperties: false,
+        required: ["schemaVersion", "generatedAt", "savedFile", "limit", "feedCount", "failedFeedCount", "linkCount", "websites"],
         properties: {
+          schemaVersion: { type: "integer", enum: [1] },
+          generatedAt: { type: "string", format: "date-time" },
           savedFile: string,
-          limit: integer,
+          limit: { type: "integer", minimum: 1, maximum: 100 },
           feedCount: integer,
           failedFeedCount: integer,
           linkCount: integer,
-          markdown: string,
           websites: {
             type: "array",
             items: {
               type: "object",
+              additionalProperties: false,
+              required: ["name", "sections"],
               properties: {
                 name: string,
                 sections: {
                   type: "array",
                   items: {
                     type: "object",
+                    additionalProperties: false,
+                    required: ["name", "available", "articles"],
                     properties: {
                       name: string,
-                       links: { type: "array", items: string },
-                       articles: {
-                         type: "array",
-                         items: {
-                           type: "object",
-                           required: ["url"],
-                           properties: {
-                             url: { type: "string", format: "uri" },
-                             summary: {
-                               type: "string",
-                               maxLength: 1000,
-                               description: "Optional feed-provided plain-text summary; omitted when unavailable or insufficient.",
-                             },
-                           },
-                         },
-                       },
+                      articles: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          additionalProperties: false,
+                          required: ["url"],
+                          properties: {
+                            url: { type: "string", format: "uri" },
+                            summary: {
+                              type: "string",
+                              minLength: 1,
+                              maxLength: 1000,
+                              description: "Optional feed-provided plain-text summary; omitted when unavailable or insufficient.",
+                            },
+                          },
+                        },
+                      },
                       available: { type: "boolean" },
                     },
                   },

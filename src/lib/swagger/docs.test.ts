@@ -88,6 +88,23 @@ test("access hashes are safely escaped inside the HTML bootstrap", async () => {
   assert.match(html, /\\u003c/);
 });
 
+test("OpenAPI exposes JSON-only link reports without changing article format support", () => {
+  for (const operation of Object.values(openApiDocument.paths["/api/links"])) {
+    assert.deepEqual(Object.keys(operation.responses["200"].content), ["application/json"]);
+    assert.deepEqual(Object.keys(operation.responses["502"].content), ["application/json"]);
+    assert.deepEqual(operation.parameters[0].schema.enum, ["json"]);
+    assert.ok(operation.responses["400"]);
+  }
+  const report = openApiDocument.components.schemas.LinksReport;
+  assert.deepEqual(report.properties.schemaVersion.enum, [1]);
+  assert.equal("markdown" in report.properties, false);
+  const section = report.properties.websites.items.properties.sections.items;
+  assert.equal("links" in section.properties, false);
+  assert.deepEqual(section.properties.articles.items.required, ["url"]);
+  assert.ok("summary" in section.properties.articles.items.properties);
+  assert.ok("text/markdown" in openApiDocument.paths["/api/read"].get.responses["200"].content);
+});
+
 test("OpenAPI describes all routes, uses unique operation IDs and resolves every schema reference", () => {
   for (const path of [
     "/api/read",

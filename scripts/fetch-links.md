@@ -4,17 +4,50 @@ The basic read/save/feed operations are available over HTTP:
 
 - `GET /api/read?url=…&hash=…` — read an article.
 - `GET /api/save?url=…&hash=…` — read and save an article.
-- `GET /api/links?hash=…` — collect RSS article links, save a report, and return Markdown.
+- `GET /api/links?hash=…` — collect RSS article links, save a report, and return JSON.
 
 `/api/links` also accepts POST with the same query parameters. Prefer POST when
 triggering a collection, since it creates a file. Every endpoint uses the
-`ACCESS_HASH` secret. Add `format=json` to return JSON. Links JSON includes the
-saved path, counts, Markdown, and website/section-grouped article URLs.
-`X-Saved-File` supplies the saved relative path in either format.
+`ACCESS_HASH` secret. Links reports are JSON only; omit `format` or use `format=json`.
+Other formats return HTTP 400 before collection. `X-Saved-File` supplies the saved path.
+Article read/save endpoints retain their separate Markdown/JSON format options.
 
-Reports are stored in `output/links/links_YYYY-MM-DD_HH-mm-ss.md`. Timestamps are
-UTC. Existing files are never overwritten. Each website is a level-one heading
-and each section is a level-two heading.
+Reports are stored in `output/links/links_YYYY-MM-DD_HH-mm-ss.json`. Timestamps are
+UTC. Existing files are never overwritten. The file and response share this schema:
+
+```json
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-19T12:00:00.000Z",
+  "savedFile": "output/links/links_2026-10-19_12-00-00.json",
+  "limit": 5,
+  "feedCount": 1,
+  "failedFeedCount": 0,
+  "linkCount": 1,
+  "websites": [
+    {
+      "name": "Example News",
+      "sections": [
+        {
+          "name": "Main feed",
+          "available": true,
+          "articles": [
+            { "url": "https://example.com/story", "summary": "Optional feed-provided excerpt." }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+`summary` is omitted when unavailable. `available` is false if any feed in the
+section failed; an available empty section has no eligible articles. `linkCount`
+counts the actual deduplicated, capped article entries. Feed counts count sources,
+not sections. Array order preserves selection order. The shared runtime schema in
+`src/lib/rss/report.ts` validates reads, writes and imports, including version,
+counts, URLs and summary limits. Reports contain no rendered Markdown or duplicate
+URL-only arrays. Background jobs read these JSON groups to create saving tasks.
 
 Example configuration (substitute a private random key of at least 32 characters
 for production). Configure the server environment or an existing ignored `.env`,
@@ -60,8 +93,9 @@ Article bodies and publisher homepages are not fetched by `/api/links`.
 The background save resolver remains compatible with older Google-wrapper reports.
 The npm `fetch:links` command and its CLI options have been removed.
 
-Reports remain Markdown even with `format=json`. JSON includes the derived
-`markdown`, `savedFile`, counts, and per-section `links` plus `articles` (optional
-feed-provided summaries). Storage is temporary on Render Free; consume/archive
+This replaces the former Markdown report/API format. Historical `.md` link reports
+are left untouched, but are not consumed or accepted by the JSON import workflow;
+new collections always generate fresh JSON reports. Saved articles remain Markdown
+by default. Storage is temporary on Render Free; consume/archive
 reports before sleep, restart or redeploy. For async orchestration and status
 polling use the [collection API](collect-articles.md).

@@ -19,6 +19,10 @@ async function visit(directory) {
     if (!entry.isFile()) continue;
     const savedPath = `output/${relative(root, path).split(sep).join("/")}`;
     if (!/^output\/(?:articles|links|jobs)\//.test(savedPath)) continue;
+    if (savedPath.startsWith("output/links/") && !/^output\/links\/links_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.json$/.test(savedPath)) {
+      console.warn("Skipped a legacy or unsupported link report; only JSON link reports can be imported. Source files are unchanged.");
+      continue;
+    }
     if ((await lstat(path)).size > 8_000_000) throw new Error("A source file exceeds 8 MB. No files were removed.");
     const bytes = await readFile(path);
     const url = new URL("/api/import", origin);

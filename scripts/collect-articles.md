@@ -10,7 +10,7 @@ GET is also supported. The response is HTTP 202 immediately after creating the
 progress record, with `callId`, `status: "in progress"`, `phase`, `concurrency`,
 and a `statusEndpoint` path. Add your hash when calling that status path.
 
-In the background, the server calls `/api/links`, reads the Markdown file that
+In the background, the server calls `/api/links`, reads the validated JSON file that
 request generated, and calls `/api/save` for each article. Each save receives
 the original website/section headings, URL, access hash, and `callId`.
 Article output paths remain unchanged. Add `format=json` to the start request

@@ -5,6 +5,7 @@ import { setTimeout as sleep } from "node:timers/promises";
 import { isGoogleNewsArticle, resolveGoogleNewsUrl } from "../rss/google-news.ts";
 import { publicFetch } from "../runtime/network.ts";
 import { syncDirectory } from "../runtime/storage.ts";
+import { linksReportPath, parseLinksReport } from "../rss/report.ts";
 
 export type ArticleTask = { website: string; section: string; url: string };
 export type JobStatus = "in progress" | "completed" | "partial" | "error";
@@ -55,32 +56,22 @@ export function saveConcurrency(value: string | undefined): number {
   return Number.isInteger(number) && number >= 1 && number <= 10 ? number : 5;
 }
 
-/** Read only the generated report's website/section headings and article links. */
-export function parseLinksFile(markdown: string): ArticleTask[] {
-  let website = "";
-  let section = "";
+/** Validate the stored JSON before building tasks; summaries are never interpreted. */
+export function parseLinksFile(content: string, expectedPath?: string): ArticleTask[] {
+  const report = parseLinksReport(content);
+  if (expectedPath && report.savedFile !== expectedPath) throw new Error("Link report path mismatch.");
   const tasks: ArticleTask[] = [];
   const seen = new Set<string>();
-  for (const line of markdown.split(/\r?\n/)) {
-    const siteMatch = /^# (.+)$/.exec(line);
-    if (siteMatch) {
-      website = siteMatch[1].replace(/\\(.)/g, "$1");
-      section = "";
-      continue;
-    }
-    const sectionMatch = /^## (.+)$/.exec(line);
-    if (sectionMatch) {
-      section = sectionMatch[1].replace(/\\(.)/g, "$1");
-      continue;
-    }
-    const link = /^- <(https?:\/\/[^<>]+)>$/.exec(line);
-    if (!link || !website || !section) continue;
-    const url = new URL(link[1]);
-    if (url.username || url.password) continue;
-    const key = JSON.stringify([website, section, url.href]);
-    if (!seen.has(key)) {
-      seen.add(key);
-      tasks.push({ website, section, url: url.href });
+  for (const website of report.websites) {
+    for (const section of website.sections) {
+      for (const article of section.articles) {
+        const url = new URL(article.url);
+        const key = JSON.stringify([website.name, section.name, url.href]);
+        if (!seen.has(key)) {
+          seen.add(key);
+          tasks.push({ website: website.name, section: section.name, url: url.href });
+        }
+      }
     }
   }
   return tasks;
@@ -266,13 +257,14 @@ export class JobManager {
       const report = (await response.json()) as { savedFile?: string; failedFeedCount?: number };
       if (
         report.savedFile &&
-        /^output\/links\/links_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.md$/.test(report.savedFile)
+        linksReportPath.test(report.savedFile)
       ) {
         job.linksFile = report.savedFile;
       }
       job.failedFeeds = report.failedFeedCount ?? 0;
       if (!response.ok || !job.linksFile) throw new Error("Unable to collect article links.");
-      const tasks = parseLinksFile(await readFile(resolve(this.root, job.linksFile), "utf8"));
+      const content = await readFile(resolve(this.root, job.linksFile), "utf8");
+      const tasks = parseLinksFile(content, job.linksFile);
       job.total = tasks.length;
       job.phase = "saving articles";
       await this.update(job);

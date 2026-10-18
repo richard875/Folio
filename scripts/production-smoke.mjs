@@ -103,7 +103,10 @@ try {
   assert.equal(linkReport.failedFeedCount, 0);
   assert.equal(linkReport.linkCount, 10);
   assert.deepEqual(linkReport.websites.map((site) => site.name), feedCatalog.map((feed) => feed.site));
-  assert.equal(await readFile(join(root, linkReport.savedFile), "utf8"), linkReport.markdown);
+  assert.match(linkReport.savedFile, /\.json$/);
+  assert.deepEqual(JSON.parse(await readFile(join(root, linkReport.savedFile), "utf8")), linkReport);
+  assert.equal(linkReport.schemaVersion, 1);
+  assert.equal("markdown" in linkReport, false);
 
   const manifest = [];
   let manifestUrl = "/api/agent/latest?limit=3";
@@ -160,6 +163,9 @@ try {
   const archive = join(root, "archive");
   await mkdir(join(archive, "articles", "2000-01-01_00-00"), { recursive: true });
   await writeFile(join(archive, "articles/2000-01-01_00-00/fixture.md"), "# Imported fixture\n");
+  await mkdir(join(archive, "links"));
+  await writeFile(join(archive, "links", linkReport.savedFile.split("/").pop()), JSON.stringify(linkReport, null, 2) + "\n");
+  await writeFile(join(archive, "links/links_2000-01-01_00-00-00.md"), "# Historical link report; keep unchanged\n");
   const importer = spawn(process.execPath, [join(project, "scripts/import-output.mjs"), archive, origin], { env, stdio: "ignore" });
   assert.equal(await new Promise((resolve) => importer.once("exit", resolve)), 0);
   assert.equal(await readFile(join(root, "output/articles/2000-01-01_00-00/fixture.md"), "utf8"), "# Imported fixture\n");

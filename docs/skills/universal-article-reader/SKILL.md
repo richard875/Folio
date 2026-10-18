@@ -90,10 +90,13 @@ can use the generic reader, but successful extraction is not guaranteed.
 - Summaries are feed excerpts, not AI-generated text or article-page fetches.
   Prefer RSS description/summary/content:encoded or Atom summary/inline content;
   clean HTML, reject stubs under 40 characters, cap at 1,000, omit when absent.
-- `/api/links?format=json` still saves `output/links/links_<UTC timestamp>.md`.
-  JSON includes counts, `markdown`, `savedFile`, and website/section `links` and
-  `articles` arrays. Collection jobs still parse that Markdown's headings/URL lines.
-  Only the feed catalog has moved to JSON; link-report storage has not.
+- `/api/links` saves and returns JSON only (`format=json` is optional; other formats
+  return 400). Files use `output/links/links_<UTC timestamp>.json` and include
+  `schemaVersion: 1`, `generatedAt`, `savedFile`, counts and website/section groups.
+  Each section has `available` and `articles: { url, summary? }[]`, without Markdown
+  or duplicate URL arrays. Collection jobs validate and read these JSON groups.
+  Historical Markdown link reports are preserved but not consumed/imported by this
+  workflow. Saved articles remain Markdown by default.
 
 No automatic polling is scheduled. `FEED_CONCURRENCY` defaults to 2, up to 6.
 Feed retries have their own policy; do not confuse them with article-method caps.

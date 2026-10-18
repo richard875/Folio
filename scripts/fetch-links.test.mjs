@@ -12,7 +12,7 @@ import {
   generateLinks,
   linksFilename,
   parseArticleLinks,
-  renderLinksMarkdown,
+  buildLinksReport,
   saveLinks,
 } from "../src/lib/rss/links.ts";
 import { validateFeedCatalog } from "../src/lib/rss/catalog.ts";
@@ -247,8 +247,8 @@ test("the cap is shared across feeds in a subsection and enforced in Markdown", 
     },
     { ...feed, ok: true, urls: ["https://example.com/extra"] },
   ];
-  assert.equal((renderLinksMarkdown(rawResults).match(/^- </gm) || []).length, 5);
-  assert.equal((renderLinksMarkdown(rawResults, new Date(), 7).match(/^- </gm) || []).length, 7);
+  assert.equal(buildLinksReport(rawResults).linkCount, 5);
+  assert.equal(buildLinksReport(rawResults, new Date(), 7).linkCount, 7);
 });
 
 test("rejects HTML instead of treating it as an empty feed", async () => {
@@ -314,8 +314,8 @@ test("failed feeds do not abort other feeds and completion order is stable", asy
   assert.equal(results.filter((item) => item.ok).length, 4);
 });
 
-test("Markdown groups sites and sections without request metadata", () => {
-  const markdown = renderLinksMarkdown(
+test("JSON groups sites and sections without request metadata", () => {
+  const report = buildLinksReport(
     [
       { ...feed, urls: ["https://example.com/story"], ok: true },
       { ...feed, urls: ["https://example.com/story", "https://example.com/second"], ok: true },
@@ -324,14 +324,13 @@ test("Markdown groups sites and sections without request metadata", () => {
     ],
     new Date("2026-10-11T12:34:56Z"),
   );
-  assert.match(markdown, /^# Example News$/m);
-  assert.match(markdown, /^## World$/m);
-  assert.match(markdown, /^## Tech$/m);
-  assert.match(markdown, /^# Other$/m);
-  assert.equal(markdown.match(/<https:\/\/example.com\/story>/g).length, 1);
-  assert.match(markdown, /Some feeds were unavailable/);
-  assert.match(markdown, /No article links available/);
-  assert.doesNotMatch(markdown, /method|bypass|internal request|https:\/\/example.com\/rss/i);
+  assert.deepEqual(report.websites.map((site) => site.name), ["Example News", "Other"]);
+  assert.deepEqual(report.websites[0].sections.map((section) => section.name), ["World", "Tech"]);
+  assert.equal(report.websites[0].sections[0].articles.length, 2);
+  assert.equal(report.websites[0].sections[1].available, false);
+  assert.deepEqual(report.websites[1].sections[0].articles, []);
+  assert.equal(report.linkCount, 2);
+  assert.doesNotMatch(JSON.stringify(report), /method|bypass|internal request|https:\/\/example.com\/rss/i);
 });
 
 test("timestamped output never overwrites an existing run", async (t) => {
@@ -339,7 +338,7 @@ test("timestamped output never overwrites an existing run", async (t) => {
   t.after(() => rm(dir, { recursive: true, force: true }));
   const results = [{ ...feed, urls: ["https://example.com/story"], ok: true }];
   let current = new Date("2026-10-11T12:34:56Z");
-  assert.equal(linksFilename(current), "links_2026-10-11_12-34-56.md");
+  assert.equal(linksFilename(current), "links_2026-10-11_12-34-56.json");
   const first = await saveLinks(results, dir, { now: () => current });
   const original = await readFile(first, "utf8");
   const second = await saveLinks(results, dir, {
@@ -379,9 +378,9 @@ test("collection generates a saved report, keeps successful feeds and honors env
   assert.equal(result.failedFeedCount, 1);
   const files = await readdir(output);
   assert.equal(files.length, 1);
-  assert.match(files[0], /^links_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.md$/);
-  assert.match(await readFile(join(output, files[0]), "utf8"), /# Local News/);
-  assert.equal(await readFile(join(output, files[0]), "utf8"), result.markdown);
+  assert.match(files[0], /^links_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.json$/);
+  assert.equal(result.websites[0].name, "Local News");
+  assert.deepEqual(JSON.parse(await readFile(join(output, files[0]), "utf8")), result);
   const oldLimit = process.env.RSS_LINKS_PER_SECTION;
   t.after(() => {
     if (oldLimit === undefined) delete process.env.RSS_LINKS_PER_SECTION;
@@ -401,30 +400,17 @@ test("collection generates a saved report, keeps successful feeds and honors env
   );
   assert.equal(failed.linkCount, 0);
   assert.equal(failed.failedFeedCount, 1);
-  assert.match(failed.markdown, /unavailable/);
+  assert.equal(failed.websites[0].sections[0].available, false);
 });
 
-test("links endpoint authenticates, returns JSON or Markdown and prevents overlapping runs", async (t) => {
+test("links endpoint authenticates, returns only JSON and prevents overlapping runs", async (t) => {
   const originalHash = process.env.ACCESS_HASH;
   process.env.ACCESS_HASH = "test-links-key";
   t.after(() => {
     if (originalHash === undefined) delete process.env.ACCESS_HASH;
     else process.env.ACCESS_HASH = originalHash;
   });
-  const report = {
-    savedFile: "output/links/links_2026-10-11_12-34-56.md",
-    limit: 5,
-    feedCount: 1,
-    failedFeedCount: 0,
-    linkCount: 1,
-    markdown: "# News\n## World\n- <https://example.com/story>\n",
-    websites: [
-      {
-        name: "News",
-        sections: [{ name: "World", links: ["https://example.com/story"], available: true }],
-      },
-    ],
-  };
+  const report = buildLinksReport([{ ...feed, urls: ["https://example.com/story"], ok: true }], new Date("2026-10-11T12:34:56Z"));
   let calls = 0;
   const sourceCatalog = [catalogEntry];
   const handler = createLinksHandler(sourceCatalog, async (source) => {
@@ -439,10 +425,11 @@ test("links endpoint authenticates, returns JSON or Markdown and prevents overla
   );
   assert.equal(json.status, 200);
   assert.deepEqual(await json.json(), report);
-  const markdown = await handler(new Request("http://localhost/api/links?hash=test-links-key"));
-  assert.equal(await markdown.text(), report.markdown);
-  assert.equal(markdown.headers.get("x-saved-file"), report.savedFile);
-  assert.equal(markdown.headers.get("cache-control"), "no-store");
+  const defaultResponse = await handler(new Request("http://localhost/api/links?hash=test-links-key"));
+  assert.deepEqual(await defaultResponse.json(), report);
+  assert.equal(defaultResponse.headers.get("x-saved-file"), report.savedFile);
+  assert.equal(defaultResponse.headers.get("cache-control"), "no-store");
+  assert.equal((await handler(new Request("http://localhost/api/links?hash=test-links-key&format=markdown"))).status, 400);
   let release;
   const pending = new Promise((done) => {
     release = done;
