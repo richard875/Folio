@@ -29,6 +29,27 @@ Open `http://localhost:8080`, enter an article URL, and use the generated `ACCES
 
 See [`.env.example`](.env.example) for configuration options. Keep `VITE_AUTH_ENABLED=false` and leave `DATABASE_URL` unset for the current file-backed deployment. Never commit access keys or expose them through `VITE_` variables.
 
+### Article retrieval order
+
+Folio uses WallHop's normal HTML page (`https://wallhop.io/https://…`), not its
+`/raw` or `/api` endpoints, with the existing article parser:
+
+- **First attempt:** WSJ, Foreign Policy, CNBC.
+- **Second attempt:** NY Times, Washington Post, Bloomberg, The Economist,
+  Financial Times, Reuters, Business Insider.
+
+For the second-attempt group, the first attempt is the publisher page when the
+proxy is enabled/configured, otherwise Freedium Mirror. All existing fallbacks
+remain in their previous relative order. Later methods are tried when earlier
+ones fail or yield short/incomplete text; a substantial result can stop the cascade.
+For WSJ, WallHop's normal page loads article HTML from the same URL with
+`X-Wallhop-Load: 1`; Folio sends that header only to WallHop, without executing
+page scripts. WallHop gets at most **25 seconds total**, bounded by the existing
+48-second article budget, because its WSJ loading page advertises 10–20 seconds.
+It uses the same transport and response limits as other HTML retrieval services
+and is not automatically exempted from proxy routing. Availability
+and article completeness are not guaranteed; existing cached results may skip fetching.
+
 ### Article response limits
 
 Article downloads allow up to **8,000,000 bytes** per response by default,
@@ -67,8 +88,10 @@ random exit from your pool; repeated IPs are still possible. This is not a promi
 of a unique IP for every request. Existing third-party retrieval services make their
 own downstream requests, whose exit IPs Folio cannot control.
 
-With proxy routing enabled, extraction tries the publisher URL first, through the
-proxy, before the existing retrieval-service cascade. Each extraction method gets
+With proxy routing enabled, extraction tries the publisher URL through the proxy
+before the existing retrieval-service cascade, except that WallHop precedes it for
+WSJ, Foreign Policy and CNBC (see retrieval order above). Except for WallHop's
+25-second allowance, each extraction method gets
 at most **6 seconds total** across redirects/retries and **one retry**, further
 bounded by the existing article deadline and `FETCH_RETRY_LIMIT`. This prevents an
 unreachable service from exhausting the entire extraction budget. Direct mode

@@ -66,6 +66,12 @@ function isCloudBlockedDomain(url: string): boolean {
 
 export type Probe = { method: string; url: string };
 
+const WALLHOP_FIRST_DOMAINS = new Set(["wsj.com", "foreignpolicy.com", "cnbc.com"]);
+const WALLHOP_SECOND_DOMAINS = new Set([
+  "nytimes.com", "washingtonpost.com", "bloomberg.com", "economist.com",
+  "ft.com", "reuters.com", "businessinsider.com",
+]);
+
 /** Build Freedium Mirror URLs (WORKS on Render for many domains) */
 function freediumMirrorProbes(original: string, enc: string): Probe[] {
   return [
@@ -168,10 +174,19 @@ export function probeList(original: string): Probe[] {
   );
 
   const seen = new Set<string>();
-  return raw.filter((p) => {
+  const probes = raw.filter((p) => {
     const key = `${p.method}|${p.url}`;
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
   });
+
+  // Use the normal HTML reader page, never WallHop's /raw or /api endpoints.
+  // Insert after deduplication so "second" means the second distinct method
+  // whether the first attempt is proxied publisher HTML or the mirror.
+  const host = new URL(original).hostname.toLowerCase().replace(/^www\./, "");
+  const wallhop = { method: "wallhop", url: `https://wallhop.io/${original}` };
+  if (WALLHOP_FIRST_DOMAINS.has(host)) probes.splice(0, 0, wallhop);
+  else if (WALLHOP_SECOND_DOMAINS.has(host)) probes.splice(1, 0, wallhop);
+  return probes;
 }

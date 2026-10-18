@@ -4,6 +4,8 @@ import { boundedInteger } from "../src/lib/runtime/limits.ts";
 
 const ATTEMPT_MS = 15_000;
 const TEXT_EXTRACTION_ATTEMPT_MS = 10_000;
+// The normal WallHop WSJ page advertises 10–20 seconds for extraction.
+const WALLHOP_BUDGET_MS = 25_000;
 const DEFAULT_MAX_BYTES = 8_000_000;
 const HARD_MAX_BYTES = 16_000_000;
 const DEFAULT_RETRY_LIMIT = 8;
@@ -17,6 +19,7 @@ function isTextExtractionMethod(method: string): boolean {
 }
 
 function attemptTimeout(method: string): number {
+  if (method === "wallhop") return WALLHOP_BUDGET_MS;
   return isTextExtractionMethod(method) ? TEXT_EXTRACTION_ATTEMPT_MS : ATTEMPT_MS;
 }
 
@@ -50,7 +53,9 @@ export async function fetchHtmlWithRedirects(
   // Direct mode retains its existing retry/deadline behaviour.
   const proxyActive = outboundProxyEnabled() && Boolean(outboundProxyUrl());
   const limit = proxyActive ? Math.min(retryLimit(), 1) : retryLimit();
-  const probeDeadline = proxyActive ? Math.min(deadline, Date.now() + 6000) : deadline;
+  const probeDeadline = method === "wallhop"
+    ? Math.min(deadline, Date.now() + WALLHOP_BUDGET_MS)
+    : proxyActive ? Math.min(deadline, Date.now() + 6000) : deadline;
   const maxBytes = boundedInteger(process.env.ARTICLE_MAX_RESPONSE_BYTES, DEFAULT_MAX_BYTES, HARD_MAX_BYTES);
   let currentUrl = url;
 
@@ -76,6 +81,12 @@ export async function fetchHtmlWithRedirects(
             "user-agent": userAgentFor(method),
             accept: "text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.8",
             "accept-language": "en-US,en;q=0.9",
+            // WallHop's normal reader requests the same URL with this header
+            // to replace its JS loading screen with article HTML. No raw/API
+            // endpoint or script execution is needed. Never forward to origins.
+            ...(method === "wallhop" && new URL(currentUrl).hostname === "wallhop.io"
+              ? { "X-Wallhop-Load": "1" }
+              : {}),
           },
         }, maxBytes);
 

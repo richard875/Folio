@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, describe, it } from "node:test";
 import { hashMatches } from "./auth.ts";
-import { fetchHtml } from "./fetch.ts";
+import { fetchHtml, fetchHtmlWithRedirects } from "./fetch.ts";
 import { readArticle } from "./read.ts";
 import { probeList } from "./targets.ts";
 
@@ -157,6 +157,34 @@ describe("fetch retries", () => {
 });
 
 describe("extraction service catalog", () => {
+  it("places the normal WallHop page first or second for all ten publishers in either transport mode", () => {
+    const first = ["wsj.com", "foreignpolicy.com", "cnbc.com"];
+    const second = ["nytimes.com", "washingtonpost.com", "bloomberg.com", "economist.com", "ft.com", "reuters.com", "businessinsider.com"];
+    for (const mode of ["unconfigured", "disabled", "enabled"]) {
+      process.env.OUTBOUND_PROXY_ENABLED = String(mode === "enabled");
+      if (mode === "unconfigured") delete process.env.OUTBOUND_PROXY_URL;
+      else process.env.OUTBOUND_PROXY_URL = "http://test-user:test-password@127.0.0.1:9999/";
+      const baseline = probeList("https://example.com/story").map((probe) => probe.method);
+      for (const domain of [...first, ...second]) {
+        for (const prefix of ["", "www."]) {
+          const url = `https://${prefix}${domain}/world/story?edition=us&item=2`;
+          const probes = probeList(url);
+          const index = first.includes(domain) ? 0 : 1;
+          assert.deepEqual(probes[index], { method: "wallhop", url: `https://wallhop.io/${url}` });
+          assert.equal(probes.filter((probe) => probe.method === "wallhop").length, 1);
+          assert.deepEqual(probes.filter((probe) => probe.method !== "wallhop").map((probe) => probe.method), baseline);
+          assert.equal(probes[first.includes(domain) ? 1 : 0].method, mode === "enabled" ? "direct" : "freedium-mirror");
+        }
+      }
+    }
+  });
+
+  it("does not add WallHop to unrelated or lookalike publisher domains", () => {
+    for (const host of ["example.com", "notwsj.com", "wsj.com.example.com", "ft.com.example.com"]) {
+      assert.equal(probeList(`https://${host}/story`).some((probe) => probe.method === "wallhop"), false);
+    }
+  });
+
   it("keeps both working mirror variants and never schedules the retired service", () => {
     for (const proxyEnabled of [false, true]) {
       process.env.OUTBOUND_PROXY_ENABLED = String(proxyEnabled);
@@ -167,6 +195,106 @@ describe("extraction service catalog", () => {
         assert.equal(probes.some((probe) => new URL(probe.url).hostname === "freedium.cfd"), false);
         assert.equal(probes.some((probe) => ["freedium", "freedium-encoded"].includes(probe.method)), false);
       }
+    }
+  });
+});
+
+describe("WallHop HTML extraction", () => {
+  it("requests normal-page article HTML and does not forward the load header to a redirected publisher", async () => {
+    const requested: Array<{ url: string; load: string | null }> = [];
+    globalThis.fetch = async (input, init) => {
+      requested.push({ url: String(input), load: new Headers(init?.headers).get("X-Wallhop-Load") });
+      return requested.length === 1
+        ? new Response(null, { status: 302, headers: { location: "https://www.wsj.com/story" } })
+        : articleResponse();
+    };
+    const result = await fetchHtmlWithRedirects("https://wallhop.io/https://www.wsj.com/story", "wallhop", Date.now() + 1000);
+    assert.deepEqual(requested, [
+      { url: "https://wallhop.io/https://www.wsj.com/story", load: "1" },
+      { url: "https://www.wsj.com/story", load: null },
+    ]);
+    assert.equal(result.finalUrl, "https://www.wsj.com/story");
+    assert.ok(result.html.includes("Example article"));
+  });
+
+  it("allows slow WallHop HTML but caps the total method budget at 25 seconds in both transport modes", async (t) => {
+    let now = Date.now();
+    t.mock.method(Date, "now", () => now);
+    for (const enabled of [false, true]) {
+      process.env.OUTBOUND_PROXY_ENABLED = String(enabled);
+      process.env.OUTBOUND_PROXY_URL = "http://test-user:test-password@127.0.0.1:9999/";
+      globalThis.fetch = async () => { now += 20000; return new Response("article"); };
+      assert.equal(await fetchHtml("https://93.184.216.34/story", "wallhop", now + 48000), "article");
+      let calls = 0;
+      globalThis.fetch = async () => { calls++; now += 25100; throw new TypeError("fetch failed"); };
+      await assert.rejects(fetchHtml("https://93.184.216.34/story", "wallhop", now + 48000), /fetch failed/);
+      assert.equal(calls, 1);
+    }
+  });
+
+  it("never extends the caller's remaining article deadline for WallHop", async (t) => {
+    let now = Date.now();
+    t.mock.method(Date, "now", () => now);
+    let calls = 0;
+    globalThis.fetch = async () => { calls++; now += 1100; throw new TypeError("fetch failed"); };
+    await assert.rejects(fetchHtml("https://example.com/story", "wallhop", now + 1000), /fetch failed/);
+    assert.equal(calls, 1);
+  });
+
+  it("reads normal WallHop HTML first for WSJ, Foreign Policy and CNBC", async () => {
+    for (const host of ["www.wsj.com", "foreignpolicy.com", "www.cnbc.com"]) {
+      const url = `https://${host}/wallhop-first-story`;
+      const requested: string[] = [];
+      globalThis.fetch = async (input, init) => {
+        requested.push(String(input));
+        assert.equal(new Headers(init?.headers).get("X-Wallhop-Load"), "1");
+        return articleResponse();
+      };
+      const result = await readArticle(url, ACCESS_HASH);
+      assert.deepEqual(requested, [`https://wallhop.io/${url}`]);
+      assert.equal(result.originalUrl, url);
+      assert.equal(result.sourceUrl, `https://wallhop.io/${url}`);
+      assert.equal(result.title, "Example article");
+      assert.ok(result.text.includes("The newspaper reported"));
+      assert.equal(result.partial, false);
+    }
+  });
+
+  it("uses WallHop second after a failed first attempt, with and without the proxy", async () => {
+    process.env.FETCH_RETRY_LIMIT = "0";
+    for (const enabled of [false, true]) {
+      process.env.OUTBOUND_PROXY_ENABLED = String(enabled);
+      process.env.OUTBOUND_PROXY_URL = "http://test-user:test-password@127.0.0.1:9999/";
+      const url = `https://www.ft.com/wallhop-second-story-${enabled}`;
+      const requested: string[] = [];
+      globalThis.fetch = async (input) => {
+        requested.push(String(input));
+        return requested.length === 1 ? new Response(null, { status: 404 }) : articleResponse();
+      };
+      const result = await readArticle(url, ACCESS_HASH);
+      assert.deepEqual(requested, [enabled ? url : `https://freedium-mirror.cfd/${url}`, `https://wallhop.io/${url}`]);
+      assert.equal(result.originalUrl, url);
+      assert.equal(result.sourceUrl, `https://wallhop.io/${url}`);
+      assert.equal(result.partial, false);
+    }
+  });
+
+  it("continues to the existing fallback after WallHop fails or returns unusable HTML", async () => {
+    process.env.FETCH_RETRY_LIMIT = "0";
+    for (const failure of ["http", "html"]) {
+      const url = `https://www.wsj.com/wallhop-fallback-${failure}`;
+      const requested: string[] = [];
+      globalThis.fetch = async (input) => {
+        requested.push(String(input));
+        if (requested.length > 1) return articleResponse();
+        return failure === "http"
+          ? new Response(null, { status: 503 })
+          : new Response("<html><body>No article</body></html>", { headers: { "content-type": "text/html" } });
+      };
+      const result = await readArticle(url, ACCESS_HASH);
+      assert.deepEqual(requested, [`https://wallhop.io/${url}`, `https://freedium-mirror.cfd/${url}`]);
+      assert.equal(result.sourceUrl, `https://freedium-mirror.cfd/${url}`);
+      assert.equal(result.partial, false);
     }
   });
 });
