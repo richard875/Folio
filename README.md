@@ -72,7 +72,7 @@ This setting does not increase feed-download limits. Restart after changing it.
 
 ### Optional outbound proxy (Webshare)
 
-Set the server-only `OUTBOUND_PROXY_URL` environment variable to your proxy URL,
+For one account, set the server-only `OUTBOUND_PROXY_URL` environment variable to your proxy URL,
 for example `http://USERNAME:PASSWORD@p.webshare.io:80/`. Use your current credentials
 privately; never commit them or put them in a `VITE_` variable. Percent-encode special
 characters in the username/password. HTTP and HTTPS proxy endpoints are supported.
@@ -92,9 +92,42 @@ contains placeholders only. Unset `OUTBOUND_PROXY_MODE` (or set `configured`) to
 the URL exactly as supplied, including for non-Webshare proxies. Invalid modes fail
 requests rather than silently bypassing the proxy.
 
-Every outbound fetch creates a new CONNECT tunnel and destroys its dispatcher
+#### Multiple accounts: round-robin pool
+
+Set server-only `OUTBOUND_PROXY_URLS` to a JSON array of your accounts' URLs. A
+nonblank list **replaces**, rather than appends to, `OUTBOUND_PROXY_URL`, so include
+all three accounts in order. Blank/unset preserves the existing single-URL setup.
+The single URL may be kept or removed: it is ignored while a nonblank pool is set.
+For an ignored dotenv file (one line, placeholders only):
+
+```dotenv
+OUTBOUND_PROXY_URLS='["http://ACCOUNT_1:PASSWORD_1@p.webshare.io:80/","http://ACCOUNT_2:PASSWORD_2@p.webshare.io:80/","http://ACCOUNT_3:PASSWORD_3@p.webshare.io:80/"]'
+```
+
+The request allocation is **1 → 2 → 3 → 1 → …**, shared by article/feed downloads,
+Google resolution, retries and redirect hops using the proxy. Concurrent calls
+reserve slots synchronously; completion order may differ. Bypassed/direct requests,
+configuration inspection, cache hits and requests already aborted before allocation
+do not consume slots. An attempted proxied request consumes its slot even if it
+fails; no automatic direct fallback, account skipping, extra failover request or
+quota tracking is added. Existing retry/fail-fast rules remain in force.
+
+The pool accepts 1–16 distinct HTTP(S) URLs. Every entry is validated before any
+selection; invalid/empty/duplicate lists fail closed, not back to the single URL.
+`OUTBOUND_PROXY_MODE=rotating` applies to every entry and adds `-rotate` as needed.
+The account cursor is in process memory: it resets on restart or an effective pool
+change. Disabling routing pauses it. Multiple processes do not share a cursor.
+Equal request counts do not mean equal bandwidth usage or guaranteed combined
+monthly quota; provider allowances and terms still apply. Webshare exit-IP rotation
+remains separate and random, so different accounts may still yield the same IP.
+
+In Render's environment UI, enter the JSON array **without the surrounding dotenv
+single quotes**. For development export this server variable before `sh startup.sh`;
+restart after configuration changes. Do not put it in `VITE_` flags or tracked files.
+
+Every proxied outbound fetch creates a new CONNECT tunnel and destroys its dispatcher
 afterwards, even for the same site, retries and redirect hops. Webshare chooses a
-random exit from your pool; repeated IPs are still possible. This is not a promise
+random exit from the selected account's IP pool; repeated IPs are still possible. This is not a promise
 of a unique IP for every request. Existing third-party retrieval services make their
 own downstream requests, whose exit IPs Folio cannot control.
 
@@ -138,15 +171,16 @@ with your private values). For Render, add the same variable in the service's
 Do not assume Vite's `.env` loading makes unprefixed values available to server code.
 
 Set `OUTBOUND_PROXY_ENABLED=false` to turn proxy routing off without deleting the
-URL; set it to `true` to turn routing back on. Unset/blank defaults to `true` for
-backward compatibility, but a nonblank `OUTBOUND_PROXY_URL` is still required.
+URL/pool; set it to `true` to turn routing back on. Unset/blank defaults to `true` for
+backward compatibility, but a nonblank `OUTBOUND_PROXY_URL` or `OUTBOUND_PROXY_URLS` is still required.
 Invalid toggle values fail requests instead of silently switching to direct mode.
 Restart the server after changing either setting (redeploy on Render).
 
 When enabled and configured, feed downloads, Google News resolution, and article-fetch requests
 (including redirects and existing retrieval-service requests) use the proxy. Internal
 Folio API calls and unrelated platform integrations are not proxied. A failed proxy
-request **never falls back to a direct connection**. Unset/blank restores direct mode.
+request **never falls back to a direct connection**. Unsetting/blanking both URL
+settings restores direct mode; a configured pool takes precedence over the single URL.
 Existing article caches can return results without making a network request.
 
 Each proxied request emits a server-side JSON log with event
@@ -160,6 +194,10 @@ emit this event. Logs appear in the local server output or Render logs.
 Logs also include the effective `connectionMode`. Failures include allowlisted
 `errorCode`, `errorType`, and `proxyStatus` diagnostics (for example certificate
 errors or CONNECT 407), without exposing raw error messages or credentials.
+Proxied request logs include `proxyIndex` (1-based account position) and
+`proxyPoolSize`, so accounts sharing the same gateway can be distinguished without
+logging usernames/passwords. Bypass events list the first configured gateway and
+pool size only; they do not select or consume an account.
 
 Private-network filtering, TLS verification, deadlines and response-size limits remain
 enabled. Publisher hostnames are resolved locally and CONNECT tunnels use validated

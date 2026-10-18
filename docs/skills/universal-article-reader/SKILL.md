@@ -124,7 +124,7 @@ valid range 1–10). See `scripts/collect-articles.md` and `scripts/save-article
 **P** = publisher HTML (`direct`), **W** = WallHop (`wallhop`),
 **M** = Freedium Mirror (`freedium-mirror`), **F** = shared fallbacks below.
 
-| Publishers | Proxy enabled and URL configured | Proxy disabled / URL unset |
+| Publishers | Proxy enabled and URL/pool configured | Proxy disabled / neither configured |
 | --- | --- | --- |
 | WSJ, Foreign Policy, CNBC | W → P → M → F | W → M → F |
 | NY Times, Washington Post, Bloomberg, The Economist, Financial Times, Reuters, Business Insider | P → W → M → F | M → W → F |
@@ -173,10 +173,22 @@ npm run reader:plan -- 'https://www.wsj.com/economy/example-article'
 ## Proxy routing is separate from method order
 
 `direct` names publisher HTML, **not** a promise of a direct network connection.
-When `OUTBOUND_PROXY_ENABLED` permits it and `OUTBOUND_PROXY_URL` is nonblank,
+When `OUTBOUND_PROXY_ENABLED` permits it and `OUTBOUND_PROXY_URL` or `OUTBOUND_PROXY_URLS` is nonblank,
 the shared transport uses the configured HTTP(S) forward proxy. Webshare rotating
 mode is selected by `OUTBOUND_PROXY_MODE=rotating`; fresh tunnels permit random
 rotation but do not guarantee a different exit IP for every request.
+
+`OUTBOUND_PROXY_URLS` is an optional server-only JSON array of 1–16 distinct proxy
+URLs. It replaces the single URL when nonblank; blank/unset preserves legacy
+configuration. Validate every entry; never silently ignore an invalid pool.
+Accounts are allocated 1 → 2 → … → 1 per proxied request, including retries/redirects.
+Bypass/direct/cache hits and configuration inspection consume no account slots.
+Failures consume a slot, without extra failover or quota-based skipping. The cursor
+is process-local and resets on restart/pool change; this balances request counts,
+not bytes or guaranteed monthly allowances. `OUTBOUND_PROXY_MODE` applies to each
+account; Webshare's random exit-IP selection remains separate. Safe logs use
+`proxyIndex` and `proxyPoolSize`, never account credentials. Never put URLs in
+`VITE_` variables or tracked examples; follow the README's private pool setup.
 
 The intended exact-host bypass configuration is:
 

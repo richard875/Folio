@@ -9,7 +9,7 @@ const originalFetch = globalThis.fetch;
 const originalAccessHash = process.env.ACCESS_HASH;
 const originalRetryLimit = process.env.FETCH_RETRY_LIMIT;
 const originalMaxResponseBytes = process.env.ARTICLE_MAX_RESPONSE_BYTES;
-const originalProxyEnv = Object.fromEntries(["OUTBOUND_PROXY_ENABLED", "OUTBOUND_PROXY_URL", "OUTBOUND_PROXY_MODE", "OUTBOUND_PROXY_BYPASS_HOSTS"].map((key) => [key, process.env[key]]));
+const originalProxyEnv = Object.fromEntries(["OUTBOUND_PROXY_ENABLED", "OUTBOUND_PROXY_URL", "OUTBOUND_PROXY_URLS", "OUTBOUND_PROXY_MODE", "OUTBOUND_PROXY_BYPASS_HOSTS"].map((key) => [key, process.env[key]]));
 const ACCESS_HASH = "test-reader-access-hash";
 
 beforeEach(() => {
@@ -300,10 +300,17 @@ describe("WallHop HTML extraction", () => {
 });
 
 describe("failure handling and proxy extraction budgets", () => {
-  function enableProxy() {
+  function enableProxy(poolOnly = false) {
     process.env.OUTBOUND_PROXY_ENABLED = "true";
     process.env.OUTBOUND_PROXY_URL = "http://test-user:test-password@127.0.0.1:9999/";
     process.env.FETCH_RETRY_LIMIT = "8";
+    if (poolOnly) {
+      process.env.OUTBOUND_PROXY_URLS = JSON.stringify([
+        process.env.OUTBOUND_PROXY_URL,
+        "http://second-test-user:test-password@127.0.0.1:9999/",
+      ]);
+      delete process.env.OUTBOUND_PROXY_URL;
+    }
   }
 
   it("does not repeatedly retry invalid certificates in direct or proxy mode", async () => {
@@ -341,6 +348,24 @@ describe("failure handling and proxy extraction budgets", () => {
     let calls = 0;
     globalThis.fetch = async () => { calls++; now += 6100; throw new TypeError("fetch failed"); };
     await assert.rejects(fetchHtml("https://93.184.216.34/story", "direct", now + 48000), /fetch failed/);
+    assert.equal(calls, 1);
+  });
+
+  it("keeps the one-retry cap when only the proxy pool is configured", async () => {
+    enableProxy(true);
+    let calls = 0;
+    globalThis.fetch = async () => { calls++; throw new TypeError("fetch failed"); };
+    await assert.rejects(fetchHtml("https://93.184.216.34/pool-retries", "direct", Date.now() + 1000), /fetch failed/);
+    assert.equal(calls, 2);
+  });
+
+  it("keeps the six-second method budget when only the proxy pool is configured", async (t) => {
+    enableProxy(true);
+    let now = Date.now();
+    t.mock.method(Date, "now", () => now);
+    let calls = 0;
+    globalThis.fetch = async () => { calls++; now += 6100; throw new TypeError("fetch failed"); };
+    await assert.rejects(fetchHtml("https://93.184.216.34/pool-budget", "direct", now + 48000), /fetch failed/);
     assert.equal(calls, 1);
   });
 

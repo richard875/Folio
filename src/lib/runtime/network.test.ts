@@ -4,7 +4,8 @@ import { createServer, type IncomingMessage } from "node:http";
 import type { Duplex } from "node:stream";
 import dns from "node:dns";
 import { syncBuiltinESMExports } from "node:module";
-import { publicFetch, publicFetchRedirects, outboundProxyUrl, outboundProxyEnabled, proxyBypassed, networkErrorDetails, permanentNetworkFailure } from "./network.ts";
+import { publicFetch, publicFetchRedirects, outboundProxyUrl, outboundProxyUrls, outboundProxyActive, outboundProxyEnabled, proxyBypassed, networkErrorDetails, permanentNetworkFailure } from "./network.ts";
+import { probeList } from "../../../reader/targets.ts";
 import { Agent } from "undici";
 import { fetchHtml } from "../../../reader/fetch.ts";
 
@@ -20,16 +21,20 @@ async function fakeProxy(t: TestContext, handle: (request: IncomingMessage, sock
   const address = server.address();
   assert.ok(address && typeof address === "object");
   const previous = process.env.OUTBOUND_PROXY_URL;
+  const previousPool = process.env.OUTBOUND_PROXY_URLS;
   const previousEnabled = process.env.OUTBOUND_PROXY_ENABLED;
   const previousMode = process.env.OUTBOUND_PROXY_MODE;
   const previousBypass = process.env.OUTBOUND_PROXY_BYPASS_HOSTS;
   delete process.env.OUTBOUND_PROXY_BYPASS_HOSTS;
+  delete process.env.OUTBOUND_PROXY_URLS;
   process.env.OUTBOUND_PROXY_MODE = "configured";
   process.env.OUTBOUND_PROXY_ENABLED = "true";
   process.env.OUTBOUND_PROXY_URL = `http://test-user:test%3Apassword@127.0.0.1:${address.port}/`;
   t.after(async () => {
     if (previous === undefined) delete process.env.OUTBOUND_PROXY_URL;
     else process.env.OUTBOUND_PROXY_URL = previous;
+    if (previousPool === undefined) delete process.env.OUTBOUND_PROXY_URLS;
+    else process.env.OUTBOUND_PROXY_URLS = previousPool;
     if (previousEnabled === undefined) delete process.env.OUTBOUND_PROXY_ENABLED;
     else process.env.OUTBOUND_PROXY_ENABLED = previousEnabled;
     if (previousMode === undefined) delete process.env.OUTBOUND_PROXY_MODE;
@@ -79,6 +84,136 @@ test("proxy toggle defaults on, supports explicit off, and rejects typos", () =>
   for (const value of ["", "  ", "true", " TRUE "]) assert.equal(outboundProxyEnabled(value), true);
   for (const value of ["false", " FALSE "]) assert.equal(outboundProxyEnabled(value), false);
   for (const value of ["0", "1", "yes", "flase"]) assert.throws(() => outboundProxyEnabled(value), /Invalid OUTBOUND_PROXY_ENABLED/);
+});
+
+test("proxy pool is explicit, bounded, fully validated and never echoes credentials", () => {
+  const single = "http://legacy-user:legacy-password@proxy.example/";
+  assert.deepEqual(outboundProxyUrls("", single, "configured").map((url) => url.href), [single]);
+  assert.deepEqual(outboundProxyUrls("", "", "configured"), []);
+  const urls = ["http://account-one:private-one@p.webshare.io/", "http://account-two-rotate:private-two@p.webshare.io/"];
+  assert.deepEqual(outboundProxyUrls(JSON.stringify(urls), "invalid-ignored-single", "rotating").map((url) => url.username), ["account-one-rotate", "account-two-rotate"]);
+  for (const pool of ["private-one", "null", "{}", "[]", '[" "]', '[1]', '["http://account-one:private-one@proxy.example/path"]', JSON.stringify([urls[0], "bad-private-two"]), JSON.stringify([urls[0], urls[0]]), JSON.stringify(Array(17).fill(urls[0]))]) {
+    assert.throws(() => outboundProxyUrls(pool, single, "configured"), (error: Error) => {
+      assert.match(error.message, /Invalid OUTBOUND_PROXY_URLS/);
+      assert.doesNotMatch(error.message, /account-one|private-one|private-two|legacy-password/);
+      return true;
+    });
+  }
+  assert.throws(() => outboundProxyUrls(JSON.stringify([single]), "", "rotating"), /Invalid OUTBOUND_PROXY_URLS/);
+  assert.throws(() => outboundProxyUrls(JSON.stringify(urls), "", "invalid"), /Invalid OUTBOUND_PROXY_URLS/);
+  assert.throws(() => outboundProxyUrls(JSON.stringify([urls[0], urls[0].replace("account-one:", "account-one-rotate:")]), "", "rotating"), /Invalid OUTBOUND_PROXY_URLS/);
+  assert.equal(outboundProxyUrls(JSON.stringify(Array.from({ length: 16 }, (_, index) => `http://account-${index}:password@p.webshare.io/`)), "", "rotating").length, 16);
+});
+
+test("an invalid pool never dispatches through the legacy proxy or direct transport", async (t) => {
+  await fakeProxy(t, (_request, socket) => { socket.destroy(); });
+  process.env.OUTBOUND_PROXY_URLS = '["http://pool-user:private-password@proxy.example/", "invalid-private-value"]';
+  let requests = 0;
+  t.mock.method(globalThis, "fetch", async () => { requests++; return new Response("unexpected"); });
+  await assert.rejects(publicFetch("https://example.com/story"), (error: Error) => {
+    assert.match(error.message, /Invalid OUTBOUND_PROXY_URLS/);
+    assert.doesNotMatch(error.message, /pool-user|private-password|invalid-private-value/);
+    return true;
+  });
+  assert.equal(requests, 0);
+});
+
+function usePool() {
+  const base = process.env.OUTBOUND_PROXY_URL!;
+  process.env.OUTBOUND_PROXY_URLS = JSON.stringify(["one", "two", "three"].map((account) => base.replace("test-user:", `test-${account}:`)));
+  return ["one", "two", "three"].map((account) => `Basic ${Buffer.from(`test-${account}:test:password`).toString("base64")}`);
+}
+
+test("request-level round robin cycles accounts across normal requests, retries and redirect hops", async (t) => {
+  const authorizations: unknown[] = [];
+  await fakeProxy(t, (request, socket) => {
+    authorizations.push(request.headers["proxy-authorization"]);
+    const count = authorizations.length;
+    const response = count === 5
+      ? "HTTP/1.1 503 Unavailable\r\nContent-Length: 0\r\n\r\n"
+      : count === 7
+        ? "HTTP/1.1 302 Found\r\nLocation: /redirected\r\nContent-Length: 0\r\n\r\n"
+        : "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 7\r\n\r\narticle";
+    tunnel(socket, response);
+  });
+  const accounts = usePool();
+  delete process.env.OUTBOUND_PROXY_URL; // The pool alone must enable reader proxy orders/budgets.
+  for (let count = 0; count < 4; count++) {
+    assert.equal(outboundProxyActive(), true);
+    assert.equal(outboundProxyUrls().length, 3);
+    assert.equal(probeList("https://example.com/story")[0].method, "direct");
+    assert.equal(await (await publicFetch("http://93.184.216.34/story", { signal: AbortSignal.timeout(2000) })).text(), "article");
+  }
+  const previousRetry = process.env.FETCH_RETRY_LIMIT;
+  process.env.FETCH_RETRY_LIMIT = "1";
+  t.after(() => { if (previousRetry === undefined) delete process.env.FETCH_RETRY_LIMIT; else process.env.FETCH_RETRY_LIMIT = previousRetry; });
+  assert.equal(await fetchHtml("http://93.184.216.34/story", "direct", Date.now() + 3000), "article");
+  assert.equal(await (await publicFetchRedirects("http://93.184.216.34/story", { signal: AbortSignal.timeout(2000) })).text(), "article");
+  assert.deepEqual(authorizations, Array.from({ length: 8 }, (_, index) => accounts[index % 3]));
+});
+
+test("concurrent requests allocate slots before asynchronous transport completes", async (t) => {
+  const received = new Map<string, unknown>();
+  await fakeProxy(t, (request, socket) => {
+    const account = request.headers["proxy-authorization"];
+    tunnel(socket, "HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok", (text) => {
+      received.set(/GET (\S+)/.exec(text)![1], account);
+    });
+  });
+  const accounts = usePool();
+  await Promise.all(Array.from({ length: 9 }, (_, index) => publicFetch(`http://93.184.216.34/story-${index}`, { signal: AbortSignal.timeout(3000) })));
+  for (let index = 0; index < 9; index++) assert.equal(received.get(`/story-${index}`), accounts[index % 3]);
+});
+
+test("bypass, disabled routing, cancelled requests and inspection do not consume pool slots", async (t) => {
+  const received: unknown[] = [];
+  await fakeProxy(t, (request, socket) => {
+    received.push(request.headers["proxy-authorization"]);
+    tunnel(socket, "HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok");
+  });
+  const accounts = usePool();
+  const originalFetch = globalThis.fetch;
+  t.mock.method(globalThis, "fetch", async (input: Parameters<typeof fetch>[0], init?: RequestInit & { dispatcher?: unknown }) => {
+    if (init?.dispatcher instanceof Agent) return new Response("bypassed");
+    return originalFetch(input, init);
+  });
+  await publicFetch("http://93.184.216.34/one");
+  process.env.OUTBOUND_PROXY_BYPASS_HOSTS = "93.184.216.34";
+  assert.equal(await (await publicFetch("http://93.184.216.34/bypass")).text(), "bypassed");
+  delete process.env.OUTBOUND_PROXY_BYPASS_HOSTS;
+  process.env.OUTBOUND_PROXY_ENABLED = "false";
+  const configured = process.env.OUTBOUND_PROXY_URLS;
+  process.env.OUTBOUND_PROXY_URLS = "invalid-private-value";
+  assert.equal(outboundProxyActive(), false);
+  await publicFetch("http://93.184.216.34/disabled");
+  process.env.OUTBOUND_PROXY_URLS = configured;
+  process.env.OUTBOUND_PROXY_ENABLED = "true";
+  await assert.rejects(publicFetch("http://93.184.216.34/cancelled", { signal: AbortSignal.abort() }));
+  for (let count = 0; count < 5; count++) assert.equal(outboundProxyActive(), true);
+  await publicFetch("http://93.184.216.34/two");
+  assert.deepEqual(received, accounts.slice(0, 2));
+});
+
+test("proxy failures consume a slot without direct fallback and safe logs identify account indexes", async (t) => {
+  const received: unknown[] = [];
+  await fakeProxy(t, (request, socket) => {
+    received.push(request.headers["proxy-authorization"]);
+    if (received.length === 1) socket.end("HTTP/1.1 407 Proxy Authentication Required\r\nContent-Length: 0\r\n\r\n");
+    else tunnel(socket, "HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok");
+  });
+  const accounts = usePool();
+  const logs: string[] = [];
+  t.mock.method(console, "info", (message: string) => { logs.push(message); });
+  await assert.rejects(publicFetch("https://93.184.216.34/private-query?token=hidden", { signal: AbortSignal.timeout(2000) }));
+  assert.equal(await (await publicFetch("http://93.184.216.34/story")).text(), "ok");
+  assert.deepEqual(received, accounts.slice(0, 2));
+  assert.deepEqual(logs.map((entry) => JSON.parse(entry).proxyIndex), [1, 2]);
+  assert.ok(logs.every((entry) => JSON.parse(entry).proxyPoolSize === 3));
+  assert.doesNotMatch(logs.join("\n"), /test-one|test-two|test-three|test:password|private-query|hidden/);
+  process.env.OUTBOUND_PROXY_URLS = JSON.stringify([JSON.parse(process.env.OUTBOUND_PROXY_URLS!)[2]]);
+  await publicFetch("http://93.184.216.34/new-pool");
+  assert.equal(received[2], accounts[2]);
+  assert.equal(JSON.parse(logs[2]).proxyIndex, 1);
 });
 
 test("environment-selected rotation remains enforced while explicit generic fixtures stay independent", (t) => {

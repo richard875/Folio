@@ -23,6 +23,8 @@ attempts, not guarantees of working or complete articles.
 **Routing is separate from order:** explicitly bypassing `wallhop.io` and
 `freedium-mirror.cfd` makes those hosts direct; others use the configured proxy
 when enabled. No hosts bypass it by default. Redirects are checked separately.
+An optional `OUTBOUND_PROXY_URLS` pool rotates accounts per proxied request;
+bypassed requests do not advance it. [Pool setup](../README.md#multiple-accounts-round-robin-pool).
 
 **Configure:** [retrieval.config.ts](retrieval.config.ts) for order;
 [methods.ts](methods.ts) for service URLs and settings.

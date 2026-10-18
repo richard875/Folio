@@ -1,5 +1,5 @@
 import { methodDefinition, METHOD_DEFAULTS, userAgentFor } from "./methods.ts";
-import { boundedBytes, publicFetch, publicUrl, outboundProxyEnabled, outboundProxyUrl, permanentNetworkFailure } from "../src/lib/runtime/network.ts";
+import { boundedBytes, publicFetch, publicUrl, outboundProxyActive, permanentNetworkFailure } from "../src/lib/runtime/network.ts";
 import { boundedInteger } from "../src/lib/runtime/limits.ts";
 
 const DEFAULT_MAX_BYTES = 8_000_000;
@@ -34,7 +34,7 @@ export async function fetchHtmlWithRedirects(
 ): Promise<FetchResult> {
   // A failing service must not consume the entire 48-second extraction budget.
   // Direct mode retains its existing retry/deadline behaviour.
-  const proxyActive = outboundProxyEnabled() && Boolean(outboundProxyUrl());
+  const proxyActive = outboundProxyActive();
   const limit = proxyActive ? Math.min(retryLimit(), 1) : retryLimit();
   const definition = methodDefinition(method);
   const budgetMs = definition?.totalBudgetMs ?? (proxyActive ? METHOD_DEFAULTS.proxyBudgetMs : null);

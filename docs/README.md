@@ -18,7 +18,7 @@
 
 ## Current implementation guides
 
-- [Root README](../README.md): setup, API map and proxy operation.
+- [Root README](../README.md): setup, API map, single-proxy operation and round-robin account pools.
 - [Deployment](../deployment.md): single-process Render Free and temporary storage.
 - [Reader overview](../reader/README.md) and [maintainer guide](../reader/AI-GUIDE.md).
 - [Feed catalog](../data/README.md) and [selection policy](../scripts/feed-selection.md).

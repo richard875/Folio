@@ -1,4 +1,5 @@
 import { lookup } from "node:dns";
+import { createHash } from "node:crypto";
 import { BlockList, isIP, type LookupFunction } from "node:net";
 import { Agent, Pool, ProxyAgent } from "undici";
 
@@ -85,6 +86,52 @@ export function outboundProxyUrl(value = process.env.OUTBOUND_PROXY_URL, mode = 
     throw new Error("Invalid OUTBOUND_PROXY_MODE: expected configured or rotating.");
   }
   return url;
+}
+
+/** Inspect configuration without advancing the request-level round-robin cursor.
+ * A nonblank JSON list replaces the legacy single URL; invalid lists fail closed. */
+export function outboundProxyUrls(
+  value = process.env.OUTBOUND_PROXY_URLS,
+  single = process.env.OUTBOUND_PROXY_URL,
+  mode = process.env.OUTBOUND_PROXY_MODE,
+): URL[] {
+  if (!value?.trim()) {
+    const proxy = outboundProxyUrl(single, mode);
+    return proxy ? [proxy] : [];
+  }
+  try {
+    if (value.length > 65536) throw new Error();
+    const entries: unknown = JSON.parse(value);
+    if (!Array.isArray(entries) || entries.length < 1 || entries.length > 16) throw new Error();
+    const proxies = entries.map((entry: unknown) => {
+      if (typeof entry !== "string" || !entry.trim()) throw new Error();
+      return outboundProxyUrl(entry, mode)!;
+    });
+    if (new Set(proxies.map((proxy) => proxy.href)).size !== proxies.length) throw new Error();
+    return proxies;
+  } catch {
+    // Do not echo JSON, URLs, credentials or parser/validation exceptions.
+    throw new Error("Invalid OUTBOUND_PROXY_URLS: expected a JSON array of 1–16 distinct http(s) proxy URLs compatible with OUTBOUND_PROXY_MODE.");
+  }
+}
+
+export function outboundProxyActive(): boolean {
+  return outboundProxyEnabled() && outboundProxyUrls().length > 0;
+}
+
+let proxyPoolKey = "";
+let nextProxyIndex = 0;
+
+/** Synchronous allocation before DNS/fetch awaits keeps concurrent calls fair. */
+function selectProxy(proxies: URL[]): { proxy: URL; index: number } {
+  const key = createHash("sha256").update(JSON.stringify(proxies.map((proxy) => proxy.href))).digest("hex");
+  if (key !== proxyPoolKey) {
+    proxyPoolKey = key;
+    nextProxyIndex = 0;
+  }
+  const index = nextProxyIndex;
+  nextProxyIndex = (index + 1) % proxies.length;
+  return { proxy: proxies[index], index };
 }
 
 /** Exact host matches only: redirects are evaluated independently. */
@@ -201,10 +248,12 @@ export async function boundedBytes(response: Response, maximum: number, signal?:
  * Redirects are deliberately manual: each new destination is validated again. */
 export async function publicFetch(input: string | URL | Request, init: RequestInit = {}, maximumBytes = 8_000_000): Promise<Response> {
   const url = publicUrl(input instanceof Request ? input.url : String(input));
-  const configuredProxy = outboundProxyEnabled() ? outboundProxyUrl() : undefined;
-  const bypass = configuredProxy && proxyBypassed(url);
-  const proxy = bypass ? undefined : configuredProxy;
-  if (bypass) console.info(JSON.stringify({ event: "outbound_proxy_bypass", site: url.origin, proxy: configuredProxy.origin, reason: "configured_hostname" }));
+  const proxies = outboundProxyEnabled() ? outboundProxyUrls() : [];
+  const bypass = proxies.length > 0 && proxyBypassed(url);
+  init.signal?.throwIfAborted();
+  const selected = proxies.length > 0 && !bypass ? selectProxy(proxies) : undefined;
+  const proxy = selected?.proxy;
+  if (bypass) console.info(JSON.stringify({ event: "outbound_proxy_bypass", site: url.origin, proxy: proxies[0].origin, proxyPoolSize: proxies.length, reason: "configured_hostname" }));
   let agent: Agent | ProxyAgent | undefined;
   const started = Date.now();
   let status: number | null = null;
@@ -233,6 +282,8 @@ export async function publicFetch(input: string | URL | Request, init: RequestIn
       event: "outbound_proxy_request",
       site: url.origin,
       proxy: proxy.origin,
+      proxyIndex: selected!.index + 1,
+      proxyPoolSize: proxies.length,
       status,
       outcome,
       connectionMode: proxy.hostname === "p.webshare.io" && decodeURIComponent(proxy.username).endsWith("-rotate") ? "rotating" : "configured",

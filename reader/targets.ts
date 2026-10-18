@@ -1,5 +1,5 @@
 export { publicUrl as assertPublicHttpUrl } from "../src/lib/runtime/network.ts";
-import { outboundProxyEnabled, outboundProxyUrl } from "../src/lib/runtime/network.ts";
+import { outboundProxyActive } from "../src/lib/runtime/network.ts";
 import { methodUrl, type MethodId } from "./methods.ts";
 import { DEFAULT_ORDER, PUBLISHERS, type RetrievalOrder } from "./retrieval.config.ts";
 
@@ -18,5 +18,5 @@ export function buildProbeList(original: string, proxyActive: boolean): Probe[] 
 
 /** Runtime adapter. Exact-host bypasses do not change which order is selected. */
 export function probeList(original: string): Probe[] {
-  return buildProbeList(original, outboundProxyEnabled() && Boolean(outboundProxyUrl()));
+  return buildProbeList(original, outboundProxyActive());
 }

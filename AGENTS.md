@@ -28,6 +28,10 @@ greeting, audit or documentation request.
   `reader/retrieval.config.ts` for publisher orders; `reader/methods.ts` for
   retrieval services/headers/timeouts. Root `reader/` is active extraction code;
   `@reader/*` maps there. Feed/batch/agent/runtime helpers live in `src/lib/`.
+- **Proxy accounts:** server-only `OUTBOUND_PROXY_URLS` optionally supplies a JSON
+  array replacing `OUTBOUND_PROXY_URL`. Shared networking allocates accounts round
+  robin per proxied request; bypasses and configuration inspection do not advance it.
+  Keep test isolation for both settings and never commit real account URLs.
 - **Current guides:** `README.md`, `deployment.md`, `reader/AI-GUIDE.md`,
   `scripts/*.md`, and `docs/skills/universal-article-reader/SKILL.md`.
   Keep the human `reader/README.md` very concise. Handovers/research/prompts are

@@ -27,7 +27,7 @@ orders/templates changes future requests, not historical saved data.
 **P** = publisher HTML (`direct`), **W** = WallHop (`wallhop`),
 **M** = Freedium Mirror (`freedium-mirror`), **F** = the full fallback list below.
 
-| Publisher | Proxy enabled + URL configured | Proxy disabled / URL unset |
+| Publisher | Proxy enabled + URL/pool configured | Proxy disabled / neither configured |
 | --- | --- | --- |
 | The Wall Street Journal | W → P → M → F | W → M → F |
 | The New York Times | P → W → M → F | M → W → F |
@@ -132,7 +132,7 @@ article HTML from the same normal page URL rather than its JavaScript loading sc
 
 The two arrays select **priority**, not transport:
 
-- `withProxy` applies when a valid proxy URL is configured and the toggle allows it.
+- `withProxy` applies when a valid proxy URL or pool is configured and the toggle allows it.
   It still applies if WallHop or Freedium Mirror are explicitly bypassed.
 - The method named `direct` means **publisher HTML**. It still uses Webshare when
   proxy routing is active, unless that publisher hostname is explicitly bypassed.
@@ -147,6 +147,16 @@ This is an example of the intended environment value, **not a new hardcoded defa
 Archive hosts remain proxied. Each redirect is validated/routed separately; there
 is no error-triggered direct fallback. TLS and private-network checks remain enabled.
 Third-party services control their own downstream publisher connections.
+
+Server-only `OUTBOUND_PROXY_URLS` optionally supplies a JSON array of 1–16 distinct
+proxy URLs, replacing the legacy `OUTBOUND_PROXY_URL` when nonblank. The shared
+transport allocates accounts round robin per proxied request, including retries
+and redirects. `outboundProxyActive()` checks the whole configuration without
+advancing the cursor, so reader-plan/budget checks do not consume account slots.
+Bypassed/direct requests do not advance it. Failures consume their assigned slot;
+there is no quota-based skipping or hidden direct fallback. The cursor is local to
+one Node process and resets on restart/pool change. Webshare rotating mode still
+selects random exit IPs independently. See the [pool setup](../README.md#multiple-accounts-round-robin-pool).
 
 ## Why later methods can still run after WallHop succeeds
 

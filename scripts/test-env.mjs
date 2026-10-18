@@ -3,6 +3,7 @@
 // Production/start/dev/build commands intentionally do not load this module.
 for (const key of [
   "OUTBOUND_PROXY_URL",
+  "OUTBOUND_PROXY_URLS",
   "OUTBOUND_PROXY_ENABLED",
   "OUTBOUND_PROXY_MODE",
   "OUTBOUND_PROXY_BYPASS_HOSTS",

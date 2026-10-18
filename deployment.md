@@ -35,17 +35,28 @@ history and job statuses. Keep important output in a separate local archive.
 Add `OUTBOUND_PROXY_URL` as a **secret environment variable** in the Render service
 and redeploy. Format: `http://USERNAME:PASSWORD@p.webshare.io:80/` (placeholder
 credentials only). Use the same setting locally for comparable routing. Never put
-the secret into `render.yaml`, Git, or a `VITE_` variable. Leave it unset for direct
-connections. Configured proxy failures do not fall back to Render's outbound IP.
+the secret into `render.yaml`, Git, or a `VITE_` variable. Leave both URL settings
+unset for direct connections. Configured proxy failures do not fall back to Render's outbound IP.
 See the README's outbound-proxy section for scope, TLS and DNS behaviour.
 Set `OUTBOUND_PROXY_ENABLED=false` to disable the proxy while keeping its URL;
 set `true` to re-enable it, then redeploy. Unset/blank defaults to true and still
-requires a nonblank proxy URL. Invalid toggle values fail requests.
+requires a nonblank single URL or pool. Invalid toggle values fail requests.
 For Webshare rotation, set `OUTBOUND_PROXY_MODE=rotating` with the `p.webshare.io:80`
 HTTP gateway. Folio adds `-rotate` to the username if missing and opens a fresh
 tunnel for every request, retry and redirect. Webshare randomly selects from your
 pool, so consecutive IPs can repeat. Unset mode or `configured` preserves the URL's
 credentials unchanged. Set these values in the service environment, then redeploy.
+
+For multiple accounts, set secret `OUTBOUND_PROXY_URLS` to a JSON array containing
+all account URLs in the desired round-robin order (1–16 distinct URLs). It replaces
+`OUTBOUND_PROXY_URL`; blank/unset falls back to the single URL. In Render enter
+the array without dotenv's outer single quotes. `OUTBOUND_PROXY_MODE` applies to
+every entry. Invalid lists fail requests rather than silently using direct transport
+or the old URL. See the [pool configuration](README.md#multiple-accounts-round-robin-pool).
+Each proxied request, retry and redirect hop takes the next account; bypassed
+requests do not. Allocation is process-local and restarts at account 1 on restart
+or pool change. It balances request counts, not bytes, and does not track quotas
+or guarantee provider allowances. No real credentials belong in the Blueprint.
 
 If third-party retrieval services work directly but not through the proxy, set
 `OUTBOUND_PROXY_BYPASS_HOSTS` to a comma-separated list of their exact hostnames.
