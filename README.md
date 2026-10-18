@@ -31,6 +31,10 @@ See [`.env.example`](.env.example) for configuration options. Keep `VITE_AUTH_EN
 
 ### Article retrieval order
 
+For editable publisher orders, method definitions and a full fallback diagram,
+see **[reader/README.md](reader/README.md)**. Configuration lives in
+`reader/retrieval.config.ts` (ordering) and `reader/methods.ts` (service definitions).
+
 Folio uses WallHop's normal HTML page (`https://wallhop.io/https://…`), not its
 `/raw` or `/api` endpoints, with the existing article parser:
 

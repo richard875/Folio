@@ -1,192 +1,22 @@
 export { publicUrl as assertPublicHttpUrl } from "../src/lib/runtime/network.ts";
 import { outboundProxyEnabled, outboundProxyUrl } from "../src/lib/runtime/network.ts";
+import { methodUrl, type MethodId } from "./methods.ts";
+import { DEFAULT_ORDER, PUBLISHERS, type RetrievalOrder } from "./retrieval.config.ts";
 
-// Premium news domains that benefit from Freedium-first approach
-const PREMIUM_DOMAINS = new Set([
-  "nytimes.com",
-  "www.nytimes.com",
-  "washingtonpost.com",
-  "www.washingtonpost.com",
-  "bloomberg.com",
-  "www.bloomberg.com",
-  "reuters.com",
-  "www.reuters.com",
-  "economist.com",
-  "www.economist.com",
-  "ft.com",
-  "www.ft.com",
-]);
+export type Probe = { method: MethodId; url: string };
 
-// Domains that work best with archive.is/newest (tried first)
-const ARCHIVE_NEWEST_DOMAINS = new Set([
-  "wsj.com",
-  "www.wsj.com",
-  "foreignpolicy.com",
-  "www.foreignpolicy.com",
-  "cnbc.com",
-  "www.cnbc.com",
-  "businessinsider.com",
-  "www.businessinsider.com",
-]);
-
-// Domains that block cloud IPs heavily - need text extraction services first
-const CLOUD_BLOCKED_DOMAINS = new Set([
-  "wsj.com",
-  "www.wsj.com",
-  "cnbc.com",
-  "www.cnbc.com",
-]);
-
-function isPremiumDomain(url: string): boolean {
-  try {
-    const host = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
-    return PREMIUM_DOMAINS.has(host) || PREMIUM_DOMAINS.has(`www.${host}`);
-  } catch {
-    return false;
-  }
-}
-
-function isArchiveNewestDomain(url: string): boolean {
-  try {
-    const host = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
-    return ARCHIVE_NEWEST_DOMAINS.has(host) || ARCHIVE_NEWEST_DOMAINS.has(`www.${host}`);
-  } catch {
-    return false;
-  }
-}
-
-function isCloudBlockedDomain(url: string): boolean {
-  try {
-    const host = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
-    return CLOUD_BLOCKED_DOMAINS.has(host) || CLOUD_BLOCKED_DOMAINS.has(`www.${host}`);
-  } catch {
-    return false;
-  }
-}
-
-export type Probe = { method: string; url: string };
-
-const WALLHOP_FIRST_DOMAINS = new Set(["wsj.com", "foreignpolicy.com", "cnbc.com"]);
-const WALLHOP_SECOND_DOMAINS = new Set([
-  "nytimes.com", "washingtonpost.com", "bloomberg.com", "economist.com",
-  "ft.com", "reuters.com", "businessinsider.com",
-]);
-
-/** Build Freedium Mirror URLs (WORKS on Render for many domains) */
-function freediumMirrorProbes(original: string, enc: string): Probe[] {
-  return [
-    { method: "freedium-mirror", url: `https://freedium-mirror.cfd/${original}` },
-    { method: "freedium-mirror-encoded", url: `https://freedium-mirror.cfd/${enc}` },
-  ];
-}
-
-/** Build archive service URLs (heavily rate-limited on cloud IPs) */
-function archiveProbes(original: string, enc: string): Probe[] {
-  return [
-    { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
-    { method: "archive.today", url: `https://archive.today/latest/${original}` },
-    { method: "archive.ph", url: `https://archive.ph/${original}` },
-    { method: "archive.is", url: `https://archive.is/${original}` },
-    { method: "removepaywalls", url: `https://removepaywalls.com/${original}` },
-    { method: "removepaywall", url: `https://removepaywall.com/${original}` },
-    { method: "removepaywall-co", url: `https://removepaywall.co/${original}` },
-    { method: "wayback", url: `https://web.archive.org/web/${original}` },
-    { method: "wayback-id", url: `https://web.archive.org/web/id_/${original}` },
-  ];
-}
-
-/** Build text-extraction service URLs (slow, timeout-prone on cloud) */
-function textExtractionProbes(original: string, enc: string): Probe[] {
-  const noProto = original.replace(/^https?:\/\//, "");
-  return [
-    // Jina AI Reader - returns clean text but slow/times out on cloud
-    { method: "jina-http", url: `https://r.jina.ai/http://${noProto}` },
-    { method: "jina-https", url: `https://r.jina.ai/https://${noProto}` },
-    { method: "jina-enc", url: `https://r.jina.ai/http://${enc}` },
-    // Bing cache via Jina AI
-    { method: "textise-dot-iitty", url: `https://r.jina.ai/http://cc.bingj.com/cache.aspx?d=503-123&u=${enc}` },
-  ];
-}
-
-export function probeList(original: string): Probe[] {
-  const enc = encodeURIComponent(original);
-  const premium = isPremiumDomain(original);
-  const archiveNewest = isArchiveNewestDomain(original);
-  const cloudBlocked = isCloudBlockedDomain(original);
-
-  // Build cascade: mirror, archives, then text extraction services.
-  const raw: Probe[] = [];
-
-  // With a proxy available, try the actual publisher before external retrieval
-  // services. The transport still uses the configured proxy; "direct" here
-  // names the extraction method, not a bypass of proxy routing.
-  if (outboundProxyEnabled() && outboundProxyUrl()) raw.push({ method: "direct", url: original });
-
-  // Keep the working mirror ahead of the other retrieval services.
-  raw.push(...freediumMirrorProbes(original, enc));
-
-  if (cloudBlocked) {
-    // For cloud-blocked domains (WSJ, CNBC):
-    // Archive services return 429 on Render; text extraction doesn't work either.
-    // Try archive services anyway (work locally), then Jina AI as last resort.
-    raw.push(
-      { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
-      { method: "archive.today", url: `https://archive.today/latest/${original}` },
-      { method: "archive.ph", url: `https://archive.ph/${original}` },
-      { method: "archive.is", url: `https://archive.is/${original}` },
-    );
-  }
-
-  if (archiveNewest && !cloudBlocked) {
-    // For other archiveNewest domains (foreignpolicy, businessinsider)
-    raw.push(
-      { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
-      { method: "archive.today", url: `https://archive.today/latest/${original}` },
-      { method: "archive.ph", url: `https://archive.ph/${original}` },
-      { method: "archive.is", url: `https://archive.is/${original}` },
-    );
-  }
-
-  if (premium) {
-    // For premium domains, archive.is/newest early too
-    raw.push(
-      { method: "archive.is-newest", url: `https://archive.is/newest/${original}` },
-      { method: "archive.today", url: `https://archive.today/latest/${original}` },
-      { method: "archive.ph", url: `https://archive.ph/${original}` },
-      { method: "archive.is", url: `https://archive.is/${original}` },
-    );
-  }
-
-  // Archive services for all domains
-  raw.push(...archiveProbes(original, enc));
-
-  // Text extraction LAST (slow, times out on cloud)
-  raw.push(...textExtractionProbes(original, enc));
-
-  // Other services
-  raw.push(
-    { method: "smry", url: `https://smry.ai/${original}` },
-    { method: "12ft", url: `https://12ft.io/${original}` },
-    { method: "googlebot", url: original },
-    { method: "direct-bingbot", url: original },
-    { method: "direct-facebook", url: original },
-    { method: "direct-twitter", url: original },
-  );
-
-  const seen = new Set<string>();
-  const probes = raw.filter((p) => {
-    const key = `${p.method}|${p.url}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-
-  // Use the normal HTML reader page, never WallHop's /raw or /api endpoints.
-  // Insert after deduplication so "second" means the second distinct method
-  // whether the first attempt is proxied publisher HTML or the mirror.
+/** Pure plan builder: no environment reads, network requests or file writes. */
+export function buildProbeList(original: string, proxyActive: boolean): Probe[] {
   const host = new URL(original).hostname.toLowerCase().replace(/^www\./, "");
-  const wallhop = { method: "wallhop", url: `https://wallhop.io/${original}` };
-  if (WALLHOP_FIRST_DOMAINS.has(host)) probes.splice(0, 0, wallhop);
-  else if (WALLHOP_SECOND_DOMAINS.has(host)) probes.splice(1, 0, wallhop);
-  return probes;
+  const order: RetrievalOrder = Object.hasOwn(PUBLISHERS, host)
+    ? PUBLISHERS[host as keyof typeof PUBLISHERS]
+    : DEFAULT_ORDER;
+  const methods = proxyActive ? order.withProxy : order.withoutProxy;
+  // Preserve the historical duplicate-probe protection when editing lists.
+  return [...new Set(methods)].map((method) => ({ method, url: methodUrl(method, original) }));
+}
+
+/** Runtime adapter. Exact-host bypasses do not change which order is selected. */
+export function probeList(original: string): Probe[] {
+  return buildProbeList(original, outboundProxyEnabled() && Boolean(outboundProxyUrl()));
 }
