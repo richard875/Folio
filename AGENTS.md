@@ -27,10 +27,24 @@ greeting, audit or documentation request.
   Keep the human `reader/README.md` very concise. Handovers/research/prompts are
   historical snapshots, not current configuration authorities.
 
-The optional App Builder library under `.grok/` is scoped by
-[.grok/README.md](.grok/README.md). Its game/art/account/database examples are
+## AI Agent Resources
+
+Supporting skills and references from the App Builder library have one shared
+home under `.claude/`, discovered by both Claude Code and OpenCode:
+
+- **Skills:** `.claude/skills/` (18 optional feature recipes)
+- **References:** `.claude/references/`
+- **Indexes:** `.claude/README.md` and each resource directory's `_INDEX.md`
+- **Project instructions:** this `AGENTS.md` is authoritative; `CLAUDE.md` imports it
+- **OpenCode:** `opencode.json` explicitly loads the `.claude/references/` guides
+- **Runtime config:** Folio reads `.claude/app-env.defaults.json` and optional
+  `.claude/app-env.json`.
+
+Edit shared resources in place; do not create tool-specific copies. These are
 recipes for explicitly requested future work, not features already in Folio.
 Statements about platform provisioning apply only in that platform environment.
+See `.claude/README.md` for the distinction between template material and active
+Folio features. No `.agents/` or `.ai/` resource tree is needed.
 
 ## 0.5 Decide scope, auth and storage before implementing
 
@@ -53,7 +67,8 @@ change requiring an explicit request. For a separately authorized app feature:
 - Otherwise use local state/`localStorage` as appropriate; add no migrations,
   `@/lib/db` imports or login routes. This does not replace Folio's existing
   server file store with browser storage.
-- If a future account-backed feature is authorized, read `.grok/references/data-and-auth.md`
+- If a future account-backed feature is authorized, read `.claude/references/data-and-auth.md`
+  (also in `opencode.json` instructions)
   plus the `auth`/`neon` skills. Every per-user server function must use
   `authMiddleware` and verified `context.userId` query scoping, never a client id.
   Do not add account middleware to Folio's account-free APIs.
@@ -70,15 +85,15 @@ when the requested change needs them; do not reinstall as routine QA.
 
 The existing root `startup.sh` changes to its own directory, probes
 `http://127.0.0.1:8080/`, and starts `npm run dev` in the background only if needed.
-It logs to `.grok/dev.log`. Run **`sh startup.sh`** from the repository root.
+It logs to `.claude/dev.log`. Run **`sh startup.sh`** from the repository root.
 Keep it idempotent and non-blocking, update it when the development start contract
 changes, and never delete or rename it. In a hosted App Builder sandbox the same
 root file is `/workspace/startup.sh`; do not create `/workspace` on macOS.
 
 - Development binds **`0.0.0.0:8080`**. Keep the dev and QA preview port contracts.
 - Start Vite through npm scripts, never `vite` / `npx vite` directly. The wrapper
-  `scripts/with-app-env.mjs` merges tracked `.grok/app-env.defaults.json`, optional
-  ignored `.grok/app-env.json`, then process variables (highest precedence).
+  `scripts/with-app-env.mjs` merges tracked `.claude/app-env.defaults.json`, optional
+  ignored `.claude/app-env.json`, then process variables (highest precedence).
   Only `VITE_` string entries are flags; those JSON files are not secret stores.
 - `npm start` loads an existing ignored `.env` and starts the production build
   with constrained memory. Render supplies runtime environment variables and `PORT`.
@@ -121,9 +136,10 @@ optional account scaffold. Do not add Grok sign-in buttons to Folio's access-key
 1. **Inspect first.** Check Git status and relevant source/instructions. Preserve
    user changes. Commit, push, credential rotation and history cleanup each need
    appropriate current authorization; one request is not standing permission.
-2. **Consult matching recipes only when applicable.** UI → `design-ui`; game/canvas/3D
-   → `building-games`; game UI → both; WASD/vehicles/flight → `controls` before
-   movement code. Only use `imagine_*` tools if actually available. Otherwise use
+2. **Consult matching recipes only when applicable.** UI → `.claude/skills/design-ui`;
+   game/canvas/3D → `.claude/skills/building-games`; game UI → both;
+   WASD/vehicles/flight → `.claude/skills/controls` before movement code.
+   Only use `imagine_*` tools if actually available. Otherwise use
    CSS/SVG/canvas/geometry; abstract games stay procedural. Source images are art,
    never a substitute for an implemented UI.
    Viewer connector data, if requested, uses backend-only `src/lib/app-data/`
@@ -149,13 +165,14 @@ optional account scaffold. Do not add Grok sign-in buttons to Folio's access-key
    Follow the `og` skill when a custom card is actually required. Establish
    routes/types/tokens/dependencies and non-overlapping file ownership before any
    parallel agent writes; delegate only when authorized by the user or applicable
-   skill. If a brand task is dispatched, **no `wait_tasks`, never `get_task_output`**
-   on it; leave it running and use its completion notification. Its relative marker
-   is `.grok/og-pending` (`/workspace/.grok/og-pending` in the hosted sandbox), stale
+   skill (see `.claude/skills/og/SKILL.md`). If a brand task is dispatched,
+   **no `wait_tasks`, never `get_task_output`** on it; leave it running and use
+   its completion notification. Its relative marker
+   is `.claude/og-pending` (`/workspace/.claude/og-pending` in the hosted sandbox), stale
    after **10 minutes**. A fresh marker suppresses brand warnings; do not duplicate
    the task. Folio is a utility, not a game; documentation maintenance is not a
    reason to generate new assets or change branding.
-7. **Verify rendering when UI/runtime changes.** Read `.grok/references/browser-qa.md`.
+7. **Verify rendering when UI/runtime changes.** Read `.claude/references/browser-qa.md`.
    `node scripts/browser-smoke.mjs http://127.0.0.1:8080/ docs/qa/screenshots/change-dev.png`
    audits desktop and mobile. Inspect both screenshots and ensure visible content,
    no horizontal overflow and no uncaught console/module/hydration errors. A curl

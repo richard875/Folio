@@ -24,7 +24,7 @@
 - [Links](../scripts/fetch-links.md), [collection](../scripts/collect-articles.md),
   [save/save-batch](../scripts/save-articles.md), [agent reading](../scripts/agent-reader.md),
   and [Swagger](../scripts/swagger.md).
-- [App Builder reference scope](../.grok/README.md): optional generic recipes,
+- [App Builder reference scope](../.claude/README.md): optional generic recipes,
   not the active Folio architecture or deployment.
 
 Handovers, research and recovered prompts are historical context, not current

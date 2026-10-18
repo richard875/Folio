@@ -20,7 +20,7 @@ const PRINT_FLAG = "process.stdout.write(String(process.env.VITE_AUTH_ENABLED));
 function makeWorkspace(appEnvJson) {
   const root = mkdtempSync(join(tmpdir(), "app-env-"));
   if (appEnvJson !== undefined) {
-    mkdirSync(join(root, ".grok"), { recursive: true });
+    mkdirSync(join(root, ".claude"), { recursive: true });
     writeFileSync(join(root, APP_ENV_REL_PATH), appEnvJson);
   }
   return root;
@@ -47,6 +47,35 @@ test("a missing app-env.json is a clean no-op", () => {
 
 test("reads the app env from a workspace", () => {
   const root = makeWorkspace('{"VITE_AUTH_ENABLED":"false"}');
+  assert.deepEqual(readAppEnv(root), { VITE_AUTH_ENABLED: "false" });
+});
+
+test("reads a pre-migration local override when the new override is absent", () => {
+  const root = mkdtempSync(join(tmpdir(), "app-env-legacy-"));
+  mkdirSync(join(root, ".claude"), { recursive: true });
+  mkdirSync(join(root, ".grok"), { recursive: true });
+  writeFileSync(join(root, ".claude/app-env.defaults.json"), '{"VITE_AUTH_ENABLED":"false"}');
+  writeFileSync(join(root, ".grok/app-env.json"), '{"VITE_AUTH_ENABLED":"true"}');
+  assert.deepEqual(readAppEnv(root), { VITE_AUTH_ENABLED: "true" });
+});
+
+test("the new local override wins over a leftover pre-migration override", () => {
+  const root = mkdtempSync(join(tmpdir(), "app-env-both-"));
+  mkdirSync(join(root, ".claude"), { recursive: true });
+  mkdirSync(join(root, ".grok"), { recursive: true });
+  writeFileSync(join(root, ".claude/app-env.defaults.json"), '{"VITE_AUTH_ENABLED":"false"}');
+  writeFileSync(join(root, ".claude/app-env.json"), '{"VITE_AUTH_ENABLED":"new"}');
+  writeFileSync(join(root, ".grok/app-env.json"), '{"VITE_AUTH_ENABLED":"legacy"}');
+  assert.deepEqual(readAppEnv(root), { VITE_AUTH_ENABLED: "new" });
+});
+
+test("an unreadable new override does not fall back to a stale legacy override", () => {
+  const root = mkdtempSync(join(tmpdir(), "app-env-unreadable-"));
+  mkdirSync(join(root, ".claude"), { recursive: true });
+  mkdirSync(join(root, ".claude/app-env.json"));
+  mkdirSync(join(root, ".grok"), { recursive: true });
+  writeFileSync(join(root, ".claude/app-env.defaults.json"), '{"VITE_AUTH_ENABLED":"false"}');
+  writeFileSync(join(root, ".grok/app-env.json"), '{"VITE_AUTH_ENABLED":"legacy"}');
   assert.deepEqual(readAppEnv(root), { VITE_AUTH_ENABLED: "false" });
 });
 

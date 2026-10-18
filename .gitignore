@@ -13,6 +13,12 @@ node_modules/
 /.vite/
 
 # Local App Builder runtime files
+/.claude/app-env.json
+/.agents/app-env.json
+/.claude/preview.log
+/.claude/preview.pid
+/.claude/og-pending
+# Keep legacy local overrides/runtime artifacts ignored after the folder move.
 /.grok/app-env.json
 /.grok/preview.log
 /.grok/status

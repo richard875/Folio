@@ -230,15 +230,17 @@ collection/runtime/agent helpers in `src/lib/`, and operational tools in `script
 Generated articles, link reports, and job records are written under `output/`.
 
 The existing `sh startup.sh` starts development idempotently using `npm run dev`
-and logs to `.grok/dev.log`. The wrapper reads tracked
-`.grok/app-env.defaults.json`, then optional local `.grok/app-env.json`; the process
+and logs to `.claude/dev.log`. The wrapper reads tracked
+`.claude/app-env.defaults.json`, then optional local `.claude/app-env.json`; the process
 environment takes precedence. Only `VITE_` string flags are read from those JSON
 files. They are not secret stores. `npm start` loads an existing ignored `.env`;
 development loads only selected server variables from it, so export other server
 settings before starting development (see [deployment.md](deployment.md)).
 
-The [`.grok/` reference library](.grok/README.md) contains optional App Builder
+The [shared AI agent resources](.claude/README.md) contain optional App Builder
 recipes, not additional Folio features or the active deployment configuration.
+Claude Code and OpenCode both discover `.claude/skills/`; `AGENTS.md` holds the
+shared project instructions, imported by `CLAUDE.md` for Claude Code.
 
 The Render Blueprint is defined in [`render.yaml`](render.yaml). **Render Free storage is temporary:** articles and job history can be lost on sleep, restart, or redeployment. Collections are best-effort and do not automatically resume after interruption. Archive important output separately.
 

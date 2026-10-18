@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Run a command with `.grok/app-env.json` merged into its environment.
+ * Run a command with `.claude/app-env.json` merged into its environment.
  *
  * `dev`, `build` and `preview` all route through this wrapper, so the dev
  * server, the built bundle and the preview server can never disagree about
@@ -25,7 +25,7 @@ import { constants as osConstants } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const APP_ENV_REL_PATH = ".grok/app-env.json";
+export const APP_ENV_REL_PATH = ".claude/app-env.json";
 
 const VITE_PREFIX = "VITE_";
 
@@ -55,12 +55,20 @@ export function parseAppEnv(text) {
 export function readAppEnv(root) {
   let defaults = {};
   try {
-    defaults = parseAppEnv(readFileSync(join(root, ".grok/app-env.defaults.json"), "utf8"));
+    defaults = parseAppEnv(readFileSync(join(root, ".claude/app-env.defaults.json"), "utf8"));
   } catch { /* Generic workspaces without project defaults remain unchanged. */ }
   try {
     return { ...defaults, ...parseAppEnv(readFileSync(join(root, APP_ENV_REL_PATH), "utf8")) };
-  } catch {
-    return defaults;
+  } catch (error) {
+    if (error?.code !== "ENOENT") return defaults;
+    // Preserve a pre-migration local override without requiring its owner to
+    // move it during the folder rename. The legacy path is read-only fallback;
+    // new configuration always belongs in `.claude/app-env.json`.
+    try {
+      return { ...defaults, ...parseAppEnv(readFileSync(join(root, ".grok/app-env.json"), "utf8")) };
+    } catch {
+      return defaults;
+    }
   }
 }
 

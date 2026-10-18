@@ -263,7 +263,7 @@ than broad live collections or real proxy spending. Use Node 24.20.0 and existin
 npm scripts; keep the test-only proxy-environment preload. Run `npm test`,
 `npm run typecheck`, `npm run build`, and appropriate browser/production checks.
 Do not claim new validations, remote deployment state or image checks you did not do.
-Tracked `.grok/app-env.defaults.json` and the Render Blueprint keep accounts off;
-process settings override local JSON flags. The generic `.grok/` recipes do not
+Tracked `.claude/app-env.defaults.json` and the Render Blueprint keep accounts off;
+process settings override local JSON flags. The generic agent-resource recipes do not
 describe additional active Folio integrations. Consult `deployment.md` for actual
 environment loading and temporary-storage operation.
