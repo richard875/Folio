@@ -211,6 +211,8 @@ See [`data/README.md`](data/README.md) for the catalog format.
 
 `/api/links` includes an optional `summary` field with each article URL when its RSS description or Atom summary contains useful text. RSS `content:encoded` and Atom inline content are fallbacks. HTML is converted to plain text; short stubs (under 40 characters) and headline/publisher-only descriptions are omitted. Summaries are capped at 1,000 characters with an ellipsis; they are feed excerpts, not generated summaries or full-article extractions. Missing summaries leave an object containing only `url`, including news sitemaps without descriptions.
 
+Bloomberg's news sitemap is an explicit exception to headline-only summary rejection: its `news:title` is saved as `summary`, including short headlines. Other news sitemaps do not gain a headline fallback. Empty titles are omitted and titles exceeding 1,000 characters are capped.
+
 Link reports are saved and returned as JSON only. Each publisher/section group has an `articles` array of `{ "url": "…", "summary": "…" }` objects; `summary` is omitted when unavailable. Reports include schema version 1, a UTC generation timestamp, the saved path, counts and section availability. Background collection validates and reads these JSON groups. There is no embedded Markdown or duplicate URL-only array. Omit `format` or use `format=json`; other link-report formats return 400. Historical Markdown reports are left untouched, but new collections and link-report imports use JSON. Saved articles remain Markdown by default. See the [report schema and example](scripts/fetch-links.md).
 
 ## Development and deployment

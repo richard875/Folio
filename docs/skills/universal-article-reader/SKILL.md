@@ -90,6 +90,9 @@ can use the generic reader, but successful extraction is not guaranteed.
 - Summaries are feed excerpts, not AI-generated text or article-page fetches.
   Prefer RSS description/summary/content:encoded or Atom summary/inline content;
   clean HTML, reject stubs under 40 characters, cap at 1,000, omit when absent.
+  Exception: Bloomberg's news sitemap uses `news:title` as `summary`, including
+  short/headline-only titles, capped at 1,000 characters; missing titles are omitted.
+  This fallback does not apply to other publishers' sitemaps.
 - `/api/links` saves and returns JSON only (`format=json` is optional; other formats
   return 400). Files use `output/links/links_<UTC timestamp>.json` and include
   `schemaVersion: 1`, `generatedAt`, `savedFile`, counts and website/section groups.
