@@ -15,10 +15,12 @@ import {
   renderLinksMarkdown,
   saveLinks,
 } from "../src/lib/rss/links.ts";
-import { parseFeedCatalog } from "../src/lib/rss/catalog.ts";
+import { validateFeedCatalog } from "../src/lib/rss/catalog.ts";
 import { createLinksHandler } from "../src/lib/rss/api.ts";
+import catalog from "../data/feeds.json" with { type: "json" };
 
 const feed = { site: "Example News", section: "World", url: "https://example.com/rss" };
+const catalogEntry = { ...feed, ordering: "feed", format: "rss" };
 const rss = `<?xml version="1.0"?><rss version="2.0"><channel><title>News</title><link>https://example.com</link><description>News</description>
 <item><title>First</title><link>https://example.com/story?a=1&amp;b=2</link></item>
 <item><title>Duplicate</title><link>https://example.com/story?a=1&amp;b=2#fragment</link></item>
@@ -29,11 +31,7 @@ const rss = `<?xml version="1.0"?><rss version="2.0"><channel><title>News</title
 </channel></rss>`;
 
 test("catalog uses exactly the ten configured primary feed URLs", async () => {
-  const source = await readFile(
-    new URL("../attachments/News site RSS feeds by section.md", import.meta.url),
-    "utf8",
-  );
-  const feeds = parseFeedCatalog(source);
+  const feeds = validateFeedCatalog(catalog);
   assert.equal(feeds.length, 10);
   assert.equal(new Set(feeds.map((item) => item.site)).size, 10);
   const urls = new Set(feeds.map((item) => item.url));
@@ -56,10 +54,18 @@ test("catalog uses exactly the ten configured primary feed URLs", async () => {
   assert.equal(feeds.find((item) => item.site === "Bloomberg").format, "news-sitemap");
   assert.equal(feeds.find((item) => item.site === "NY Times").ordering, "editorial");
   assert.equal(feeds.find((item) => item.site === "Financial Times").homepageScore, 9);
-  assert.match(
-    feeds.find((item) => item.site === "Washington Post").description,
-    /Associated Press/,
-  );
+  assert.deepEqual(feeds.map(({ site, ordering, format, homepageScore, edition }) => [site, ordering, format, homepageScore, edition]), [
+    ["WSJ", "newest", "rss", 8, "US"],
+    ["NY Times", "editorial", "rss", 8, "US"],
+    ["Washington Post", "newest", "rss", 6, "US"],
+    ["Bloomberg", "newest", "news-sitemap", 4, "Only one"],
+    ["The Economist", "newest", "rss", 5, "Only one"],
+    ["Financial Times", "editorial", "rss", 9, "International"],
+    ["Foreign Policy", "newest", "rss", 7, "Only one"],
+    ["CNBC", "editorial", "rss", 9, "US"],
+    ["Reuters", "google-ranked", "rss", 4, "US"],
+    ["Business Insider", "newest", "news-sitemap", 7, "US"],
+  ]);
   assert.ok(feeds.every((item) => item.section === "Main feed"));
   assert.ok(
     !urls.has("https://www.ft.com/rss/home/international"),
@@ -71,20 +77,48 @@ test("catalog uses exactly the ten configured primary feed URLs", async () => {
   assert.equal(new Set(feeds.map((item) => `${item.site}:${item.url}`)).size, feeds.length);
 });
 
-test("catalog ignores dead/prose links and supports CRLF and escaped table pipes", () => {
-  const feeds = parseFeedCatalog(
-    "## Test\r\nDead: `https://old.example.com/feed`\r\n| Section | URL |\r\n| --- | --- |\r\n| Main | `https://example.com/feed` |\r\n| Categories | `https://example.com/<one\\|two>/feed` |\r\n",
-  );
-  assert.deepEqual(
-    feeds.map((item) => item.url),
-    ["https://example.com/feed"],
-  );
+test("catalog validates explicit fields and rejects Markdown, prose, unsafe URLs and invalid metadata", () => {
+  for (const invalid of [null, {}, "# Feeds\n| Site | URL |", JSON.stringify([catalogEntry])]) {
+    assert.throws(() => validateFeedCatalog(invalid), /JSON array/);
+  }
+  for (const invalid of [
+    null, [], {},
+    { ...catalogEntry, site: "" }, { ...catalogEntry, section: " " },
+    { ...catalogEntry, url: "not-a-url" }, { ...catalogEntry, url: "file:///private/file" },
+    { ...catalogEntry, url: "https://user:private-password@example.com/feed" },
+    { ...catalogEntry, ordering: undefined }, { ...catalogEntry, ordering: "Newest first" },
+    { ...catalogEntry, format: undefined }, { ...catalogEntry, format: "xml" },
+    { ...catalogEntry, homepageScore: "8" }, { ...catalogEntry, homepageScore: NaN },
+    { ...catalogEntry, homepageScore: -1 }, { ...catalogEntry, homepageScore: 11 },
+    { ...catalogEntry, edition: 12 }, { ...catalogEntry, edition: "" },
+    { ...catalogEntry, description: "Homepage, in order" },
+    { ...catalogEntry, evidence: "Alternate: https://example.com/extra" },
+  ]) {
+    assert.throws(() => validateFeedCatalog([invalid]), (error) => {
+      assert.match(error.message, /Invalid feed catalog entry 1/);
+      assert.doesNotMatch(error.message, /private-password/);
+      return true;
+    });
+  }
+  assert.deepEqual(validateFeedCatalog([]), []);
 });
 
-test("a smaller site table fetches only its explicit URLs and yields at most one article per row", async () => {
-  const source =
-    "# Feeds\n| Site | Feed URL | Notes |\n| --- | --- | --- |\n| Example One | `https://example.com/one` | Alternate: `https://example.com/alternate` |\n| Example Two | `https://example.com/nyt` | |\n\n## Sources\n| Site | Feed URL |\n| --- | --- | --- |\n| Reference | `https://example.com/reference` |\n";
-  const feeds = parseFeedCatalog(source);
+test("catalog normalizes URLs, preserves section identity and deduplicates without mutating input", () => {
+  const source = [
+    { ...catalogEntry, site: " Example News ", section: " World ", url: "https://EXAMPLE.COM:443/rss" },
+    catalogEntry,
+    { ...catalogEntry, section: "Tech" },
+  ];
+  const original = structuredClone(source);
+  assert.deepEqual(validateFeedCatalog(source), [catalogEntry, { ...catalogEntry, section: "Tech" }]);
+  assert.deepEqual(source, original);
+});
+
+test("a smaller JSON catalog fetches only its explicit URLs and yields at most one article per entry", async () => {
+  const feeds = validateFeedCatalog([
+    { ...catalogEntry, site: "Example One", url: "https://example.com/one" },
+    { ...catalogEntry, site: "Example Two", url: "https://example.com/nyt" },
+  ]);
   const requested = [];
   const results = await collectFeeds(feeds, {
     limit: 1,
@@ -100,12 +134,8 @@ test("a smaller site table fetches only its explicit URLs and yields at most one
   );
 });
 
-test("limit one with the current attachment returns ten links", async () => {
-  const source = await readFile(
-    new URL("../attachments/News site RSS feeds by section.md", import.meta.url),
-    "utf8",
-  );
-  const feeds = parseFeedCatalog(source);
+test("limit one with the JSON catalog returns ten links", async () => {
+  const feeds = validateFeedCatalog(catalog);
   let feedRequests = 0;
   let resolveRequests = 0;
   const results = await collectFeeds(feeds, {
@@ -338,10 +368,13 @@ test("collection generates a saved report, keeps successful feeds and honors env
   });
   const origin = `http://127.0.0.1:${server.address().port}`;
   const output = join(dir, "links");
-  const research = `## Local News\n| Section | Feed |\n| --- | --- |\n| World | \`${origin}/rss\` |\n| Tech | \`${origin}/slow\` |\n`;
+  const source = [
+    { ...catalogEntry, site: "Local News", section: "World", url: `${origin}/rss` },
+    { ...catalogEntry, site: "Local News", section: "Tech", url: `${origin}/slow` },
+  ];
   // Explicit fixture transport: production's default deliberately rejects loopback feeds.
   const options = { outputDir: output, retryLimit: 0, timeoutMs: 100, limit: 5, fetchImpl: fetch };
-  const result = await generateLinks(research, options);
+  const result = await generateLinks(source, options);
   assert.equal(result.linkCount, 2);
   assert.equal(result.failedFeedCount, 1);
   const files = await readdir(output);
@@ -355,7 +388,7 @@ test("collection generates a saved report, keeps successful feeds and honors env
     else process.env.RSS_LINKS_PER_SECTION = oldLimit;
   });
   process.env.RSS_LINKS_PER_SECTION = "1";
-  const envRun = await generateLinks(research, {
+  const envRun = await generateLinks(source, {
     ...options,
     limit: undefined,
     outputDir: join(dir, "env"),
@@ -363,7 +396,7 @@ test("collection generates a saved report, keeps successful feeds and honors env
   assert.equal(envRun.limit, 1);
   assert.equal(envRun.linkCount, 1);
   const failed = await generateLinks(
-    `## Local News\n| Section | Feed |\n| --- | --- |\n| Tech | \`${origin}/slow\` |\n`,
+    [source[1]],
     { ...options, outputDir: join(dir, "failed") },
   );
   assert.equal(failed.linkCount, 0);
@@ -393,8 +426,9 @@ test("links endpoint authenticates, returns JSON or Markdown and prevents overla
     ],
   };
   let calls = 0;
-  const handler = createLinksHandler("research", async (source) => {
-    assert.equal(source, "research");
+  const sourceCatalog = [catalogEntry];
+  const handler = createLinksHandler(sourceCatalog, async (source) => {
+    assert.equal(source, sourceCatalog);
     calls++;
     return report;
   });
@@ -413,7 +447,7 @@ test("links endpoint authenticates, returns JSON or Markdown and prevents overla
   const pending = new Promise((done) => {
     release = done;
   });
-  const locked = createLinksHandler("research", async () => {
+  const locked = createLinksHandler(sourceCatalog, async () => {
     await pending;
     return report;
   });
@@ -428,12 +462,12 @@ test("links endpoint authenticates, returns JSON or Markdown and prevents overla
     (await locked(new Request("http://localhost/api/links?hash=test-links-key"))).status,
     200,
   );
-  const failed = createLinksHandler("research", async () => ({ ...report, failedFeedCount: 1 }));
+  const failed = createLinksHandler(sourceCatalog, async () => ({ ...report, failedFeedCount: 1 }));
   assert.equal(
     (await failed(new Request("http://localhost/api/links?hash=test-links-key"))).status,
     502,
   );
-  const broken = createLinksHandler("research", async () => {
+  const broken = createLinksHandler(sourceCatalog, async () => {
     throw new Error("EACCES: private path");
   });
   const error = await broken(

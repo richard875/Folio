@@ -184,6 +184,10 @@ Most endpoints authenticate through the `hash` query parameter; agent endpoints 
 
 ### Feed summaries
 
+The ten configured feed sources live in [`data/feeds.json`](data/feeds.json).
+Ordering and format are explicit fields, not inferred from Markdown research prose.
+See [`data/README.md`](data/README.md) for the catalog format.
+
 `/api/links` includes an indented `Summary:` line below an article URL when its RSS description or Atom summary contains useful text. RSS `content:encoded` and Atom inline content are fallbacks. HTML is converted to plain text; short stubs (under 40 characters) and headline/publisher-only descriptions are omitted. Summaries are capped at 1,000 characters with an ellipsis; they are feed excerpts, not generated summaries or full-article extractions. Missing summaries leave the existing URL-only entry unchanged, including news sitemaps without descriptions.
 
 With `format=json`, each section keeps its existing `links` string array and adds an `articles` array of `{ "url": "…", "summary": "…" }` objects. `summary` is omitted when unavailable. Saved Markdown reports include the same summaries, and background article collection continues to use the URL lines only.

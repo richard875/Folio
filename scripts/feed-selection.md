@@ -1,13 +1,12 @@
 # Article-only feed selection
 
-The research attachment is the source of truth for **which URLs are fetched**.
-Columns are identified by header name, so adding Score or Edition before Feed
-URL does not break parsing. Only the Feed URL column supplies source URLs;
-alternative feeds in notes and source references are never added automatically.
-The What it actually is description supplies format/order metadata. Score is
-used only as a bounded weight for cross-publisher coverage, not as a claim that
-an individual article has that importance score. Edition and evidence are
-retained as source metadata, not interpreted as executable instructions.
+`data/feeds.json` is the source of truth for **which URLs are fetched**.
+Each entry explicitly sets `site`, `section`, `url`, `ordering` and `format`,
+with optional numeric `homepageScore` and `edition`. No Markdown table, description,
+bold text, research note or reference URL is parsed. Unknown fields and invalid
+entries are rejected; duplicate site/section/URL entries are collapsed.
+The score is only a bounded weight for cross-publisher coverage, not a claim that
+an individual article has that importance score. Edition is informational.
 
 ## Publisher rules
 
@@ -40,7 +39,8 @@ embedded media; the filter targets media-first pages, not all multimedia reporti
   not invented.
 - Latest/Google-ranked sources exclude entries older than 72 hours; curated
   homepage feeds allow 7 days so editors' weekend/explainer choices can remain.
-  Dates more than 24 hours in the future are rejected.
+  Dates more than 24 hours in the future are rejected. Undated entries can remain
+  eligible; dates are not required or invented.
 - Curated sources preserve original feed position; filtering simply promotes
   the next eligible editorial item.
 - Other sources combine exponentially decaying freshness (36-hour scale),

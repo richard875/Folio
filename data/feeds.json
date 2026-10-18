@@ -1,0 +1,92 @@
+[
+  {
+    "site": "WSJ",
+    "section": "Main feed",
+    "url": "https://flipboard.com/@WSJ.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Main feed",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+    "ordering": "editorial",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Main feed",
+    "url": "https://www.washingtonpost.com/arcio/rss/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Main feed",
+    "url": "https://www.bloomberg.com/sitemaps/news/latest.xml",
+    "ordering": "newest",
+    "format": "news-sitemap",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Main feed",
+    "url": "https://www.economist.com/latest/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "Financial Times",
+    "section": "Main feed",
+    "url": "https://www.ft.com/?format=rss",
+    "ordering": "editorial",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "International"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Main feed",
+    "url": "https://foreignpolicy.com/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "CNBC",
+    "section": "Main feed",
+    "url": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+    "ordering": "editorial",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Main feed",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Main feed",
+    "url": "https://www.businessinsider.com/sitemap/google-news.xml",
+    "ordering": "newest",
+    "format": "news-sitemap",
+    "homepageScore": 7,
+    "edition": "US"
+  }
+]

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { parseFeedCatalog, type Feed } from "./catalog.ts";
+import { validateFeedCatalog, type Feed } from "./catalog.ts";
 import { articleUrl, parseCandidates, rankCandidates } from "./selection.ts";
 import { collectFeeds } from "./links.ts";
 
@@ -23,19 +23,19 @@ type Item = {
 const rss = (items: Item[]) =>
   `<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>News</title>${items.map((item) => `<item><title>${escape(item.title)}</title><link>${escape(item.url)}</link>${item.hours === undefined ? "" : `<pubDate>${date(item.hours)}</pubDate>`}${item.creator ? `<dc:creator>${escape(item.creator)}</dc:creator>` : ""}${(item.categories || []).map((category) => `<category>${category}</category>`).join("")}${item.enclosure ? `<enclosure url="https://example.com/media" type="${item.enclosure}"/>` : ""}</item>`).join("")}</channel></rss>`;
 
-test("catalog reads reordered columns, retains research metadata and never uses notes as feed URLs", () => {
-  const catalog = parseFeedCatalog(
-    "| Site | Score (0–10) | Feed URL | Edition | What it actually is | How I know |\n| --- | --- | --- | --- | --- | --- |\n| Example News | 10 | `https://example.com/feed/top/` | US | Homepage, in order | Saw it. Alternate `https://example.com/feed` |\n",
-  );
+test("catalog uses explicit ordering and numeric metadata instead of human descriptions", () => {
+  const catalog = validateFeedCatalog([
+    { site: "Example News", section: "Main feed", url: "https://example.com/feed/top/", ordering: "editorial", format: "rss", homepageScore: 10, edition: "US" },
+  ]);
   assert.equal(catalog.length, 1);
   assert.equal(catalog[0].url, "https://example.com/feed/top/");
   assert.equal(catalog[0].ordering, "editorial");
   assert.equal(catalog[0].homepageScore, 10);
   assert.equal(catalog[0].edition, "US");
-  assert.match(catalog[0].evidence || "", /Saw it/);
-  const newest = parseFeedCatalog(
-    "| Site | Feed URL | What it actually is |\n| --- | --- | --- |\n| WSJ | `https://flipboard.com/@WSJ.rss` | **Newest first.** Not page order. |\n",
-  );
+  assert.equal(parseCandidates(rss([{ title: "Older lead", url: "/older", hours: 5 }, { title: "New story", url: "/new", hours: 1 }]), catalog[0], NOW)[0].ordering, "editorial");
+  const newest = validateFeedCatalog([
+    { site: "WSJ", section: "Main feed", url: "https://flipboard.com/@WSJ.rss", ordering: "newest", format: "rss" },
+  ]);
   assert.equal(newest[0].ordering, "newest");
 });
 

@@ -77,8 +77,8 @@ test("Markdown escapes feed text and summaries cannot become collection tasks or
 test("saved Markdown and JSON agree while legacy links, caps and missing-summary entries remain intact", async (t) => {
   const outputDir = await mkdtemp(join(tmpdir(), "folio-summary-"));
   t.after(() => rm(outputDir, { recursive: true, force: true }));
-  const research = "## Example\n| Section | Feed |\n| --- | --- |\n| Main feed | `https://example.com/feed` |\n";
-  const report = await generateLinks(research, {
+  const catalog = [{ ...feed, ordering: "feed", format: "rss" }];
+  const report = await generateLinks(catalog, {
     outputDir,
     limit: 2,
     retryLimit: 0,
@@ -99,7 +99,7 @@ test("saved Markdown and JSON agree while legacy links, caps and missing-summary
     if (originalHash === undefined) delete process.env.ACCESS_HASH;
     else process.env.ACCESS_HASH = originalHash;
   });
-  const handle = createLinksHandler(research, async () => report);
+  const handle = createLinksHandler(catalog, async () => report);
   const jsonResponse = await handle(new Request("https://folio.example/api/links?hash=summary-test-key&format=json"));
   assert.equal(jsonResponse.status, 200);
   assert.deepEqual((await jsonResponse.json()).websites[0].sections[0].articles, section.articles);

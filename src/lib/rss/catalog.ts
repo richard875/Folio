@@ -1,102 +1,55 @@
-/** The attachment's feed columns are the only source of feed URLs. */
+/** Feed collection configuration. Runtime entries come from data/feeds.json. */
 export type Feed = {
   site: string;
   section: string;
   url: string;
-  description?: string;
   edition?: string;
-  evidence?: string;
   homepageScore?: number;
   ordering?: "editorial" | "newest" | "google-ranked" | "feed";
   format?: "rss" | "news-sitemap";
 };
 
-export function parseFeedCatalog(markdown: string): Feed[] {
-  const feeds: Feed[] = [];
-  const seen = new Set<string>();
-  let site = "";
-  let ignored = false;
-  let table: "sites" | "sections" | null = null;
-  let columns: string[] = [];
+export type CatalogFeed = Feed & {
+  ordering: NonNullable<Feed["ordering"]>;
+  format: NonNullable<Feed["format"]>;
+};
 
-  for (const line of markdown.split(/\r?\n/)) {
-    const heading = /^##\s+(.+?)\s*$/.exec(line);
-    if (heading) {
-      ignored = ["At a glance", "Sources"].includes(heading[1]);
-      site = ignored ? "" : heading[1];
-      table = null;
-      continue;
-    }
-    if (!line.trim().startsWith("|")) {
-      table = null;
-      continue;
-    }
-    if (ignored) continue;
-    const cells = line
-      .trim()
-      .replace(/\\\|/g, "\u0000")
-      .split("|")
-      .slice(1, -1)
-      .map((cell) => cell.trim().replaceAll("\u0000", "|"));
-    const headers = cells.map((cell) => cell.toLowerCase());
-    if (headers.some((header) => ["feed url", "url"].includes(header)) || headers[1] === "feed") {
-      columns = headers;
-      if (headers.includes("site")) table = "sites";
-      else if (["section", "nav section", "feed"].includes(headers[0]) && site) table = "sections";
-      else table = null;
-      continue;
-    }
-    const label = cells[table === "sites" ? columns.indexOf("site") : 0];
-    const explicitUrlIndex = columns.findIndex((header) => ["feed url", "url"].includes(header));
-    const urlIndex = explicitUrlIndex >= 0 ? explicitUrlIndex : columns.indexOf("feed");
-    const column = cells[urlIndex] || "";
-    if (!table || !label || /^:?-+:?$/.test(label)) continue;
-    const website = table === "sites" ? label : site;
-    const section = table === "sites" ? "Main feed" : label;
-    for (const match of column.matchAll(/`(https?:\/\/[^`]+)`/g)) {
-      const raw = match[1];
-      // Templates are not actual URLs. Do not expand them or inspect notes.
-      if (/[<>]|\.\.\./.test(raw)) continue;
-      try {
-        const url = new URL(raw);
-        if (url.username || url.password) continue;
-        const key = JSON.stringify([website, section, url.href]);
-        if (seen.has(key)) continue;
-        seen.add(key);
-        const field = (name: string) => cells[columns.indexOf(name)] || "";
-        const description = field("what it actually is");
-        const primaryDescription =
-          /\*\*(.+?)\*\*/.exec(description)?.[1] ?? description.split(/[.!?]/)[0];
-        const homepageScore = Number.parseFloat(field("score (0–10)"));
-        const ordering =
-          /editor order|page order|homepage, in order|exact homepage|lead and story river, in order/i.test(
-            primaryDescription,
-          )
-            ? "editorial"
-            : url.hostname === "news.google.com"
-              ? "google-ranked"
-              : /newest first|sorted by last update/i.test(description)
-                ? "newest"
-                : "feed";
-        feeds.push({
-          site: website,
-          section,
-          url: url.href,
-          ...(description
-            ? {
-                description,
-                ordering,
-                format: /sitemap/i.test(description) ? "news-sitemap" : "rss",
-              }
-            : {}),
-          ...(field("edition") ? { edition: field("edition") } : {}),
-          ...(field("how i know") ? { evidence: field("how i know") } : {}),
-          ...(Number.isFinite(homepageScore) ? { homepageScore } : {}),
-        });
-      } catch {
-        /* Skip malformed feed URLs. */
-      }
-    }
+const FIELDS = new Set(["site", "section", "url", "ordering", "format", "homepageScore", "edition"]);
+
+/** Validate explicit JSON data; never infer settings from descriptions/prose. */
+export function validateFeedCatalog(catalog: unknown): CatalogFeed[] {
+  if (!Array.isArray(catalog)) throw new Error("Feed catalog must be a JSON array.");
+  const feeds: CatalogFeed[] = [];
+  const seen = new Set<string>();
+  for (const [index, entry] of catalog.entries()) {
+    const invalid = () => new Error(`Invalid feed catalog entry ${index + 1}.`);
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) throw invalid();
+    const row = entry as Record<string, unknown>;
+    if (Object.keys(row).some((key) => !FIELDS.has(key))) throw invalid();
+    const field = (name: string): string => {
+      if (typeof row[name] !== "string" || !row[name].trim()) throw invalid();
+      return row[name].trim();
+    };
+    const site = field("site");
+    const section = field("section");
+    let url: URL;
+    try { url = new URL(field("url")); } catch { throw invalid(); }
+    if (!["http:", "https:"].includes(url.protocol) || url.username || url.password) throw invalid();
+    const ordering = row.ordering;
+    const format = row.format;
+    if (ordering !== "editorial" && ordering !== "newest" && ordering !== "google-ranked" && ordering !== "feed") throw invalid();
+    if (format !== "rss" && format !== "news-sitemap") throw invalid();
+    const homepageScore = row.homepageScore;
+    if (homepageScore !== undefined && (typeof homepageScore !== "number" || !Number.isFinite(homepageScore) || homepageScore < 0 || homepageScore > 10)) throw invalid();
+    const edition = row.edition === undefined ? undefined : field("edition");
+    const key = JSON.stringify([site, section, url.href]);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    feeds.push({
+      site, section, url: url.href, ordering, format,
+      ...(homepageScore !== undefined && { homepageScore }),
+      ...(edition !== undefined && { edition }),
+    });
   }
   return feeds;
 }

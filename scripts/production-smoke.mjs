@@ -1,5 +1,5 @@
 // Built-server integration test. All writable data and credentials are disposable;
-// never starts collection, fetches publisher articles, or changes real output/.
+// never starts background article collection, contacts publishers, or changes real output/.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
@@ -9,6 +9,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { setTimeout as sleep } from "node:timers/promises";
 import { chromium } from "playwright";
+import feedCatalog from "../data/feeds.json" with { type: "json" };
 
 const project = fileURLToPath(new URL("../", import.meta.url));
 const root = await mkdtemp(join(tmpdir(), "folio-production-smoke-"));
@@ -48,8 +49,21 @@ try {
   // Test-only publisher transport, never deployed: exercise real HTTP extraction
   // and DOM parsing without issuing third-party article requests or saving real data.
   const fixtureHtml = `<html><head><title>Memory fixture</title></head><body><article><h1>Memory fixture</h1>${("<p>Folio reports on the changing economic situation and explains the evidence in detail for its readers. This is a synthetic memory-test paragraph.</p>").repeat(1200)}</article></body></html>`;
+  const publisherDomains = {
+    WSJ: "www.wsj.com", "NY Times": "www.nytimes.com", "Washington Post": "www.washingtonpost.com",
+    Bloomberg: "www.bloomberg.com", "The Economist": "www.economist.com", "Financial Times": "www.ft.com",
+    "Foreign Policy": "foreignpolicy.com", CNBC: "www.cnbc.com", Reuters: "www.reuters.com", "Business Insider": "www.businessinsider.com",
+  };
+  const feedFixtures = Object.fromEntries(feedCatalog.map((feed) => {
+    const url = `https://${publisherDomains[feed.site]}/world/fixture-story`;
+    const date = new Date().toISOString();
+    const xml = feed.format === "news-sitemap"
+      ? `<urlset xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"><url><loc>${url}</loc><news:news><news:title>Fixture article</news:title><news:publication_date>${date}</news:publication_date></news:news></url></urlset>`
+      : `<rss><channel><item><title>Fixture article</title><link>${url}</link><pubDate>${date}</pubDate></item></channel></rss>`;
+    return [feed.url, xml];
+  }));
   const preload = join(root, "fixture-transport.mjs");
-  await writeFile(preload, `const original = globalThis.fetch; const html = ${JSON.stringify(fixtureHtml)}; globalThis.fetch = (input, init) => String(input).includes("fixture.folio.example") ? Promise.resolve(new Response(html, {headers:{"content-type":"text/html"}})) : original(input, init);`);
+  await writeFile(preload, `const original = globalThis.fetch; const html = ${JSON.stringify(fixtureHtml)}; const feeds = ${JSON.stringify(feedFixtures)}; globalThis.fetch = (input, init) => Object.hasOwn(feeds, String(input)) ? Promise.resolve(new Response(feeds[String(input)], {headers:{"content-type":"application/xml"}})) : String(input).includes("fixture.folio.example") ? Promise.resolve(new Response(html, {headers:{"content-type":"text/html"}})) : original(input, init);`);
   child = spawn(process.execPath, ["--max-old-space-size=256", "--max-semi-space-size=16", "--import", preload, join(project, "scripts/start-production.mjs")], {
     cwd: root, env, stdio: ["ignore", "pipe", "pipe"],
   });
@@ -80,6 +94,16 @@ try {
   assert.match(html, /data:image\/png;base64/);
   assert.doesNotMatch(html, /history\.replaceState/);
   assert.equal((await get("/api/openapi")).status, 200);
+
+  // Exercise the JSON catalog bundled into the built route, never real feeds.
+  const linkResponse = await get(`/api/links?${new URLSearchParams({ hash, format: "json" })}`, false, { method: "POST" });
+  assert.equal(linkResponse.status, 200);
+  const linkReport = await linkResponse.json();
+  assert.equal(linkReport.feedCount, 10);
+  assert.equal(linkReport.failedFeedCount, 0);
+  assert.equal(linkReport.linkCount, 10);
+  assert.deepEqual(linkReport.websites.map((site) => site.name), feedCatalog.map((feed) => feed.site));
+  assert.equal(await readFile(join(root, linkReport.savedFile), "utf8"), linkReport.markdown);
 
   const manifest = [];
   let manifestUrl = "/api/agent/latest?limit=3";
