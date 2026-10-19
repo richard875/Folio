@@ -52,15 +52,14 @@ websites[].sections[].articles[] = { url, summary? }
 ```
 
 These are candidates from configured feeds, not every article published by those
-outlets. The server's per-section limit applies (currently at most 599 entries
-across ten publishers with `RSS_LINKS_PER_SECTION=1`, including up to 35 WSJ and
-556 NY Times sections). All 599 feeds are requested, so allow for longer collection
-time; do not repeat a timed-out trigger without reconciling its state. URLs may
-repeat across sections; deduplicate before saving. Neither WSJ's nor NY Times'
-larger feed count is independent publisher diversity; Athletic and sister products
-remain under NY Times. Japanese WSJ and Spanish/Chinese NY Times feeds may contain
-non-English text. NY Times research statuses are third-party records, not direct
-availability verification. Summaries are optional
+outlets. Folio stores 599 inventory entries (including 35 WSJ and 556 NY Times),
+but **only the ten Main feeds are active**, one per publisher. All links/collect
+operations exclude the other 589 reference feeds; no query option enables them,
+and a main-feed failure never falls back to them. With `RSS_LINKS_PER_SECTION=1`,
+at most ten article entries are returned; the default of 5 permits at most 50.
+Retries and Google resolution can require more than ten outbound requests. Do
+not repeat a timed-out trigger without reconciling its state. Deduplicate before
+saving. Research statuses are not direct availability verification. Summaries are optional
 feed excerpts or headlines, not full-text analysis. Record unavailable sections
 and failed feeds; HTTP 502 means all feeds failed even if a report was returned.
 

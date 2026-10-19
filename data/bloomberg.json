@@ -1,0 +1,11 @@
+[
+  {
+    "site": "Bloomberg",
+    "section": "Main feed",
+    "url": "https://www.bloomberg.com/sitemaps/news/latest.xml",
+    "ordering": "newest",
+    "format": "news-sitemap",
+    "homepageScore": 4,
+    "edition": "Only one"
+  }
+]

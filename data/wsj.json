@@ -1,0 +1,317 @@
+[
+  {
+    "site": "WSJ",
+    "section": "Main feed",
+    "url": "https://flipboard.com/@WSJ.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "World News",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSWorldNews",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "U.S. News",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSUSnews",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Politics",
+    "url": "https://feeds.content.dowjones.io/public/rss/socialpoliticsfeed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Economy",
+    "url": "https://feeds.content.dowjones.io/public/rss/socialeconomyfeed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "U.S. Business",
+    "url": "https://feeds.content.dowjones.io/public/rss/WSJcomUSBusiness",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Technology",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSWSJD",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Markets",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSMarketsMain",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Personal Finance",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSPersonalFinance",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Real Estate",
+    "url": "https://feeds.content.dowjones.io/public/rss/latestnewsrealestate",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Health",
+    "url": "https://feeds.content.dowjones.io/public/rss/socialhealth",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Opinion",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSOpinion",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Arts & Culture",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSArtsCulture",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Lifestyle",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSLifestyle",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Style",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSStyle",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Sports",
+    "url": "https://feeds.content.dowjones.io/public/rss/rsssportsfeed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Markets briefs",
+    "url": "https://feeds.content.dowjones.io/public/rss/rssmarkets",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Markets (social)",
+    "url": "https://feeds.content.dowjones.io/public/rss/socialmarketsfeed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Tech (social)",
+    "url": "https://feeds.content.dowjones.io/public/rss/socialtechfeed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Central Banking",
+    "url": "https://feeds.content.dowjones.io/public/rss/socialcentralbankingfeed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Lifestyle (public)",
+    "url": "https://feeds.content.dowjones.io/public/rss/wsj_lifestyle",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Food & Drink",
+    "url": "https://feeds.content.dowjones.io/public/rss/wsj_food_drink",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Homepage (partner)",
+    "url": "https://feeds.content.dowjones.io/public/rss/wsj_homepage",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "World News (email)",
+    "url": "https://feeds.content.dowjones.io/public/rss/wsj_world_news",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Japan — World",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSJapanNewsWorld",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "Japan"
+  },
+  {
+    "site": "WSJ",
+    "section": "Japan — Markets",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSJapanMarket",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "Japan"
+  },
+  {
+    "site": "WSJ",
+    "section": "Japan — Business",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSJapanBusiness",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "Japan"
+  },
+  {
+    "site": "WSJ",
+    "section": "Japan — Technology",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSJapanTechnology",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "Japan"
+  },
+  {
+    "site": "WSJ",
+    "section": "Japan — Opinion",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSJapanOpinion",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "Japan"
+  },
+  {
+    "site": "WSJ",
+    "section": "Japan — Life",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSJapanLife",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "Japan"
+  },
+  {
+    "site": "WSJ",
+    "section": "Japan — Heard on the Street",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSJapanHeardonTheStreet",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "Japan"
+  },
+  {
+    "site": "WSJ",
+    "section": "Opinion (legacy latest)",
+    "url": "https://feeds.a.dj.com/rss/LatestNewsOpinion.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Real Estate (legacy latest)",
+    "url": "https://feeds.a.dj.com/rss/LatestNewsRealEstate.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "Sports (legacy latest)",
+    "url": "https://feeds.a.dj.com/rss/LatestNewsSports.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "WSJ",
+    "section": "What's News (legacy)",
+    "url": "https://feeds.a.dj.com/rss/RSSWhatsNews.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  }
+]

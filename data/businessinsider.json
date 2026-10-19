@@ -1,0 +1,11 @@
+[
+  {
+    "site": "Business Insider",
+    "section": "Main feed",
+    "url": "https://www.businessinsider.com/sitemap/google-news.xml",
+    "ordering": "newest",
+    "format": "news-sitemap",
+    "homepageScore": 7,
+    "edition": "US"
+  }
+]

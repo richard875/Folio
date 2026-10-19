@@ -10,6 +10,7 @@ import { handleSaveRequest } from "../../../reader/save-api.ts";
 import { saveArticle } from "../../../reader/save.ts";
 import { buildLinksReport, generateLinks } from "../rss/links.ts";
 import { createLinksHandler } from "../rss/api.ts";
+import { feedInventory, mainFeeds } from "../rss/sources.ts";
 
 function reportFixture(groups: [string, string, string[]][]): string {
   return JSON.stringify(buildLinksReport(groups.map(([site, section, urls]) => ({ site, section, urls, url: "https://example.com/feed", ok: true })), new Date("2026-10-11T12:34:56Z"), 100));
@@ -20,10 +21,16 @@ test("collection reads the real JSON report and keeps article saving in Markdown
   const old = process.env.ACCESS_HASH;
   process.env.ACCESS_HASH = "collection-json-key";
   t.after(async () => { if (old === undefined) delete process.env.ACCESS_HASH; else process.env.ACCESS_HASH = old; await rm(root, { recursive: true, force: true }); });
-  const catalog = [{ site: "News & More", section: "World", url: "https://example.com/feed", ordering: "feed", format: "rss" }];
+  const catalog = [
+    { site: "News & More", section: "Main feed", url: "https://example.com/feed", ordering: "feed", format: "rss" },
+    { site: "News & More", section: "World", url: "https://example.com/reference-feed", ordering: "feed", format: "rss" },
+  ];
   const links = createLinksHandler(catalog, (source) => generateLinks(source, {
     outputDir: join(root, "output/links"), retryLimit: 0,
-    fetchImpl: async () => new Response('<rss><channel><item><title>Story</title><link>https://example.com/story</link><description>A meaningful feed summary that stays in JSON but never becomes a task.</description></item></channel></rss>'),
+    fetchImpl: async (input) => {
+      assert.equal(String(input), "https://example.com/feed", "Reference feed must never reach transport");
+      return new Response('<rss><channel><item><title>Story</title><link>https://example.com/story</link><description>A meaningful feed summary that stays in JSON but never becomes a task.</description></item></channel></rss>');
+    },
   }));
   const saves: URL[] = [];
   const manager = new JobManager({ root, fetchImpl: async (input, init) => {
@@ -39,7 +46,7 @@ test("collection reads the real JSON report and keeps article saving in Markdown
   assert.equal(job.total, 1);
   assert.match(job.linksFile!, /\.json$/);
   const stored = JSON.parse(await readFile(join(root, job.linksFile!), "utf8"));
-  assert.deepEqual(stored.websites, [{ name: "News & More", sections: [{ name: "World", available: true, articles: [{ url: "https://example.com/story", summary: "A meaningful feed summary that stays in JSON but never becomes a task." }] }] }]);
+  assert.deepEqual(stored.websites, [{ name: "News & More", sections: [{ name: "Main feed", available: true, articles: [{ url: "https://example.com/story", summary: "A meaningful feed summary that stays in JSON but never becomes a task." }] }] }]);
   assert.equal(saves[0].searchParams.get("format"), "markdown");
   assert.equal(saves[0].searchParams.get("website"), "News & More");
   assert.equal(saves[0].searchParams.has("summary"), false);
@@ -69,6 +76,61 @@ test("collection fails closed on malformed or mismatched JSON reports and legacy
     assert.equal(saves, 0);
     assert.equal(manager.isRunning, false);
   }
+});
+
+test("GET and POST collect use only ten main feeds and pass only their articles downstream", async (t) => {
+  const root = await mkdtemp(join(tmpdir(), "folio-main-collection-"));
+  const old = process.env.ACCESS_HASH;
+  process.env.ACCESS_HASH = "main-collection-test-key";
+  t.after(async () => {
+    if (old === undefined) delete process.env.ACCESS_HASH; else process.env.ACCESS_HASH = old;
+    await rm(root, { recursive: true, force: true });
+  });
+  const feedRequests: string[] = [];
+  const saved: URL[] = [];
+  const links = createLinksHandler(feedInventory, (source) => generateLinks(source, {
+    outputDir: join(root, "output/links"), retryLimit: 0, limit: 1,
+    fetchImpl: async (input) => {
+      feedRequests.push(String(input));
+      const feed = mainFeeds.find(({ url }) => url === String(input));
+      assert.ok(feed, "A reference feed reached transport");
+      const domain = feed.site === "WSJ" ? "www.wsj.com"
+        : feed.site === "NY Times" ? "www.nytimes.com"
+        : feed.site === "Reuters" ? "www.reuters.com"
+        : feed.site === "Bloomberg" ? "www.bloomberg.com"
+        : feed.site === "Business Insider" ? "www.businessinsider.com"
+        : feed.site === "The Economist" ? "www.economist.com"
+        : feed.site === "Financial Times" ? "www.ft.com"
+        : feed.site === "Foreign Policy" ? "foreignpolicy.com"
+        : feed.site === "CNBC" ? "www.cnbc.com" : "www.washingtonpost.com";
+      return new Response(`<rss><channel><item><title>Fixture article</title><link>https://${domain}/world/fixture-story</link></item></channel></rss>`);
+    },
+  }));
+  const manager = new JobManager({ root, fetchImpl: async (input, init) => {
+    const url = new URL(String(input));
+    if (url.pathname === "/api/links") {
+      assert.equal(init?.method, "POST");
+      return links(new Request(url, init));
+    }
+    assert.equal(url.pathname, "/api/save");
+    saved.push(url);
+    return new Response("article", { headers: { "x-saved-file": "output/articles/fixture.md" } });
+  } });
+  for (const method of ["GET", "POST"]) {
+    const response = await handleCollectRequest(new Request("https://folio.example/api/collect?hash=main-collection-test-key&section=all", { method }), manager);
+    assert.equal(response.status, 202);
+    const job = await finished(manager, (await response.json()).callId) as Job;
+    assert.equal(job.status, "completed");
+    assert.equal(job.total, 10);
+    assert.equal(job.saved, 10);
+    const report = JSON.parse(await readFile(join(root, job.linksFile!), "utf8"));
+    assert.equal(report.feedCount, 10);
+    assert.ok(report.websites.every((site: { sections: { name: string }[] }) => site.sections.length === 1 && site.sections[0].name === "Main feed"));
+  }
+  assert.equal(feedRequests.length, 20);
+  for (const { url } of mainFeeds) assert.equal(feedRequests.filter((input) => input === url).length, 2);
+  assert.equal(saved.length, 20);
+  assert.ok(saved.every((url) => url.searchParams.get("section") === "Main feed"));
 });
 
 const CALL_ID = "01234567-89ab-4cde-8012-3456789abcde";

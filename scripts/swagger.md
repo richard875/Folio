@@ -41,3 +41,8 @@ in the operation description and the [links guide](fetch-links.md). This does no
 change `/api/read`, `/api/save` or `/api/collect` article-format choices; saved
 articles remain Markdown by default. Import accepts validated JSON link reports,
 not historical Markdown reports, and never executes them.
+
+Both GET/POST variants of `/api/links` and `/api/collect` use only the ten Main
+feeds, one per publisher. Other publisher-file entries are inactive references,
+not fallback sources, and cannot be enabled by Swagger parameters or request
+bodies. See the [publisher files and main-feed-only policy](../data/README.md).

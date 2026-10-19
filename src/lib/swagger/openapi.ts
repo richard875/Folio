@@ -63,7 +63,7 @@ const collectOperation = {
   summary: "Start background collection",
   operationId: "startCollection",
   description:
-    "Returns 202 without waiting. Calls /api/links and then /api/save with SAVE_CONCURRENCY parallel saves (default 5). Job progress is persisted; interrupted jobs become errors after a restart. A one-hour overall budget bounds background work. Creates files; POST is preferred.",
+    "Returns 202 without waiting. Calls /api/links using only the ten publisher Main feed sources, then /api/save with SAVE_CONCURRENCY parallel saves (default 5). Other stored feed entries are inactive references, never fetched or used as fallback feeds; no query/body option enables them. Job progress is persisted; interrupted jobs become errors after a restart. A one-hour overall budget bounds background work. Creates files; POST is preferred.",
   parameters: [format],
   responses: {
     "202": response("Job accepted; use callId to check progress.", ref("JobAccepted")),
@@ -79,7 +79,7 @@ const linksOperation = {
   description:
     "Reuters's Google News RSS feed uses cleaned HTML description text as summary, including short/headline-only text and publisher labels; empty descriptions are omitted and text is capped at 1000 characters. " +
     "Bloomberg and Business Insider news sitemaps use news:title as summary, including short headlines (capped at 1000 characters); missing titles are omitted. Other sitemaps have no headline fallback. " +
-    "Collects configured RSS/Atom/news-sitemap sources and saves and returns a versioned JSON report. Publisher/section groups contain articles with url and optional feed-provided plain-text summary (maximum 1000 characters). No article pages are fetched for summaries. Filters non-articles before the limit, preserves curated editor order, and ranks unranked sources using publication time and cross-publisher support. Google News selections are resolved to publisher URLs. RSS_LINKS_PER_SECTION defaults to 5. Waits for completion; use /api/collect for background collection. JSON is the only link-report format; saved articles remain Markdown by default. Creates a file; POST is preferred.",
+    "Collects only the ten publisher Main feed sources; other stored feed entries are inactive reference data, never fetched or used as fallback feeds. No query/body option enables them. Saves and returns a versioned JSON report. Publisher/section groups contain articles with url and optional feed-provided plain-text summary (maximum 1000 characters). No article pages are fetched for summaries. Filters non-articles before the limit, preserves curated editor order, and ranks unranked sources using publication time and cross-publisher support. Google News selections are resolved to publisher URLs. RSS_LINKS_PER_SECTION defaults to 5. Waits for completion; use /api/collect for background collection. JSON is the only link-report format; saved articles remain Markdown by default. Creates a file; POST is preferred.",
   parameters: [parameter("format", "Optional; only json is supported.", false, { type: "string", enum: ["json"], default: "json" })],
   responses: {
     "200": {

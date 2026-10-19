@@ -76,15 +76,16 @@ defaulting to 5 when unset/invalid in the collector; the example explicitly uses
 Retries count attempts after the initial request; 0 disables retries. Existing
 environment variables override `.env`. Article retrieval has separate retry caps.
 
-The JSON catalog `data/feeds.json` is bundled into the server build. Changing it
-requires rebuilding/restarting production; the deployed server does not need
-source attachments at runtime. Only each entry's explicit `url` is fetched.
-The current catalog lists 599 feeds across ten websites: 35 WSJ sections, 556 NY
-Times sections, and one `Main feed` for each other publisher. A limit of 1 yields at most 599 entries,
-not ten. Deduplication is per publisher/section; URLs can repeat across sections.
-All feeds are fetched regardless of that limit; the larger catalog increases
-traffic, collection time and ranking work without extending existing budgets.
-NY Times additions use third-party research statuses, not direct verification.
+The ten publisher JSON files under `data/` are bundled through
+`src/lib/rss/sources.ts`. Changes require rebuilding/restarting production;
+the deployed server does not need source attachments at runtime.
+The stored inventory has 599 entries (35 WSJ, 556 NY Times), but **only the ten
+`Main feed` entries are selected before any fetching or ranking**, one per publisher.
+The other 589 entries are inactive reference data, never used as fallback sources.
+Missing/duplicate mains fail closed. GET and POST, and background `/api/collect`,
+share this policy; query parameters/body cannot opt into reference feeds.
+A limit of 1 yields at most ten article entries; the default of 5 permits at most 50.
+Retries and Google resolution may produce more than ten outbound requests.
 See the [catalog inventory and caveats](../data/README.md). Invalid JSON entries are rejected rather than
 silently skipped. Markdown table inputs and prose inference are no longer supported.
 

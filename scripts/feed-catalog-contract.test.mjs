@@ -2,12 +2,36 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import { test } from "node:test";
-import catalog from "../data/feeds.json" with { type: "json" };
+import { feedInventory as catalog, mainFeeds, publisherCatalogs } from "../src/lib/rss/sources.ts";
 import { METHODS, METHOD_DEFAULTS } from "../reader/methods.ts";
 import { FALLBACK_METHODS } from "../reader/retrieval.config.ts";
-import { validateFeedCatalog } from "../src/lib/rss/catalog.ts";
+import { selectMainFeeds, validateFeedCatalog } from "../src/lib/rss/catalog.ts";
 
 const root = new URL("../", import.meta.url);
+
+test("ten publisher files preserve the complete inventory but expose only one main feed each", async () => {
+  assert.deepEqual((await readdir(new URL("data/", root))).filter((name) => name.endsWith(".json")).sort(),
+    publisherCatalogs.map(({ file }) => file).sort());
+  assert.equal(mainFeeds.length, 10);
+  assert.deepEqual(mainFeeds.map(({ site }) => site), publisherCatalogs.map(({ site }) => site));
+  assert.ok(mainFeeds.every(({ section }) => section === "Main feed"));
+  for (const { site, file, entries } of publisherCatalogs) {
+    assert.deepEqual(JSON.parse(await readFile(new URL(`data/${file}`, root), "utf8")), entries);
+    assert.ok(entries.every((feed) => feed.site === site));
+    assert.equal(entries.filter(({ section }) => section === "Main feed").length, 1);
+  }
+  assert.equal(catalog.length - mainFeeds.length, 589);
+});
+
+test("main selection fails closed on missing or duplicate mains, including identical duplicates", () => {
+  const main = mainFeeds[0];
+  const reference = { ...main, section: "World", url: "https://example.com/reference" };
+  assert.deepEqual(selectMainFeeds([reference, main]), [main]);
+  for (const entries of [[], [reference], [main, main], [main, { ...main, url: reference.url }],
+    [main, { ...reference, site: "Missing main publisher" }]])
+    assert.throws(() => selectMainFeeds(entries));
+  assert.throws(() => selectMainFeeds([main, { ...reference, url: "not-a-url" }]));
+});
 
 test("WSJ catalog includes exactly the researched active article feeds, including Japan and legacy", () => {
   const feeds = validateFeedCatalog(catalog);
@@ -106,7 +130,8 @@ test("executable source has no dependency on the historical Markdown catalog or 
   }
   for (const directory of ["src/", "reader/", "scripts/", "server/"]) await visit(directory);
   const route = await readFile(new URL("src/routes/api/links.ts", root), "utf8");
-  assert.match(route, /import catalog from "\.\.\/\.\.\/\.\.\/data\/feeds\.json"/);
+  assert.match(route, /import \{ mainFeeds \} from "@\/lib\/rss\/sources"/);
+  assert.match(route, /createLinksHandler\(mainFeeds\)/);
   assert.doesNotMatch(route, /attachments|\?raw/);
 });
 
@@ -114,7 +139,7 @@ test("Folio skill names the actual data/configuration files and all configured p
   const skill = await readFile(new URL("docs/skills/universal-article-reader/SKILL.md", root), "utf8");
   assert.match(skill, /^---\nname: universal-article-reader\n/m);
   assert.match(skill, /version: 2\.0\.0/);
-  for (const path of ["data/feeds.json", "reader/retrieval.config.ts", "reader/methods.ts", "reader/AI-GUIDE.md", "src/lib/agent/api.ts"]) {
+  for (const path of ["data/README.md", "src/lib/rss/sources.ts", "reader/retrieval.config.ts", "reader/methods.ts", "reader/AI-GUIDE.md", "src/lib/agent/api.ts"]) {
     assert.ok(skill.includes(path), path);
     await readFile(new URL(path, root));
   }

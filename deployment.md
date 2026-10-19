@@ -119,6 +119,14 @@ and the article cache is capped at 8 MiB. The batch helper's fallback is 5 when
 `SAVE_CONCURRENCY` is absent/invalid; that is not the recommended Free setting.
 Do not raise concurrency on Free without measuring RSS.
 
+The ten publisher JSON inventories under `data/` are bundled through
+`src/lib/rss/sources.ts`; rebuild/redeploy after editing them. Only the ten Main
+feeds (one per publisher) are operational for both links and collection APIs.
+The other 589 stored entries are reference-only, never fetched or used as fallback
+feeds. With `RSS_LINKS_PER_SECTION=1`, at most ten article entries are selected;
+retries/Google resolution can still add outbound requests. See the
+[file mapping and validation rules](data/README.md).
+
 Builds explicitly include dev dependencies and run lint/tests/typecheck before
 building. Test commands preload `scripts/test-env.mjs` to remove inherited proxy
 settings and use only test fixtures; Render's runtime proxy settings are unchanged.

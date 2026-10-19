@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import { test } from "node:test";
 import { parseLinksReport } from "../src/lib/rss/report.ts";
+import { mainFeeds, publisherCatalogs } from "../src/lib/rss/sources.ts";
 
 const root = new URL("../", import.meta.url);
 const guides = [
@@ -11,6 +12,10 @@ const guides = [
   "scripts/save-articles.md", "scripts/agent-reader.md", "scripts/swagger.md",
   "docs/skills/universal-article-reader/SKILL.md",
   "docs/prompts/daily-news-brief.md",
+  ".claude/skills/_INDEX.md", ".claude/references/_INDEX.md",
+  ".claude/references/browser-qa.md", ".claude/references/deploy-target.md",
+  ".claude/references/hibernate-revive.md", ".claude/references/data-and-auth.md",
+  ".claude/references/generated-art.md", ".claude/references/scaffold.md",
 ];
 const readGuide = (path) => readFile(new URL(path, root), "utf8");
 
@@ -26,6 +31,24 @@ test("current implementation guides have resolvable local Markdown links", async
       await access(target);
     }
   }
+});
+
+test("current documentation distinguishes publisher inventories from ten active main feeds", async () => {
+  for (const path of guides) {
+    const text = (await readGuide(path)).replace(/\s+/g, " ");
+    assert.doesNotMatch(text, /data\/feeds\.json|All 599 feeds are requested|All 599 feeds are fetched|up to 599 entries|at most 599 entries/i, path);
+  }
+  for (const path of ["README.md", "data/README.md", "scripts/fetch-links.md", "scripts/collect-articles.md",
+    "scripts/swagger.md", "deployment.md", "docs/prompts/daily-news-brief.md", "docs/skills/universal-article-reader/SKILL.md"]) {
+    const text = (await readGuide(path)).replace(/[*`]/g, "").replace(/\s+/g, " ");
+    assert.match(text, /ten (?:publisher )?Main feeds?/i, path);
+    assert.match(text, /reference/i, path);
+  }
+  const catalogGuide = await readGuide("data/README.md");
+  for (const { site, file, entries } of publisherCatalogs)
+    assert.ok(catalogGuide.includes(`| ${site} | [${file}](${file}) | ${entries.length} | 1 |`), file);
+  assert.equal(mainFeeds.length, 10);
+  assert.match(catalogGuide, /duplicate Main feeds are always rejected/i);
 });
 
 test("documented link-report JSON example validates against the real storage schema", async () => {

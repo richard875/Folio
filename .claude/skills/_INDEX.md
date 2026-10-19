@@ -181,7 +181,7 @@ Status: ⚠️ Template recipe — Render doesn't auto-inject credentials
 **Folio's actual features are documented in:**
 - `docs/skills/universal-article-reader/SKILL.md` — Article extraction
 - `reader/AI-GUIDE.md` — Reader implementation details
-- `data/feeds.json` — Feed configuration
+- `data/*.json` — Publisher inventories; only ten Main feeds active via `src/lib/rss/sources.ts`
 - `reader/retrieval.config.ts` — Publisher retrieval orders
 
 ## Adding New Skills

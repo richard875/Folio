@@ -1,7 +1,44 @@
 # Feed catalog
 
-Edit **`feeds.json`** to configure feed collection. It is bundled into the server;
-rebuild/redeploy production after changes. Research documents are not data sources.
+The inventory is split into **ten publisher JSON files**, bundled into the server
+through [`sources.ts`](../src/lib/rss/sources.ts). Rebuild/redeploy production
+after changes. The former combined `feeds.json` is removed. Research documents
+are not runtime data sources.
+
+## Main-feed-only operation
+
+**Only the single `section: "Main feed"` entry in each file is operational.**
+`GET`/`POST /api/links`, `GET`/`POST /api/collect`, and their downstream automatic
+article-saving workflows use exactly these ten sources. The other 589 entries
+are inactive reference inventory: never fetched, ranked, used for corroboration,
+or used as fallback feeds. Query parameters and POST bodies cannot enable them.
+An unavailable main feed is reported as failed; no subsection is promoted.
+
+| Publisher | File | Stored entries | Active entries |
+| --- | --- | ---: | ---: |
+| WSJ | [wsj.json](wsj.json) | 35 | 1 |
+| NY Times | [nyt.json](nyt.json) | 556 | 1 |
+| Washington Post | [wapo.json](wapo.json) | 1 | 1 |
+| Bloomberg | [bloomberg.json](bloomberg.json) | 1 | 1 |
+| The Economist | [economist.json](economist.json) | 1 | 1 |
+| Financial Times | [ft.json](ft.json) | 1 | 1 |
+| Foreign Policy | [foreignpolicy.json](foreignpolicy.json) | 1 | 1 |
+| CNBC | [cnbc.json](cnbc.json) | 1 | 1 |
+| Reuters | [reuters.json](reuters.json) | 1 | 1 |
+| Business Insider | [businessinsider.json](businessinsider.json) | 1 | 1 |
+| **Total** | | **599** | **10** |
+
+Each file must contain only its assigned publisher and exactly one main feed.
+Missing, duplicate (even identical), or malformed main-feed configuration fails
+closed; there is no first-row fallback. Main feeds retain their existing URLs,
+ordering and metadata. `selectMainFeeds()` enforces the rule at both the links
+handler and report generator, before network work.
+
+This is a restriction on **automatic RSS/feed sourcing**, not an article-URL
+allowlist. Explicit `/api/read`, `/api/save`, and `/api/save-batch` article URLs
+and already-saved/imported articles remain usable. Agent read endpoints read
+saved files, not these feed inventories. Historical link reports and output are
+not rewritten or purged; fresh collections always use only main feeds.
 
 | Field | Values |
 | --- | --- |
@@ -14,22 +51,22 @@ rebuild/redeploy production after changes. Research documents are not data sourc
 | `edition` | Optional informational label |
 
 The first five fields are required. Unknown fields and invalid entries fail
-validation. Duplicate site/section/URL entries keep their first position.
+validation. Duplicate non-main site/section/URL entries keep their first position
+in generic validation; duplicate Main feeds are always rejected, even if identical.
 `format` describes the source; the XML parser still detects its actual structure.
 `editorial` preserves curated order, `newest`/`google-ranked` use freshness and
 coverage ranking, and `feed` uses the existing publisher-profile fallback.
 
 ## Current coverage
 
-The catalog has **599 feeds across ten publishers**: **35 WSJ feeds**, **556 NY
+The stored inventory has **599 feeds across ten publishers**: **35 WSJ feeds**, **556 NY
 Times feeds**, and one `Main feed` for each of the other eight publishers.
-`RSS_LINKS_PER_SECTION` caps each publisher/section, not each publisher. With a
-limit of 1, up to 599 entries can be returned, of which up to 35 are WSJ and 556
-are NY Times. Empty, stale, failed or filtered feeds
-can yield fewer. Identical articles can recur in different sections: deduplication
-and the cap are section-scoped, so agents should deduplicate URLs before saving.
+`RSS_LINKS_PER_SECTION` caps each active publisher's `Main feed`. With a limit
+of 1, up to ten article entries can be returned (one per publisher); with the
+default of 5, up to 50. Empty, stale, failed or filtered main feeds can yield
+fewer. The research inventories below are preserved for reference, not enabled.
 
-### WSJ article feeds
+### WSJ stored article-feed inventory
 
 The existing Flipboard `Main feed` is retained. The 34 additions below come from
 the user-supplied *WSJ RSS Feeds: Complete Verified List* dated 19 October 2026:
@@ -98,13 +135,14 @@ age out. A configured feed is not a promise of a fresh article on each run.
 
 Podcasts (including active shows), sponsored series, frozen/empty feeds, Japanese
 Barron's/Capital Journal, JSON mirrors, dead URLs and unverified YouTube are not
-included. The existing article/media/sponsored-content filters still apply to all
-feeds; Japanese text extraction and publisher access are not newly guaranteed.
-Adding feeds increases collection requests and potential proxy traffic; it does
-not increase publisher diversity, and repeated WSJ coverage does not count as
-independent cross-publisher corroboration.
+included in the stored inventory. The existing article/media/sponsored-content
+filters apply to active Main feed candidates; stored Japanese feeds are not
+executed, and their text extraction or publisher access is not newly guaranteed.
+Adding reference inventory alone does not create collection requests or proxy
+traffic. Only the selected Main feed participates; the other WSJ feeds do not
+contribute candidates or cross-publisher corroboration.
 
-### NY Times article feeds
+### NY Times stored article-feed inventory
 
 The existing HomePage `Main feed` is retained unchanged. The 555 additions were
 selected offline from the user-supplied `nyt_rss_feeds.xlsx` (both `Summary` and
@@ -141,7 +179,7 @@ within Folio's 72-hour window. No new live network audit was performed.
 | Other products: Chinese simplified/traditional, Cooking, Wirecutter | 4 |
 | **Total NY Times** | **556** |
 
-Every exact URL and section label is in [`feeds.json`](feeds.json). Section feeds
+Every exact NY Times URL and section label is in [`nyt.json`](nyt.json). Section feeds
 use `https://rss.nytimes.com/services/xml/rss/nyt/<Name>.xml`; collection URLs use
 `https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/<path>/rss.xml`.
 Athletic URLs use `https://www.nytimes.com/athletic/rss/<path>/`. Only explicit URLs
@@ -188,20 +226,21 @@ Opinion, Op-Docs, Popcast, The Book Review Podcast, The Daily, The Ezra Klein Sh
 The Headlines, The Interview, The Opinions, Student News Quiz, Wordplay (Gameplay),
 Shows (podcasts), News Quiz, and Athletic Podcasts. Some may include transcripts,
 but they are not treated as general text-news feeds. Mixed text collections such
-as What to Watch and Graphics remain subject to the existing per-item media filter.
+as What to Watch and Graphics remain stored references, not operational feeds.
 `slowing` is not proof a feed is permanently stopped; it is conservatively left
-out of this active catalog. NYT Open is in that group. No row status proves that
+out of the stored inventory. NYT Open is in that group. No row status proves that
 Folio can successfully fetch or extract that source.
 
 #### Collection cost and downstream limits
 
-Every collection now attempts 599 feeds; `RSS_LINKS_PER_SECTION=1` reduces output,
-**not feed-request count**. Repeated coverage does not increase publisher diversity.
-More feeds increase proxy traffic, memory and collection/ranking time. There is no
-new scheduler, quota control or timeout increase: synchronous `/api/links` clients
-need long timeouts, and background collection retains its ten-minute internal
-links-request cap and one-hour job budget. This catalog has not been load-tested
-against live feeds on Render Free; collection completion is not guaranteed.
+Each fresh collection attempts **ten main feed sources**, not all 599 stored
+entries. Retries and Google News resolution may require additional requests;
+ten sources does not mean exactly ten outbound requests. `RSS_LINKS_PER_SECTION`
+controls article output, not which feed sources are active. There is no new
+scheduler, quota control or timeout increase: synchronous `/api/links` clients
+need suitable timeouts, and background collection retains its ten-minute internal
+links-request cap and one-hour job budget. No live publisher availability or
+Render capacity audit is implied by fixture tests.
 
 Agents should deduplicate and select before saving. `/api/save-batch` still accepts
 at most 100 URLs per request; larger selections need sequential batches. Each batch

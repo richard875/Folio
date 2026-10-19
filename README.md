@@ -243,16 +243,16 @@ Saved-file verification proves exact retrieval, not correct or complete extracti
 
 ### Feed summaries
 
-The 599 configured feeds across ten publishers live in [`data/feeds.json`](data/feeds.json).
-WSJ has 35 feeds; NY Times has 556 (sections, columns, writers, topics, language
-editions, Athletic, Cooking and Wirecutter). The other eight publishers retain one
-main feed each. NY Times research statuses are third-party records, not direct
-availability checks. See the
-[catalog inventory and caveats](data/README.md). Limits apply per section, not
-per publisher: a limit of 1 can return up to 599 entries, with cross-section repeats.
-All 599 feeds are requested even with a limit of 1, increasing collection time and
-proxy traffic. Existing timeouts/budgets are unchanged; live Render capacity is not
-verified. Select/deduplicate before saving; save-batch accepts at most 100 URLs.
+The [feed inventory](data/README.md) is split into ten publisher JSON files under
+`data/`: 599 stored entries, including 35 WSJ and 556 NY Times entries.
+**Only the ten `Main feed` entries are active**, one per publisher, for all fresh
+links/collection operations. The other 589 entries are reference-only, never fetched
+or used as fallback feeds. Missing/duplicate mains fail configuration validation.
+With `RSS_LINKS_PER_SECTION=1`, collections return at most ten article entries;
+the default of 5 permits at most 50. Main URLs/metadata are unchanged, including
+NY Times HomePage editorial ordering. Explicit article read/save URLs and historical
+saved files remain supported. Research statuses are not live availability checks.
+Existing timeouts/budgets and save-batch's 100-URL request limit are unchanged.
 Ordering and format are explicit fields, not inferred from Markdown research prose.
 See [`data/README.md`](data/README.md) for the catalog format.
 

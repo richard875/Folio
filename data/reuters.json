@@ -1,0 +1,11 @@
+[
+  {
+    "site": "Reuters",
+    "section": "Main feed",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  }
+]

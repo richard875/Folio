@@ -17,7 +17,7 @@ import {
 } from "../src/lib/rss/links.ts";
 import { validateFeedCatalog } from "../src/lib/rss/catalog.ts";
 import { createLinksHandler } from "../src/lib/rss/api.ts";
-import catalog from "../data/feeds.json" with { type: "json" };
+import { feedInventory as catalog, mainFeeds } from "../src/lib/rss/sources.ts";
 
 const feed = { site: "Example News", section: "World", url: "https://example.com/rss" };
 const catalogEntry = { ...feed, ordering: "feed", format: "rss" };
@@ -136,8 +136,8 @@ test("a smaller JSON catalog fetches only its explicit URLs and yields at most o
   );
 });
 
-test("limit one fetches all 599 catalog feeds and preserves repeated URLs across sections", async () => {
-  const feeds = validateFeedCatalog(catalog);
+test("limit one fetches only the ten main feeds, never the 589 reference feeds", async () => {
+  const feeds = mainFeeds;
   let feedRequests = 0;
   let resolveRequests = 0;
   const results = await collectFeeds(feeds, {
@@ -188,17 +188,17 @@ test("limit one fetches all 599 catalog feeds and preserves repeated URLs across
   });
   // Debug: include in assertion message
   const details = results.map((r, i) => `${feeds[i].site}: ${r.urls.length}`).join(", ");
-  assert.equal(feedRequests, 599, `feed requests: ${details}`);
+  assert.equal(feedRequests, 10, `feed requests: ${details}`);
   assert.ok(resolveRequests > 0, "Reuters wrappers are resolved in the fixture");
   const wsj = results.filter(({ site }) => site === "WSJ");
-  assert.equal(wsj.length, 35);
+  assert.equal(wsj.length, 1);
   assert.ok(wsj.every(({ urls }) => urls.length === 1 && urls[0] === "https://www.wsj.com/news/story"));
   const nyt = results.filter(({ site }) => site === "NY Times");
-  assert.equal(nyt.length, 556);
+  assert.equal(nyt.length, 1);
   assert.ok(nyt.every(({ urls }) => urls.length === 1 && urls[0] === "https://www.nytimes.com/news/story"));
   assert.equal(
     results.reduce((sum, result) => sum + result.urls.length, 0),
-    599,
+    10,
     `total urls: ${details}`,
   );
 });
@@ -208,6 +208,57 @@ test("extracts and deduplicates RSS article links, not IDs or unsafe URLs", asyn
     "https://example.com/story?a=1&b=2",
     "https://example.com/other",
   ]);
+});
+
+test("GET/POST links filter the full inventory before transport and cannot enable references or fallback", async (t) => {
+  const output = await mkdtemp(join(tmpdir(), "folio-main-feeds-"));
+  const old = process.env.ACCESS_HASH;
+  process.env.ACCESS_HASH = "main-feed-test-key";
+  t.after(async () => {
+    if (old === undefined) delete process.env.ACCESS_HASH; else process.env.ACCESS_HASH = old;
+    await rm(output, { recursive: true, force: true });
+  });
+  let run = 0;
+  const calls = [];
+  const handle = createLinksHandler(catalog, (source) => {
+    assert.deepEqual(source, mainFeeds);
+    return generateLinks(source, {
+      outputDir: join(output, String(run++)), retryLimit: 0, limit: 1,
+      fetchImpl: async (input) => {
+        calls.push(String(input));
+        // Deliberately empty mains: reference feeds must not be used to refill them.
+        return new Response("<rss><channel><title>Empty main</title></channel></rss>");
+      },
+    });
+  });
+  for (const method of ["GET", "POST"]) {
+    const response = await handle(new Request("https://folio.example/api/links?hash=main-feed-test-key&section=all&allFeeds=true", {
+      method, ...(method === "POST" ? { body: JSON.stringify({ feeds: catalog }) } : {}),
+    }));
+    assert.equal(response.status, 200);
+    const report = await response.json();
+    assert.equal(report.feedCount, 10);
+    assert.equal(report.linkCount, 0);
+    assert.ok(report.websites.every(({ sections }) => sections.length === 1 && sections[0].name === "Main feed"));
+  }
+  // Direct generator use must have the same policy even without the HTTP handler.
+  const direct = await generateLinks(catalog, {
+    outputDir: join(output, "direct"), retryLimit: 0,
+    fetchImpl: async (input) => {
+      calls.push(String(input));
+      return new Response("unavailable", { status: 503 });
+    },
+  });
+  assert.equal(direct.failedFeedCount, 10);
+  assert.equal(direct.linkCount, 0);
+  assert.equal(calls.length, 30);
+  for (const url of mainFeeds.map(({ url }) => url)) assert.equal(calls.filter((call) => call === url).length, 3);
+  assert.ok(calls.every((url) => mainFeeds.some((feed) => feed.url === url)));
+  let dispatched = false;
+  await assert.rejects(generateLinks(catalog.filter(({ section }) => section !== "Main feed"), {
+    outputDir: join(output, "invalid"), fetchImpl: async () => { dispatched = true; return new Response(); },
+  }), /exactly one Main feed/);
+  assert.equal(dispatched, false);
 });
 
 test("supports Atom feeds and preserves Google News article URLs", async () => {
@@ -377,8 +428,8 @@ test("collection generates a saved report, keeps successful feeds and honors env
   const origin = `http://127.0.0.1:${server.address().port}`;
   const output = join(dir, "links");
   const source = [
-    { ...catalogEntry, site: "Local News", section: "World", url: `${origin}/rss` },
-    { ...catalogEntry, site: "Local News", section: "Tech", url: `${origin}/slow` },
+    { ...catalogEntry, site: "Local News", section: "Main feed", url: `${origin}/rss` },
+    { ...catalogEntry, site: "Slow News", section: "Main feed", url: `${origin}/slow` },
   ];
   // Explicit fixture transport: production's default deliberately rejects loopback feeds.
   const options = { outputDir: output, retryLimit: 0, timeoutMs: 100, limit: 5, fetchImpl: fetch };
@@ -421,9 +472,9 @@ test("links endpoint authenticates, returns only JSON and prevents overlapping r
   });
   const report = buildLinksReport([{ ...feed, urls: ["https://example.com/story"], ok: true }], new Date("2026-10-11T12:34:56Z"));
   let calls = 0;
-  const sourceCatalog = [catalogEntry];
+  const sourceCatalog = [{ ...catalogEntry, section: "Main feed" }];
   const handler = createLinksHandler(sourceCatalog, async (source) => {
-    assert.equal(source, sourceCatalog);
+    assert.deepEqual(source, sourceCatalog);
     calls++;
     return report;
   });

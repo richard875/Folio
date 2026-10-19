@@ -21,8 +21,8 @@
 - [Root README](../README.md): setup, API map, single-proxy operation and round-robin account pools.
 - [Deployment](../deployment.md): single-process Render Free and temporary storage.
 - [Reader overview](../reader/README.md) and [maintainer guide](../reader/AI-GUIDE.md).
-- [Feed catalog](../data/README.md): 599 feeds across ten publishers, including 35
-  WSJ and 556 NY Times feeds, research provenance and exclusions;
+- [Feed catalog](../data/README.md): ten publisher JSON files, 599 stored entries
+  (35 WSJ, 556 NY Times), but only ten Main feeds active; provenance and exclusions;
   [selection policy](../scripts/feed-selection.md).
 - [JSON link reports and publisher summary rules](../scripts/fetch-links.md), [collection](../scripts/collect-articles.md),
   [save/save-batch](../scripts/save-articles.md), [agent reading](../scripts/agent-reader.md),
@@ -57,7 +57,7 @@ not a promise of current service terms or an implemented scraping-API integratio
 The handover and archived verdicts retain their original text/paths as historical
 evidence. Use the table above to locate moved files. The handover also mentions a
 Markdown feed catalog that was removed earlier; the current catalog is
-[`data/feeds.json`](../data/feeds.json). No saved articles or jobs were moved.
+[publisher JSON inventory](../data/README.md). No saved articles or jobs were moved.
 
 API guides remain beside their tools in `scripts/`; reader/configuration guides
 remain in `reader/` and `data/`. Root setup/deployment instructions remain in

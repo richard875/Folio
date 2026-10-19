@@ -1,0 +1,11 @@
+[
+  {
+    "site": "The Economist",
+    "section": "Main feed",
+    "url": "https://www.economist.com/latest/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  }
+]

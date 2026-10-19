@@ -16,7 +16,7 @@ Paths below are relative to the repository root, not this skill directory.
 
 | Concern | Authoritative files |
 | --- | --- |
-| Feed sources and explicit metadata | `data/feeds.json`, validated by `src/lib/rss/catalog.ts` |
+| Feed sources and explicit metadata | Publisher `data/*.json` files (see `data/README.md`); only Main feeds selected by `src/lib/rss/sources.ts`, validated by `src/lib/rss/catalog.ts` |
 | Publisher article-fetch order | `reader/retrieval.config.ts`, expanded by `reader/targets.ts` |
 | Retrieval URLs, user agents, headers, timeouts | `reader/methods.ts`, executed by `reader/fetch.ts` |
 | Candidate selection and caches | `reader/read.ts` |
@@ -72,35 +72,35 @@ The Economist, Financial Times, Foreign Policy, CNBC, Reuters, Business Insider*
 The Hill and Axios are not configured. Other manually supplied public article URLs
 can use the generic reader, but successful extraction is not guaranteed.
 
-- Read sources only from `data/feeds.json`. Its `site`, `section`, `url`, `ordering`
+- Read sources only from the ten publisher `data/*.json` inventories registered
+  in `src/lib/rss/sources.ts`. Their `site`, `section`, `url`, `ordering`
   and `format` are explicit; `homepageScore` and `edition` are optional. Do not
   derive behavior from research prose or add alternate URLs mentioned in notes.
-- WSJ uses 35 feeds: Flipboard plus English/Japanese current-server and selected
-  legacy article feeds. See `data/README.md` for the inventory and caveats.
-  NY Times uses 556 text-oriented feeds, including sections, columns, writers,
-  topics, language editions, Athletic, Cooking and Wirecutter. Research statuses
-  are third-party records, not direct availability verification.
+- The inventory preserves 599 entries, including 35 WSJ and 556 NY Times feeds.
+  **Only ten Main feeds are operational**, one per publisher. The other 589 are
+  reference-only: never fetched, ranked, used for corroboration or fallback.
+  All GET/POST links and collect requests share this restriction. Missing or
+  duplicate mains fail closed; query/body options cannot activate reference feeds.
+  WSJ uses Flipboard; NY Times uses HomePage. See `data/README.md` for all file
+  names and provenance. Research statuses are not direct availability verification.
   Reuters uses Google News RSS, not the inactive native JSON
   branch. Bloomberg and Business Insider use news sitemaps. Others use RSS.
 - Preserve existing publisher filters: WSJ Buyside/media and Flipboard tracking;
   Washington Post sports/AP bylines; CNBC shopping/media/AP; Reuters bare-publisher
   and stock-price titles; Economist podcasts/media. Filter non-articles generally.
-- NY Times HomePage, Financial Times and CNBC preserve curated feed order. Added
-  NY Times feeds use `newest`, not a claim of curated section/topic order. Other configured
+- NY Times HomePage, Financial Times and CNBC preserve curated feed order. Other active
   feeds use date/coverage ranking, not a promise of true homepage importance.
 - Dated non-editorial entries have a 72-hour horizon; editorial entries get 168
   hours. Dates over 24 hours ahead are rejected. **Undated entries can be eligible.**
 - Resolve selected Google wrappers to publisher URLs before final filtering/capping;
   refill failed or invalid selections. Older saved reports retain the save resolver.
-- `RSS_LINKS_PER_SECTION` defaults to 5; with 1, at most one entry per
-  publisher/section is selected (up to 599 across the current catalog). All 599
-  feeds are fetched regardless of this limit, increasing time and proxy traffic.
-  Existing budgets are unchanged; live Render load capacity is unverified. URLs can
-  repeat across sections; deduplicate before selective saving. Configured feeds
-  do not guarantee eligible links every run. Japanese sections remain WSJ, not
-  additional independent publishers; edition does not filter language.
-  Athletic and other NY Times products likewise remain one publisher identity.
-  Select/deduplicate before saving; save-batch accepts at most 100 URLs per request.
+- `RSS_LINKS_PER_SECTION` defaults to 5: at most 50 entries across ten active Main
+  feeds. With 1, at most ten entries. Failed/empty/filtered sources can yield fewer.
+  Retries/Google resolution can add requests beyond the ten source fetches. No
+  timeout/budget changes. Select/deduplicate before saving; save-batch accepts at
+  most 100 URLs per request. Explicit article read/save URLs and saved/imported
+  files remain supported; the restriction is automatic feed sourcing, not an
+  article URL allowlist. Historical output must not be rewritten or purged.
 - Summaries are feed excerpts, not AI-generated text or article-page fetches.
   Prefer RSS description/summary/content:encoded or Atom summary/inline content;
   clean HTML, reject stubs under 40 characters, cap at 1,000, omit when absent.

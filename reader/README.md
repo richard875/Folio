@@ -28,5 +28,7 @@ bypassed requests do not advance it. [Pool setup](../README.md#multiple-accounts
 
 **Configure:** [retrieval.config.ts](retrieval.config.ts) for order;
 [methods.ts](methods.ts) for service URLs and settings.
+Feed inventories are separate: [publisher JSON files](../data/README.md), with
+only one Main feed per publisher active for automatic collection.
 
 [Detailed AI/maintainer guide →](AI-GUIDE.md)

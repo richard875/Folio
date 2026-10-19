@@ -1,7 +1,7 @@
 import { mkdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
-import { validateFeedCatalog, type Feed } from "./catalog.ts";
+import { selectMainFeeds, type Feed } from "./catalog.ts";
 import { articleUrl, parseCandidates, rankCandidates, type Candidate } from "./selection.ts";
 import { isGoogleNewsArticle, resolveGoogleNewsUrl } from "./google-news.ts";
 import { boundedBytes, publicFetch, publicFetchRedirects } from "../runtime/network.ts";
@@ -323,8 +323,7 @@ export async function generateLinks(
 ) {
   const limit = options.limit ?? configuredLinkLimit(process.env.RSS_LINKS_PER_SECTION);
   const retryLimit = options.retryLimit ?? configuredRetryLimit(process.env.FETCH_RETRY_LIMIT);
-  const feeds = validateFeedCatalog(catalog);
-  if (!feeds.length) throw new Error("No feed URLs found in the catalog.");
+  const feeds = selectMainFeeds(catalog);
   const results = await collectFeeds(feeds, { ...options, limit, retryLimit });
   const outputDir = options.outputDir ?? resolve(process.cwd(), "output/links");
   const path = await saveLinks(results, outputDir, { limit });

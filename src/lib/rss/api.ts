@@ -1,5 +1,6 @@
 import { hashMatches } from "../../../reader/auth.ts";
 import { generateLinks } from "./links.ts";
+import { selectMainFeeds } from "./catalog.ts";
 
 /** One collection at a time per Node process, to avoid duplicate feed storms. */
 export function createLinksHandler(catalog: unknown, generate = generateLinks) {
@@ -16,7 +17,7 @@ export function createLinksHandler(catalog: unknown, generate = generateLinks) {
       return errorResponse("A link collection is already running. Please try again later.", 409);
     running = true;
     try {
-      const report = await generate(catalog);
+      const report = await generate(selectMainFeeds(catalog));
       const status = report.failedFeedCount === report.feedCount ? 502 : 200;
       const responseHeaders = { ...headers, "x-saved-file": report.savedFile };
       return Response.json(report, { status, headers: responseHeaders });

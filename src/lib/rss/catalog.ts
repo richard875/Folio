@@ -1,4 +1,4 @@
-/** Feed collection configuration. Runtime entries come from data/feeds.json. */
+/** Feed inventory validation and main-feed-only operational selection. */
 export type Feed = {
   site: string;
   section: string;
@@ -52,4 +52,19 @@ export function validateFeedCatalog(catalog: unknown): CatalogFeed[] {
     });
   }
   return feeds;
+}
+
+/** Select before network/ranking work; never promote a reference feed on failure. */
+export function selectMainFeeds(catalog: unknown): CatalogFeed[] {
+  const feeds = validateFeedCatalog(catalog);
+  if (!feeds.length) throw new Error("No feed URLs found in the catalog.");
+  const sites = [...new Set(feeds.map(({ site }) => site))];
+  // Count raw validated rows: even identical duplicate mains are an error.
+  const mainRows = (catalog as Record<string, unknown>[]).filter((row) =>
+    (row.section as string).trim() === "Main feed");
+  for (const site of sites) {
+    if (mainRows.filter((row) => (row.site as string).trim() === site).length !== 1)
+      throw new Error("Each publisher must have exactly one Main feed.");
+  }
+  return feeds.filter(({ section }) => section === "Main feed");
 }

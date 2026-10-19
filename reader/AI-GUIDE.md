@@ -22,6 +22,12 @@ operational caveats. Executable configuration remains the source of truth.
 These configuration files organize the existing retrieval behavior; editing their
 orders/templates changes future requests, not historical saved data.
 
+Feed configuration is separate: the ten publisher `data/*.json` inventories are
+registered by `src/lib/rss/sources.ts`. Only their ten Main feeds are used by
+links/collection operations; non-main entries are inactive references, not fallback
+sources. See [feed configuration](../data/README.md). This does not restrict manually
+supplied article URLs or change the publisher extraction orders below.
+
 ## Publisher order at a glance
 
 **P** = publisher HTML (`direct`), **W** = WallHop (`wallhop`),

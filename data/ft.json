@@ -1,0 +1,11 @@
+[
+  {
+    "site": "Financial Times",
+    "section": "Main feed",
+    "url": "https://www.ft.com/?format=rss",
+    "ordering": "editorial",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "International"
+  }
+]

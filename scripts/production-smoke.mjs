@@ -9,7 +9,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { setTimeout as sleep } from "node:timers/promises";
 import { chromium } from "playwright";
-import feedCatalog from "../data/feeds.json" with { type: "json" };
+import { mainFeeds as feedCatalog, feedInventory } from "../src/lib/rss/sources.ts";
 
 const project = fileURLToPath(new URL("../", import.meta.url));
 const root = await mkdtemp(join(tmpdir(), "folio-production-smoke-"));
@@ -63,7 +63,8 @@ try {
     return [feed.url, xml];
   }));
   const preload = join(root, "fixture-transport.mjs");
-  await writeFile(preload, `const original = globalThis.fetch; const html = ${JSON.stringify(fixtureHtml)}; const feeds = ${JSON.stringify(feedFixtures)}; globalThis.fetch = (input, init) => Object.hasOwn(feeds, String(input)) ? Promise.resolve(new Response(feeds[String(input)], {headers:{"content-type":"application/xml"}})) : String(input).includes("fixture.folio.example") ? Promise.resolve(new Response(html, {headers:{"content-type":"text/html"}})) : original(input, init);`);
+  const inactiveFeeds = feedInventory.filter(({ section }) => section !== "Main feed").map(({ url }) => url);
+  await writeFile(preload, `const original = globalThis.fetch; const html = ${JSON.stringify(fixtureHtml)}; const feeds = ${JSON.stringify(feedFixtures)}; const inactive = new Set(${JSON.stringify(inactiveFeeds)}); globalThis.fetch = (input, init) => { if (inactive.has(String(input))) throw Error("Inactive reference feed reached transport"); return Object.hasOwn(feeds, String(input)) ? Promise.resolve(new Response(feeds[String(input)], {headers:{"content-type":"application/xml"}})) : String(input).includes("fixture.folio.example") ? Promise.resolve(new Response(html, {headers:{"content-type":"text/html"}})) : original(input, init); };`);
   child = spawn(process.execPath, ["--max-old-space-size=256", "--max-semi-space-size=16", "--import", preload, join(project, "scripts/start-production.mjs")], {
     cwd: root, env, stdio: ["ignore", "pipe", "pipe"],
   });
@@ -99,6 +100,7 @@ try {
   const linkResponse = await get(`/api/links?${new URLSearchParams({ hash, format: "json" })}`, false, { method: "POST" });
   assert.equal(linkResponse.status, 200);
   const linkReport = await linkResponse.json();
+  assert.equal(feedCatalog.length, 10);
   assert.equal(linkReport.feedCount, feedCatalog.length);
   assert.equal(linkReport.failedFeedCount, 0);
   assert.equal(linkReport.linkCount, new Set(feedCatalog.map(({ site, section }) => JSON.stringify([site, section]))).size);
@@ -111,6 +113,12 @@ try {
   assert.deepEqual(JSON.parse(await readFile(join(root, linkReport.savedFile), "utf8")), linkReport);
   assert.equal(linkReport.schemaVersion, 1);
   assert.equal("markdown" in linkReport, false);
+  const getLinks = await get(`/api/links?${new URLSearchParams({ hash, section: "all" })}`, false);
+  assert.equal(getLinks.status, 200);
+  const getReport = await getLinks.json();
+  assert.equal(getReport.feedCount, 10);
+  assert.ok(getReport.websites.every(({ sections }) => sections.length === 1 && sections[0].name === "Main feed"));
+  assert.ok(!logs.includes("Inactive reference feed reached transport"));
 
   const manifest = [];
   let manifestUrl = "/api/agent/latest?limit=3";

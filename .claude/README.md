@@ -37,8 +37,9 @@ unless explicitly requested.
 
 - Runtime: Node 24.20.0, React/TanStack Start, local macOS development.
 - Deployment: one Render Free Node service; its temporary filesystem is not durable.
-- Active sources of truth: `data/feeds.json`, `reader/retrieval.config.ts`, and
-  `reader/methods.ts`.
+- Active sources of truth: publisher `data/*.json` inventories (only the ten
+  `Main feed` entries are operational via `src/lib/rss/sources.ts`),
+  `reader/retrieval.config.ts`, and `reader/methods.ts`.
 - `app-env.defaults.json` carries `VITE_AUTH_ENABLED=false`. Folio's wrapper reads
   `.claude/app-env.defaults.json`, then optional ignored `.claude/app-env.json`,
   then process variables. These paths are unchanged by resource consolidation.

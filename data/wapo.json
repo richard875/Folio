@@ -1,0 +1,11 @@
+[
+  {
+    "site": "Washington Post",
+    "section": "Main feed",
+    "url": "https://www.washingtonpost.com/arcio/rss/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  }
+]

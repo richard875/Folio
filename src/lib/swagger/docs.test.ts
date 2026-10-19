@@ -105,6 +105,16 @@ test("OpenAPI exposes JSON-only link reports without changing article format sup
   assert.ok("text/markdown" in openApiDocument.paths["/api/read"].get.responses["200"].content);
 });
 
+test("both GET/POST links and collection descriptions document main-feed-only sourcing", () => {
+  for (const path of ["/api/links", "/api/collect"] as const) {
+    for (const operation of Object.values(openApiDocument.paths[path])) {
+      assert.match(operation.description, /ten publisher Main feed sources/);
+      assert.match(operation.description, /never fetched or used as fallback feeds/);
+      assert.match(operation.description, /no query\/body option enables them/i);
+    }
+  }
+});
+
 test("OpenAPI describes all routes, uses unique operation IDs and resolves every schema reference", () => {
   for (const path of [
     "/api/read",

@@ -17,6 +17,10 @@ The link report is always `output/links/links_<UTC timestamp>.json`, regardless
 of the article format. Its shared schema validates the stored report before tasks
 are created; a malformed report or mismatched saved path fails the job before saving
 articles. Summaries remain in the report but are not part of saving tasks.
+Both GET and POST collect use only the ten publisher `Main feed` sources through
+the same links handler. The other 589 stored feed entries are reference-only:
+they are never fetched, ranked or used as fallback sources. No query/body option
+enables them. With a link limit of 1, at most ten article entries reach saving.
 The job uses its freshly generated report, never scans/replays older link files,
 and does not parse historical Markdown reports. See the [links report schema](fetch-links.md).
 Article output paths remain unchanged. Add `format=json` to the start request
