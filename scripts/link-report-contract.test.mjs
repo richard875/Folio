@@ -10,11 +10,12 @@ const guides = [
   "scripts/fetch-links.md", "scripts/feed-selection.md", "scripts/collect-articles.md",
   "scripts/save-articles.md", "scripts/agent-reader.md", "scripts/swagger.md",
   "docs/skills/universal-article-reader/SKILL.md",
+  "docs/prompts/daily-news-brief.md",
 ];
 const readGuide = (path) => readFile(new URL(path, root), "utf8");
 
 test("current implementation guides have resolvable local Markdown links", async () => {
-  // Historical handovers, research, recovered prompts and private output are not
+  // Historical handovers, research and private output are not
   // current guidance and must not be rewritten to satisfy this contract.
   for (const path of guides) {
     const document = new URL(path, root);
@@ -38,6 +39,22 @@ test("documented link-report JSON example validates against the real storage sch
     { url: "https://example.com/story", summary: "Optional feed-provided excerpt." },
   ]);
   assert.equal("markdown" in report, false);
+});
+
+test("daily briefing prompt covers selective saving and job-bound verified reading", async () => {
+  const prompt = await readGuide("docs/prompts/daily-news-brief.md");
+  for (const fact of [
+    "/api/links", "/api/save-batch?hash=", "/api/save-batch/status?callId=",
+    "/api/agent/latest", "nextManifestUrl", "snapshotId", "collections[]",
+    "savedFile", "endOfArticle=true", "UTF-8 byte count", "SHA-256",
+    "save times", "untrusted data", "Retry-After",
+  ]) assert.ok(prompt.includes(fact), `Prompt missing ${fact}`);
+  const example = /```json\s*\n([\s\S]*?)\n```/.exec(prompt)?.[1];
+  assert.ok(example, "Missing save-batch request example");
+  const body = JSON.parse(example);
+  assert.equal(body.format, "markdown");
+  assert.ok(body.urls.length >= 1 && body.urls.length <= 100);
+  assert.ok(body.urls.every((item) => new URL(item.url).protocol === "https:" && !item.callId));
 });
 
 test("current guides do not reinstate obsolete Markdown link-report contracts", async () => {

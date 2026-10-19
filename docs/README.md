@@ -5,7 +5,7 @@
 | [handovers/2026-10-19.md](handovers/2026-10-19.md) | Shared Claude Code/OpenCode resources, duplicate audit, migration commit, validation, and maintenance caveats |
 | [handovers/2026-10-18_2.md](handovers/2026-10-18_2.md) | Historical continuation snapshot of WallHop, reader/JSON refactors, documentation cleanup and stash recovery |
 | [skills/universal-article-reader/SKILL.md](skills/universal-article-reader/SKILL.md) | Current Folio workflow for AI agents |
-| [prompts/daily-news-brief.md](prompts/daily-news-brief.md) | Recovered daily-brief example; credentials and service address replaced with placeholders |
+| [prompts/daily-news-brief.md](prompts/daily-news-brief.md) | Current external-agent prompt: select links, save/poll a batch, verify/read its snapshot, and produce a briefing; private values remain placeholders |
 | [handovers/2026-10-12.md](handovers/2026-10-12.md) | Recovered historical handover; credentials redacted and outdated claims labelled |
 | [handovers/2026-10-18.md](handovers/2026-10-18.md) | Historical continuation handover; not a current configuration source |
 | [research/proxy-options/overview.md](research/proxy-options/overview.md) | Proxy research report |
