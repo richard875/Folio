@@ -324,6 +324,5001 @@
     "edition": "US"
   },
   {
+    "site": "NY Times",
+    "section": "Arts",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Arts > Art & Design",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/ArtandDesign.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Arts > Dance",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Dance.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Arts > Music",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Music.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Arts > Television",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Television.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Automobiles",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Automobiles.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Books > Book Review",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Books/Review.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Business",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Business > DealBook",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Dealbook.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Business > Economy",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Economy.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Business > Energy & Environment",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/EnergyEnvironment.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Business > Small Business",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/SmallBusiness.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Climate and Environment",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Climate.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Connecticut",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Connecticut.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Education",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Education.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Fashion",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Style.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Fashion > Love",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Weddings.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Food",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/DiningandWine.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Health",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Health.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Health > Money & Policy",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/HealthCarePolicy.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Jobs",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Jobs.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Lens",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Lens.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Long Island",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Long-Island.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Media",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Most Popular — MostEmailed",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/MostEmailed.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Most Popular — MostShared",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/MostShared.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Most Popular — MostViewed",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/MostViewed.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Most Recent Headlines",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/recent.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Movies",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Movies.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "New York",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/NYRegion.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Obituaries",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Obituaries.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Opinion",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Opinion.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Opinion > Columnists",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Columnists.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Opinion > Editorials",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Editorials.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Opinion > Sunday Opinion",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/sunday-review.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Politics",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Real Estate",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/RealEstate.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Science",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Science.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Science > Space & Cosmos",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Space.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Sports > Baseball",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Baseball.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Sports > Golf",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Golf.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Sports > N.F.L.",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/ProFootball.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Style",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "T Magazine",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/tmagazine.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "T Magazine > Design & Interiors",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/tmagazine-design.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "T Magazine > Food",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/tmagazine-food.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "T Magazine > Travel",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/tmagazine-travel.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Technology",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Technology > Personal Tech",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/PersonalTech.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "The New York Times en Español",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/es.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "Spanish"
+  },
+  {
+    "site": "NY Times",
+    "section": "The New York Times Magazine",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Magazine.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "The Upshot",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Upshot.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Theater",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Theater.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Travel",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Travel.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "U.S. News",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/US.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Weather",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Weather.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Well",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Well.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Westchester",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Westchester.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "World > Africa",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Africa.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "World > Americas",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Americas.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "World > Asia Pacific",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/AsiaPacific.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "World > Europe",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Europe.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "World > Middle East",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/MiddleEast.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "World News",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Your Money",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/YourMoney.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Books",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/books/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Books > Book Review",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/books/review/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Business > Media",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/business/media/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Corrections",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/corrections/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Fashion > Men’s Style",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/fashion/mens-style/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Food > Wine, Beer & Cocktails",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/food/drinks/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Headway",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/headway/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Opinion > Contributors",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/opinion/contributors/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Opinion > Culture",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/opinion/culture/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Opinion > Letters",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/opinion/letters/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Opinion > Politics",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/opinion/politics/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Opinion > Technology",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/opinion/technology/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Opinion > The World",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/opinion/international-world/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Reader Center",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/reader-center/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Style > Self-Care",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/style/self-care/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — T Magazine > Fashion & Beauty",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/t-magazine/fashion/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Technology > Personal Tech",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/technology/personaltech/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — The Learning Network",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/learning/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Times Insider",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/insider/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Well > Eat",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/well/eat/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Well > Family",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/well/family/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Well > Mind",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/well/mind/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — Well > Move",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/well/move/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — World > Australia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/world/australia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — World > Canada",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/world/canada/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Section — World > Middle East",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/world/middleeast/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — 36 Hours",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/36-hours/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Ask Real Estate",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/ask-real-estate/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Ask Well",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/ask-well/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Bret Stephens",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/bret-stephens/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Carlos Lozada",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/carlos-lozada/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Corner Office",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/corner-office/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — David Wallace-Wells",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/david-wallace-wells/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Diagnosis",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/diagnosis/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Ezra Klein",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/ezra-klein/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Fixes",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/fixes/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Frank Bruni",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/frank-bruni/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Frugal Traveler",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/frugal-traveler/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Gail Collins",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/gail-collins/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Jamelle Bouie",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/jamelle-bouie/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — John McWhorter",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/john-mcwhorter/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Judge John Hodgman",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/judge-john-hodgman/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Lydia Polgreen",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/lydia-polgreen/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — M. Gessen",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/m-gessen/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Maureen Dowd",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/maureen-dowd/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Metropolitan Diary",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/metropolitan-diary/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Michelle Goldberg",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/michelle-goldberg/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Modern Love",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/modern-love/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — New York Today",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/ny-today-daily-briefings/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Nicholas Kristof",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/nicholas-kristof/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Off the Menu",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/off-the-menu/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Routine",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/sunday-routine/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Social Q’s",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/social-qs/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — The Ethicist",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/the-ethicist/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — The Hunt",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/the-hunt/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — The Interpreter",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/the-interpreter/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — The New Old Age",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/the-new-old-age/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Thomas B. Edsall",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/thomas-b-edsall/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Thomas L. Friedman",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/thomas-l-friedman/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Tressie McMillan Cottom",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/tressie-mcmillan-cottom/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Trilobites",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/trilobites/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Vows",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/vows/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Wealth Matters",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/wealth-matters/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — What to Cook",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/what-to-cook/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — What's Going On in This Graph?",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/whats-going-on-in-this-graph/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Column — Word of the Day",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/learning-word-of-the-day/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — A.O. Scott",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/a-o-scott/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Adam Liptak",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/adam-liptak/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Amanda Hess",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/amanda-hess/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Andrew Ross Sorkin",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/andrew-ross-sorkin/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Annie Karni",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/annie-karni/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Apoorva Mandavilli",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/apoorva-mandavilli/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Ben Casselman",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/ben-casselman/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Brian X. Chen",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/brian-x-chen/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Cade Metz",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/cade-metz/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Carl Zimmer",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/carl-zimmer/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Charlie Savage",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/charlie-savage/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Claire Cain Miller",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/claire-cain-miller/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — David E. Sanger",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/david-e-sanger/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — David French",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/david-french/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — David McCabe",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/david-mccabe/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Dwight Garner",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/dwight-garner/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Emily Badger",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/emily-badger/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Emily Bazelon",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/emily-bazelon/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Eric Asimov",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/eric-asimov/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Eric Schmitt",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/eric-schmitt/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Gina Kolata",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/gina-kolata/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — James Poniewozik",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/james-poniewozik/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Jason Zinoman",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/jason-zinoman/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Jeanna Smialek",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/jeanna-smialek/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Jennifer Szalai",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/jennifer-szalai/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Jeremy W. Peters",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/jeremy-w-peters/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Jim Tankersley",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/jim-tankersley/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Jodi Kantor",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/jodi-kantor/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Jon Caramanica",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/jon-caramanica/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Jon Pareles",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/jon-pareles/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Josh Katz",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/josh-katz/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Karen Weise",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/karen-weise/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Kashmir Hill",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/kashmir-hill/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Katie Benner",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/katie-benner/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Kenneth Chang",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/kenneth-chang/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Lulu Garcia-Navarro",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/lulu-garcia-navarro/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Maggie Haberman",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/maggie-haberman/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Manohla Dargis",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/manohla-dargis/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Melissa Clark",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/melissa-clark/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Mike Isaac",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/mike-isaac/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Nate Cohn",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/nate-cohn/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Paul Mozur",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/paul-mozur/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Pete Wells",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/pete-wells/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Peter Baker",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/peter-baker/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Reid J. Epstein",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/reid-j-epstein/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Rukmini Callimachi",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/rukmini-callimachi/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Sheera Frenkel",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/sheera-frenkel/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Spencer Bokat-Lindell",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/spencer-bokat-lindell/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Tejal Rao",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/tejal-rao/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Writer — Wesley Morris",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/wesley-morris/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Newsletter — The Evening",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/series/us-evening-briefing/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Newsletter — The Morning Newsletter",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/series/us-morning-briefing/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Spotlight — Artificial Intelligence",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/spotlight/artificial-intelligence/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Spotlight — Arts & Entertainment Guide",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/spotlight/arts-listings/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Spotlight — Cybersecurity",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/spotlight/cybersecurity/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Spotlight — Graphics",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/spotlight/graphics/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Spotlight — Pop Culture",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/spotlight/pop-culture/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Spotlight — The Great Read",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/spotlight/the-great-read/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Spotlight — What to Watch",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/spotlight/what-to-watch/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "News event — Russia-Ukraine War",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/news-event/ukraine-russia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "News event — The Covid-19 Pandemic",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/news-event/coronavirus/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Advertising and Marketing",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/advertising-and-marketing/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Agriculture and Farming",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/agriculture-and-farming/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Airlines and Airplanes",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/airlines-and-airplanes/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Animals",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/animals/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Antitrust Laws and Competition Issues",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/antitrust-laws-and-competition-issues/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Archaeology and Anthropology",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/archaeology-and-anthropology/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Architecture",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/architecture/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Artificial Intelligence",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/artificial-intelligence/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Asset Allocation",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/asset-allocation/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Banking Industry",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/banking-industry/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Biotechnology",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/biotechnology/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Book Reviews",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/book-reviews/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Books and Literature",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/books-and-literature/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Business and Economy in China",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/business-and-economy-in-china/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Chess",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/chess/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Chicago",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/chicago/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Civil Rights",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/civil-rights/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Classical Music",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/classical-music/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Coffee",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/coffee/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Colleges and Universities",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/colleges-and-universities/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Computer Security (Cybersecurity)",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/computer-security-cybersecurity/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Consumer Behavior",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/consumer-behavior/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Consumer Protection",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/consumer-protection/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Design",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/design/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Disabilities",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/disabilities/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Drugs (Pharmaceuticals)",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/drugs-pharmaceuticals/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Economy",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/economy/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Education (Pre-School)",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/education-preschool/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Education and Schools",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/education-and-schools/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Elder Care",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/elder-care/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Electric and Hybrid Vehicles",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/electric-and-hybrid-vehicles/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Endangered and Extinct Species",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/endangered-and-extinct-species/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Energy and Power",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/energy-and-power/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Energy Efficiency",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/energy-efficiency/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Entrepreneurship",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/entrepreneurship/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Estate Planning",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/estate-planning/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Families and Family Life",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/families-and-family-life/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Finances",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/finances/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Forensic Science",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/forensic-science/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Gardens and Gardening",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/gardens-and-gardening/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Global Warming",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/global-warming-climate-change/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Grammar and Usage",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/grammar-and-usage/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Graphic Novels",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/graphic-novels/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Green Tech",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/green-tech/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Health Care",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/health-care/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Health Insurance and Managed Care",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/health-insurance-and-managed-care/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Hedge Funds",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/hedge-funds/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Homosexuality",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/homosexuality/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Human Trafficking",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/human-trafficking/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Illegal Immigration",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/illegal-immigration/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Immigration",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/immigration/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Immigration and Emigration",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/immigration-and-emigration/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Interior Design and Home Furnishings",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/interior-design-and-home-furnishings/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — International Education",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/international-education/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — International Relations",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/international-relations/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Investments",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/investments/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Labor",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/labor-the-new-american-job/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Language and Languages",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/language-and-languages/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Legal Profession",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/legal-profession/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Libraries and Librarians",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/libraries-and-librarians/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Marijuana and Medical Marijuana",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/marijuana-and-medical-marijuana/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Mathematics",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/mathematics/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Medicaid",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/medicaid/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Medical Malpractice",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/medical-malpractice/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Mental Health and Disorders",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/mental-health-and-disorders/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Mergers, Acquisitions and Divestitures",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/mergers-acquisitions-and-divestitures/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Middle East",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/middle-east/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Mines and Mining",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/mines-and-mining/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Mobile Applications",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/mobile-applications/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Nuclear Weapons",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/nuclear-weapons/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Organic Foods and Products",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/organic-foods-and-products/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Parenting",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/parenting/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Philanthropy",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/philanthropy/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Photography",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/photography/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Planning",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/planning/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Predator Drones and Unmanned Aerial Vehicles",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/predator-drones-and-unmanned-aerial-vehicles-uavs/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Presidential Election of 2008",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/presidential-election-of-2008/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Prisons and Prisoners",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/prisons-and-prisoners/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Privacy",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/privacy/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Private Equity",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/private-equity/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Psychiatry and Psychiatrists",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/psychiatry-and-psychiatrists/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Psychology and Psychologists",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/psychology-and-psychologists/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Religion and Belief",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/religion-and-belief/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Retirement",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/retirement/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Rock Climbing",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/rock-climbing/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Running",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/running/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Science and Technology",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/science-and-technology/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Science Fiction",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/science-fiction/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Shopping and the Retail Industry",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/shopping-and-the-retail-industry/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Social Media",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/social-media/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Sociology",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/sociology/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Space",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/space/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Sustainable Business",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/sustainable-business/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Sustainable Development",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/sustainable-development/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Sustainable Living",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/sustainable-living/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Terrorism",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/terrorism/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Traumatic Brain Injury",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/traumatic-brain-injury/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Veganism",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/veganism/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Venture Capital",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/venture-capital/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Veterinary Medicine",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/veterinary-medicine/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Water",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/water/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Wines",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/wines/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (subject) — Yoga",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/yoga/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Afghanistan",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/afghanistan/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Albania",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/albania/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Algeria",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/algeria/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Arctic Regions",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/arctic-regions/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Argentina",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/argentina/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Azerbaijan",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/azerbaijan/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Bangladesh",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/bangladesh/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Bosnia and Herzegovina",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/bosnia-and-herzegovina/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Brazil",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/brazil/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Cambodia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/cambodia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Canada",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/canada/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Chile",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/chile/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — China",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/china/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Colombia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/colombia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Congo",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/congo/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Connecticut",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/connecticut/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Cuba",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/cuba/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Ecuador",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/ecuador/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Egypt",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/egypt/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Ethiopia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/ethiopia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — France",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/france/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Germany",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/germany/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Ghana",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/ghana/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Great Britain",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/great-britain/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Greece",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/greece/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Guatemala",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/guatemala/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Haiti News",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/haiti/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Hong Kong",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/hong-kong/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Hungary",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/hungary/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Iceland",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/iceland/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — India",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/india/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Indonesia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/indonesia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Iran",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/iran/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Iraq",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/iraq/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Ireland",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/ireland/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Israel News",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/israel/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Italy",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/italy/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Japan",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/japan/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Kenya",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/kenya/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Kyrgyzstan",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/kyrgyzstan/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Laos",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/laos/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Libya",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/libya/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Long Island",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/long-island/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Malaysia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/malaysia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Mali",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/mali/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Mexico",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/mexico/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Mongolia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/mongolia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Morocco",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/morocco/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Myanmar",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/myanmar/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Nepal",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/nepal/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Netherlands",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/netherlands/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — New Jersey",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/new-jersey/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Nigeria",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/nigeria/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — North Korea",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/north-korea/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Pakistan",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/pakistan/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Peru",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/peru/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Philippines",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/philippines/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Poland",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/poland/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Portugal",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/portugal/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Russia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/russia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Rwanda",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/rwanda/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — San Francisco Bay Area",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/san-francisco-bay-area/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Saudi Arabia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/saudi-arabia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Serbia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/serbia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Singapore",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/singapore/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Somalia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/somalia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — South Africa",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/south-africa/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — South Korea",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/south-korea/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Spain",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/spain/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Sudan",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/sudan/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Sweden",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/sweden/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Syria",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/syria/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Taiwan",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/taiwan/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Tajikistan",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/tajikistan/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Tanzania",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/tanzania/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Texas",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/texas/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Thailand",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/thailand/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Tibet",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/tibet/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Tunisia",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/tunisia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Turkey",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/turkey/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Turkmenistan",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/turkmenistan/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Uganda",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/uganda/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — United Arab Emirates",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/united-arab-emirates/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Uzbekistan",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/uzbekistan/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Venezuela",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/venezuela/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Vietnam",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/vietnam/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (place) — Zimbabwe",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/zimbabwe/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Airbus S.A.S.",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/airbus-sas/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Amazon.com Inc.",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/amazoncom-inc/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Apple Inc.",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/apple-incorporated/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Bank of America Corporation",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/bank-of-america-corporation/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Boeing Company",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/boeing-company/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Disney, Walt, Company",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/walt-disney-company/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Facebook",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/facebook-inc/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Ford Motor Company",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/ford-motor-company/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — General Motors",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/general-motors/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Goldman Sachs Group",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/goldman-sachs-group-inc/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Google Inc.",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/alphabet-inc/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — International Business Machines (I.B.M.)",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/international-business-machines-corporation/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Morgan, J. P., Chase & Company",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/jpmorgan-chase-company/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Procter & Gamble",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/procter-gamble-company/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (company) — Toyota Motor Corporation",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/toyota-motor-corporation/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — Brookings Institution",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/brookings-institution/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — European Commission",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/european-commission/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — Homeland Security Department",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/homeland-security-department/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — Human Rights Watch",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/human-rights-watch/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — International Criminal Court",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/international-criminal-court/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — Metropolitan Opera",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/metropolitan-opera/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — National Aeronautics and Space Administration",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/national-aeronautics-and-space-administration/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — National Football League",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/national-football-league/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — Navy, U.S.",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/us-navy/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — New York Giants",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/new-york-giants/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — New York Knicks",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/new-york-knicks/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — New Yorker, The",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/the-new-yorker/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — Roman Catholic Church",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/roman-catholic-church/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — United Nations",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/united-nations/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (organization) — Wall Street Journal",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/organization/wall-street-journal/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (person) — Melissa Clark",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/person/melissa-clark/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Topic (person) — William Shakespeare",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/person/william-shakespeare/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Boxing",
+    "url": "https://www.nytimes.com/athletic/rss/boxing/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Bundesliga",
+    "url": "https://www.nytimes.com/athletic/rss/bundesliga/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Champions League",
+    "url": "https://www.nytimes.com/athletic/rss/champions-league/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — College Football",
+    "url": "https://www.nytimes.com/athletic/rss/college-football/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — College Sports",
+    "url": "https://www.nytimes.com/athletic/rss/college-sports/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Culture",
+    "url": "https://www.nytimes.com/athletic/rss/culture/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Fantasy Baseball",
+    "url": "https://www.nytimes.com/athletic/rss/fantasy-baseball/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Fantasy Football",
+    "url": "https://www.nytimes.com/athletic/rss/fantasy-football/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — FIFA Men's World Cup",
+    "url": "https://www.nytimes.com/athletic/rss/world-cup/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Formula 1",
+    "url": "https://www.nytimes.com/athletic/rss/formula-1/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Golf",
+    "url": "https://www.nytimes.com/athletic/rss/golf/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Ink",
+    "url": "https://www.nytimes.com/athletic/rss/ink/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — International Football",
+    "url": "https://www.nytimes.com/athletic/rss/international-football/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — La Liga",
+    "url": "https://www.nytimes.com/athletic/rss/la-liga/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Latest Headlines",
+    "url": "https://www.nytimes.com/athletic/rss/news/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Men's College Basketball",
+    "url": "https://www.nytimes.com/athletic/rss/college-basketball/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Mixed Martial Arts",
+    "url": "https://www.nytimes.com/athletic/rss/mma/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — MLB",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — MLS",
+    "url": "https://www.nytimes.com/athletic/rss/mls/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Motorsports",
+    "url": "https://www.nytimes.com/athletic/rss/motorsports/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — NBA",
+    "url": "https://www.nytimes.com/athletic/rss/nba/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — NFL",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — NHL",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — NWSL",
+    "url": "https://www.nytimes.com/athletic/rss/nwsl/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Olympics",
+    "url": "https://www.nytimes.com/athletic/rss/olympics/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Premier League",
+    "url": "https://www.nytimes.com/athletic/rss/premier-league/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Serie A",
+    "url": "https://www.nytimes.com/athletic/rss/serie-a/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Soccer",
+    "url": "https://www.nytimes.com/athletic/rss/football/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Sports Betting",
+    "url": "https://www.nytimes.com/athletic/rss/sports-betting/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Sports Business",
+    "url": "https://www.nytimes.com/athletic/rss/sports-business/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Tennis",
+    "url": "https://www.nytimes.com/athletic/rss/tennis/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — WNBA",
+    "url": "https://www.nytimes.com/athletic/rss/wnba/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Women's College Basketball",
+    "url": "https://www.nytimes.com/athletic/rss/womens-college-basketball/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Leagues and sports — Women's Soccer",
+    "url": "https://www.nytimes.com/athletic/rss/womens-football/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Atlanta Falcons",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/falcons/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Buffalo Bills",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/bills/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Chicago Bears",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/bears/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Cincinnati Bengals",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/bengals/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Cleveland Browns",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/browns/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Dallas Cowboys",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/cowboys/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Denver Broncos",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/broncos/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Detroit Lions",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/lions/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Green Bay Packers",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/packers/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Indianapolis Colts",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/colts/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Kansas City Chiefs",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/chiefs/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Las Vegas Raiders",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/raiders/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Minnesota Vikings",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/vikings/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — New England Patriots",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/patriots/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — New Orleans Saints",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/saints/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — New York Giants",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/giants/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — New York Jets",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/jets/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Philadelphia Eagles",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/eagles/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Pittsburgh Steelers",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/steelers/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — San Francisco 49ers",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/niners/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Seattle Seahawks",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/seahawks/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NFL — Washington Commanders",
+    "url": "https://www.nytimes.com/athletic/rss/nfl/commanders/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NBA — Boston Celtics",
+    "url": "https://www.nytimes.com/athletic/rss/nba/celtics/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NBA — Brooklyn Nets",
+    "url": "https://www.nytimes.com/athletic/rss/nba/nets/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NBA — Chicago Bulls",
+    "url": "https://www.nytimes.com/athletic/rss/nba/bulls/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NBA — Cleveland Cavaliers",
+    "url": "https://www.nytimes.com/athletic/rss/nba/cavaliers/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NBA — Dallas Mavericks",
+    "url": "https://www.nytimes.com/athletic/rss/nba/mavericks/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NBA — Golden State Warriors",
+    "url": "https://www.nytimes.com/athletic/rss/nba/warriors/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NBA — Los Angeles Lakers",
+    "url": "https://www.nytimes.com/athletic/rss/nba/lakers/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NBA — Milwaukee Bucks",
+    "url": "https://www.nytimes.com/athletic/rss/nba/bucks/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NBA — New York Knicks",
+    "url": "https://www.nytimes.com/athletic/rss/nba/knicks/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NBA — Philadelphia 76ers",
+    "url": "https://www.nytimes.com/athletic/rss/nba/sixers/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NBA — Toronto Raptors",
+    "url": "https://www.nytimes.com/athletic/rss/nba/raptors/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Atlanta Braves",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/braves/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Baltimore Orioles",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/orioles/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Boston Red Sox",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/redsox/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Chicago Cubs",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/cubs/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Chicago White Sox",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/whitesox/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Cincinnati Reds",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/reds/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Cleveland Guardians",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/guardians/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Detroit Tigers",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/tigers/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Houston Astros",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/astros/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Kansas City Royals",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/royals/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Los Angeles Dodgers",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/dodgers/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Milwaukee Brewers",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/brewers/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Minnesota Twins",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/twins/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — New York Mets",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/mets/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — New York Yankees",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/yankees/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Philadelphia Phillies",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/phillies/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Pittsburgh Pirates",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/pirates/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — San Francisco Giants",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/sf-giants/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Seattle Mariners",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/mariners/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — St. Louis Cardinals",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/cardinals/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Texas Rangers",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/tex-rangers/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Toronto Blue Jays",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/jays/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: MLB — Washington Nationals",
+    "url": "https://www.nytimes.com/athletic/rss/mlb/nationals/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NHL — Buffalo Sabres",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/sabres/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NHL — Chicago Blackhawks",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/blackhawks/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NHL — Dallas Stars",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/stars/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NHL — Detroit Red Wings",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/redwings/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NHL — Minnesota Wild",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/wild/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NHL — Montreal Canadiens",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/canadiens/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NHL — New York Rangers",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/rangers/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NHL — Philadelphia Flyers",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/flyers/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NHL — Pittsburgh Penguins",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/penguins/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NHL — Toronto Maple Leafs",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/leafs/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: NHL — Vancouver Canucks",
+    "url": "https://www.nytimes.com/athletic/rss/nhl/canucks/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: Soccer — Arsenal",
+    "url": "https://www.nytimes.com/athletic/rss/football/arsenal/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: Soccer — Chelsea",
+    "url": "https://www.nytimes.com/athletic/rss/football/chelsea/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: Soccer — Liverpool",
+    "url": "https://www.nytimes.com/athletic/rss/football/liverpool/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: Soccer — Manchester City",
+    "url": "https://www.nytimes.com/athletic/rss/football/manchester-city/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: Soccer — Manchester United",
+    "url": "https://www.nytimes.com/athletic/rss/football/manchester-united/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: Soccer — Tottenham Hotspur",
+    "url": "https://www.nytimes.com/athletic/rss/football/tottenham-hotspur/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: Soccer — United States",
+    "url": "https://www.nytimes.com/athletic/rss/football/usmnt/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: College football — Georgia Bulldogs",
+    "url": "https://www.nytimes.com/athletic/rss/college-football/georgia-bulldogs-college-football/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: College football — Iowa Hawkeyes",
+    "url": "https://www.nytimes.com/athletic/rss/college-football/iowa-hawkeyes-college-football/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: College football — Michigan Wolverines",
+    "url": "https://www.nytimes.com/athletic/rss/college-football/michigan-wolverines-college-football/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: College football — Ohio State Buckeyes",
+    "url": "https://www.nytimes.com/athletic/rss/college-football/ohio-state-buckeyes-college-football/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Teams: College football — Wisconsin Badgers",
+    "url": "https://www.nytimes.com/athletic/rss/college-football/wisconsin-badgers-college-football/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Atlanta",
+    "url": "https://www.nytimes.com/athletic/rss/atlanta/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Bay Area",
+    "url": "https://www.nytimes.com/athletic/rss/bayarea/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Boston",
+    "url": "https://www.nytimes.com/athletic/rss/boston/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Chicago",
+    "url": "https://www.nytimes.com/athletic/rss/chicago/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Detroit",
+    "url": "https://www.nytimes.com/athletic/rss/detroit/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Minnesota",
+    "url": "https://www.nytimes.com/athletic/rss/mn/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — New York",
+    "url": "https://www.nytimes.com/athletic/rss/newyork/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Philadelphia",
+    "url": "https://www.nytimes.com/athletic/rss/philly/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Pittsburgh",
+    "url": "https://www.nytimes.com/athletic/rss/pittsburgh/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Seattle",
+    "url": "https://www.nytimes.com/athletic/rss/seattle/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Toronto",
+    "url": "https://www.nytimes.com/athletic/rss/toronto/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Washington DC",
+    "url": "https://www.nytimes.com/athletic/rss/dc/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Cities — Wisconsin",
+    "url": "https://www.nytimes.com/athletic/rss/wisconsin/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Writers — Eno Sarris",
+    "url": "https://www.nytimes.com/athletic/rss/author/eno-sarris/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Writers — Grant Brisbee",
+    "url": "https://www.nytimes.com/athletic/rss/author/grant-brisbee/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Writers — Jayson Stark",
+    "url": "https://www.nytimes.com/athletic/rss/author/jayson-stark/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Writers — John Hollinger",
+    "url": "https://www.nytimes.com/athletic/rss/author/john-hollinger/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Writers — Keith Law",
+    "url": "https://www.nytimes.com/athletic/rss/author/keith-law/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Writers — Ken Rosenthal",
+    "url": "https://www.nytimes.com/athletic/rss/author/ken-rosenthal/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Writers — Michael Cox",
+    "url": "https://www.nytimes.com/athletic/rss/author/michael-cox/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Writers — Sean McIndoe",
+    "url": "https://www.nytimes.com/athletic/rss/author/sean-mcindoe/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Writers — Stewart Mandel",
+    "url": "https://www.nytimes.com/athletic/rss/author/stewart-mandel/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Newsletters and tags — The Pulse",
+    "url": "https://www.nytimes.com/athletic/rss/tag/the-pulse/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Athletic — Newsletters and tags — Until Saturday Newsletter",
+    "url": "https://www.nytimes.com/athletic/rss/tag/until-saturday/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "NYT Chinese (Simplified)",
+    "url": "https://cn.nytimes.com/rss/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "Chinese (Simplified)"
+  },
+  {
+    "site": "NY Times",
+    "section": "NYT Chinese (Traditional)",
+    "url": "https://cn.nytimes.com/rss/zh-hant/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "Chinese (Traditional)"
+  },
+  {
+    "site": "NY Times",
+    "section": "NYT Cooking: Latest Recipes",
+    "url": "https://cooking.nytimes.com/next/api/v1/rss/recipes",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Wirecutter",
+    "url": "https://www.nytimes.com/wirecutter/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
     "site": "Washington Post",
     "section": "Main feed",
     "url": "https://www.washingtonpost.com/arcio/rss/",

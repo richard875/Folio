@@ -52,11 +52,15 @@ websites[].sections[].articles[] = { url, summary? }
 ```
 
 These are candidates from configured feeds, not every article published by those
-outlets. The server's per-section limit applies (currently at most 44 entries
-across ten publishers with `RSS_LINKS_PER_SECTION=1`, including up to 35 WSJ
-sections). URLs may repeat across sections; deduplicate before saving and avoid
-letting WSJ's larger feed count stand in for independent publisher diversity.
-Japanese WSJ sections may contain Japanese text. Summaries are optional
+outlets. The server's per-section limit applies (currently at most 599 entries
+across ten publishers with `RSS_LINKS_PER_SECTION=1`, including up to 35 WSJ and
+556 NY Times sections). All 599 feeds are requested, so allow for longer collection
+time; do not repeat a timed-out trigger without reconciling its state. URLs may
+repeat across sections; deduplicate before saving. Neither WSJ's nor NY Times'
+larger feed count is independent publisher diversity; Athletic and sister products
+remain under NY Times. Japanese WSJ and Spanish/Chinese NY Times feeds may contain
+non-English text. NY Times research statuses are third-party records, not direct
+availability verification. Summaries are optional
 feed excerpts or headlines, not full-text analysis. Record unavailable sections
 and failed feeds; HTTP 502 means all feeds failed even if a report was returned.
 
@@ -90,7 +94,10 @@ Example body (replace with selected candidates):
 }
 ```
 
-Send 1–100 entries. Use the link report's publisher/section labels; do not supply
+Send 1–100 entries. Prefer a selection of at most 100 for this single-batch workflow.
+If more are essential, run sequential batches and verify/read each batch's manifest
+before starting the next; the final latest folder does not aggregate all batches.
+Use the link report's publisher/section labels; do not supply
 per-item `callId` values for this workflow. Article files remain Markdown by
 default; JSON link reports do not require JSON article storage.
 

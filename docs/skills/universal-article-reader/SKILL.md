@@ -77,22 +77,30 @@ can use the generic reader, but successful extraction is not guaranteed.
   derive behavior from research prose or add alternate URLs mentioned in notes.
 - WSJ uses 35 feeds: Flipboard plus English/Japanese current-server and selected
   legacy article feeds. See `data/README.md` for the inventory and caveats.
+  NY Times uses 556 text-oriented feeds, including sections, columns, writers,
+  topics, language editions, Athletic, Cooking and Wirecutter. Research statuses
+  are third-party records, not direct availability verification.
   Reuters uses Google News RSS, not the inactive native JSON
   branch. Bloomberg and Business Insider use news sitemaps. Others use RSS.
 - Preserve existing publisher filters: WSJ Buyside/media and Flipboard tracking;
   Washington Post sports/AP bylines; CNBC shopping/media/AP; Reuters bare-publisher
   and stock-price titles; Economist podcasts/media. Filter non-articles generally.
-- NY Times, Financial Times and CNBC preserve curated feed order. Other configured
+- NY Times HomePage, Financial Times and CNBC preserve curated feed order. Added
+  NY Times feeds use `newest`, not a claim of curated section/topic order. Other configured
   feeds use date/coverage ranking, not a promise of true homepage importance.
 - Dated non-editorial entries have a 72-hour horizon; editorial entries get 168
   hours. Dates over 24 hours ahead are rejected. **Undated entries can be eligible.**
 - Resolve selected Google wrappers to publisher URLs before final filtering/capping;
   refill failed or invalid selections. Older saved reports retain the save resolver.
 - `RSS_LINKS_PER_SECTION` defaults to 5; with 1, at most one entry per
-  publisher/section is selected (up to 44 across the current catalog). URLs can
+  publisher/section is selected (up to 599 across the current catalog). All 599
+  feeds are fetched regardless of this limit, increasing time and proxy traffic.
+  Existing budgets are unchanged; live Render load capacity is unverified. URLs can
   repeat across sections; deduplicate before selective saving. Configured feeds
   do not guarantee eligible links every run. Japanese sections remain WSJ, not
   additional independent publishers; edition does not filter language.
+  Athletic and other NY Times products likewise remain one publisher identity.
+  Select/deduplicate before saving; save-batch accepts at most 100 URLs per request.
 - Summaries are feed excerpts, not AI-generated text or article-page fetches.
   Prefer RSS description/summary/content:encoded or Atom summary/inline content;
   clean HTML, reject stubs under 40 characters, cap at 1,000, omit when absent.

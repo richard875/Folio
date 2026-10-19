@@ -243,11 +243,16 @@ Saved-file verification proves exact retrieval, not correct or complete extracti
 
 ### Feed summaries
 
-The 44 configured feeds across ten publishers live in [`data/feeds.json`](data/feeds.json).
-WSJ has 35 sections (Flipboard plus English, Japanese and legacy article feeds);
-the other nine publishers retain one main feed each. See the
+The 599 configured feeds across ten publishers live in [`data/feeds.json`](data/feeds.json).
+WSJ has 35 feeds; NY Times has 556 (sections, columns, writers, topics, language
+editions, Athletic, Cooking and Wirecutter). The other eight publishers retain one
+main feed each. NY Times research statuses are third-party records, not direct
+availability checks. See the
 [catalog inventory and caveats](data/README.md). Limits apply per section, not
-per publisher: a limit of 1 can return up to 44 entries, with cross-section repeats.
+per publisher: a limit of 1 can return up to 599 entries, with cross-section repeats.
+All 599 feeds are requested even with a limit of 1, increasing collection time and
+proxy traffic. Existing timeouts/budgets are unchanged; live Render capacity is not
+verified. Select/deduplicate before saving; save-batch accepts at most 100 URLs.
 Ordering and format are explicit fields, not inferred from Markdown research prose.
 See [`data/README.md`](data/README.md) for the catalog format.
 
