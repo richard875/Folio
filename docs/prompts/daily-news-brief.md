@@ -52,8 +52,11 @@ websites[].sections[].articles[] = { url, summary? }
 ```
 
 These are candidates from configured feeds, not every article published by those
-outlets. The server's per-section limit applies (currently at most ten candidates
-with ten catalog websites and `RSS_LINKS_PER_SECTION=1`). Summaries are optional
+outlets. The server's per-section limit applies (currently at most 44 entries
+across ten publishers with `RSS_LINKS_PER_SECTION=1`, including up to 35 WSJ
+sections). URLs may repeat across sections; deduplicate before saving and avoid
+letting WSJ's larger feed count stand in for independent publisher diversity.
+Japanese WSJ sections may contain Japanese text. Summaries are optional
 feed excerpts or headlines, not full-text analysis. Record unavailable sections
 and failed feeds; HTTP 502 means all feeds failed even if a report was returned.
 

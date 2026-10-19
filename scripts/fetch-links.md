@@ -79,8 +79,10 @@ environment variables override `.env`. Article retrieval has separate retry caps
 The JSON catalog `data/feeds.json` is bundled into the server build. Changing it
 requires rebuilding/restarting production; the deployed server does not need
 source attachments at runtime. Only each entry's explicit `url` is fetched.
-The current catalog lists ten websites with one `Main feed` each, so a limit of
-1 yields at most ten links. Invalid JSON entries are rejected rather than
+The current catalog lists 44 feeds across ten websites: 35 WSJ sections and one
+`Main feed` for each other publisher. A limit of 1 yields at most 44 entries,
+not ten. Deduplication is per publisher/section; URLs can repeat across sections.
+See the [WSJ inventory and caveats](../data/README.md). Invalid JSON entries are rejected rather than
 silently skipped. Markdown table inputs and prose inference are no longer supported.
 
 Feed concurrency defaults to two (configurable up to six), with a 15-second per-attempt timeout.

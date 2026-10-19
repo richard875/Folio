@@ -75,7 +75,9 @@ can use the generic reader, but successful extraction is not guaranteed.
 - Read sources only from `data/feeds.json`. Its `site`, `section`, `url`, `ordering`
   and `format` are explicit; `homepageScore` and `edition` are optional. Do not
   derive behavior from research prose or add alternate URLs mentioned in notes.
-- WSJ uses Flipboard; Reuters uses Google News RSS, not the inactive native JSON
+- WSJ uses 35 feeds: Flipboard plus English/Japanese current-server and selected
+  legacy article feeds. See `data/README.md` for the inventory and caveats.
+  Reuters uses Google News RSS, not the inactive native JSON
   branch. Bloomberg and Business Insider use news sitemaps. Others use RSS.
 - Preserve existing publisher filters: WSJ Buyside/media and Flipboard tracking;
   Washington Post sports/AP bylines; CNBC shopping/media/AP; Reuters bare-publisher
@@ -86,8 +88,11 @@ can use the generic reader, but successful extraction is not guaranteed.
   hours. Dates over 24 hours ahead are rejected. **Undated entries can be eligible.**
 - Resolve selected Google wrappers to publisher URLs before final filtering/capping;
   refill failed or invalid selections. Older saved reports retain the save resolver.
-- `RSS_LINKS_PER_SECTION` defaults to 5; with 1, at most one link per publisher
-  is selected. Ten feeds do not guarantee ten eligible links every run.
+- `RSS_LINKS_PER_SECTION` defaults to 5; with 1, at most one entry per
+  publisher/section is selected (up to 44 across the current catalog). URLs can
+  repeat across sections; deduplicate before selective saving. Configured feeds
+  do not guarantee eligible links every run. Japanese sections remain WSJ, not
+  additional independent publishers; edition does not filter language.
 - Summaries are feed excerpts, not AI-generated text or article-page fetches.
   Prefer RSS description/summary/content:encoded or Atom summary/inline content;
   clean HTML, reject stubs under 40 characters, cap at 1,000, omit when absent.

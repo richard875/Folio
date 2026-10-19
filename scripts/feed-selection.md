@@ -12,7 +12,7 @@ an individual article has that importance score. Edition is informational.
 
 | Source              | Filtering and priority                                                                                                                                                                                                                                                                                                       |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| WSJ Flipboard       | Keep WSJ article links, strip `mod=Flipboard` before deduplication, exclude Buyside shopping pages and media. Use publication/posted time and cross-publisher support; this is **not** editor order. No extra Opinion feed is added.                                                                                         |
+| WSJ                 | Flipboard plus English/Japanese current-server and selected legacy article feeds. Keep WSJ article links, strip `mod=Flipboard` before deduplication, exclude Buyside shopping pages and media. Use publication/posted time and cross-publisher support; this is **not** editor order, including the partner homepage feed. |
 | NY Times            | Keep NYT articles, including image-bearing entries and valid opinion articles. Correctly handle RSS `link` plus `atom:link` in one item. Preserve top-story editor order after filtering.                                                                                                                                    |
 | Washington Post     | Drop Associated Press bylines, bylines ending in `\| AP` (including thin spaces), sports URLs, standalone media and puzzle-answer posts. Rank remaining Post journalism using its available date and cross-publisher coverage. The feed cannot reveal its true homepage order.                                               |
 | Bloomberg           | Parse Google News sitemap URL entries and `news:publication_date`, not its update ordering. Exclude non-article/media/quote pages. Keep text newsletters, opinion and graphics journalism. Rank using publication time and coverage.                                                                                         |
@@ -57,6 +57,11 @@ existing normalized publisher label; Reuters also requires a Google News feed ho
 See the [links API and JSON schema](fetch-links.md) for the stored report contract.
 
 ## Freshness and importance
+
+The [catalog](../data/README.md) now contains 35 WSJ sections. The limit and URL
+deduplication apply per publisher/section; the same article can appear in multiple
+sections. Japanese sections stay under WSJ for publisher-coverage scoring. Legacy
+feeds reported as updating may still have no entries within the freshness window.
 
 - Publication metadata is preferred: RSS `pubDate`, Atom `published`, or sitemap
   `news:publication_date`. Updated/lastmod is only a fallback. Missing dates are

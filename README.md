@@ -243,7 +243,11 @@ Saved-file verification proves exact retrieval, not correct or complete extracti
 
 ### Feed summaries
 
-The ten configured feed sources live in [`data/feeds.json`](data/feeds.json).
+The 44 configured feeds across ten publishers live in [`data/feeds.json`](data/feeds.json).
+WSJ has 35 sections (Flipboard plus English, Japanese and legacy article feeds);
+the other nine publishers retain one main feed each. See the
+[catalog inventory and caveats](data/README.md). Limits apply per section, not
+per publisher: a limit of 1 can return up to 44 entries, with cross-section repeats.
 Ordering and format are explicit fields, not inferred from Markdown research prose.
 See [`data/README.md`](data/README.md) for the catalog format.
 

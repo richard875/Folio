@@ -99,10 +99,14 @@ try {
   const linkResponse = await get(`/api/links?${new URLSearchParams({ hash, format: "json" })}`, false, { method: "POST" });
   assert.equal(linkResponse.status, 200);
   const linkReport = await linkResponse.json();
-  assert.equal(linkReport.feedCount, 10);
+  assert.equal(linkReport.feedCount, feedCatalog.length);
   assert.equal(linkReport.failedFeedCount, 0);
-  assert.equal(linkReport.linkCount, 10);
-  assert.deepEqual(linkReport.websites.map((site) => site.name), feedCatalog.map((feed) => feed.site));
+  assert.equal(linkReport.linkCount, new Set(feedCatalog.map(({ site, section }) => JSON.stringify([site, section]))).size);
+  assert.deepEqual(linkReport.websites.map((site) => site.name), [...new Set(feedCatalog.map((feed) => feed.site))]);
+  for (const site of linkReport.websites) {
+    assert.deepEqual(site.sections.map(({ name }) => name), [...new Set(feedCatalog.filter((feed) => feed.site === site.name).map(({ section }) => section))]);
+    assert.ok(site.sections.every(({ articles }) => articles.length === 1));
+  }
   assert.match(linkReport.savedFile, /\.json$/);
   assert.deepEqual(JSON.parse(await readFile(join(root, linkReport.savedFile), "utf8")), linkReport);
   assert.equal(linkReport.schemaVersion, 1);

@@ -30,8 +30,10 @@ const rss = `<?xml version="1.0"?><rss version="2.0"><channel><title>News</title
 <item><title>Only ID</title><guid isPermaLink="false">internal-id</guid></item>
 </channel></rss>`;
 
-test("catalog uses exactly the ten configured primary feed URLs", async () => {
-  const feeds = validateFeedCatalog(catalog);
+test("catalog preserves the ten primary feed URLs and their metadata alongside WSJ additions", async () => {
+  const allFeeds = validateFeedCatalog(catalog);
+  assert.equal(allFeeds.length, 44);
+  const feeds = allFeeds.filter((item) => item.section === "Main feed");
   assert.equal(feeds.length, 10);
   assert.equal(new Set(feeds.map((item) => item.site)).size, 10);
   const urls = new Set(feeds.map((item) => item.url));
@@ -134,7 +136,7 @@ test("a smaller JSON catalog fetches only its explicit URLs and yields at most o
   );
 });
 
-test("limit one with the JSON catalog returns ten links", async () => {
+test("limit one fetches all 44 catalog feeds and preserves repeated WSJ URLs across sections", async () => {
   const feeds = validateFeedCatalog(catalog);
   let feedRequests = 0;
   let resolveRequests = 0;
@@ -186,10 +188,14 @@ test("limit one with the JSON catalog returns ten links", async () => {
   });
   // Debug: include in assertion message
   const details = results.map((r, i) => `${feeds[i].site}: ${r.urls.length}`).join(", ");
-  assert.equal(feedRequests, 10, `feed requests: ${details}`);
+  assert.equal(feedRequests, 44, `feed requests: ${details}`);
+  assert.ok(resolveRequests > 0, "Reuters wrappers are resolved in the fixture");
+  const wsj = results.filter(({ site }) => site === "WSJ");
+  assert.equal(wsj.length, 35);
+  assert.ok(wsj.every(({ urls }) => urls.length === 1 && urls[0] === "https://www.wsj.com/news/story"));
   assert.equal(
     results.reduce((sum, result) => sum + result.urls.length, 0),
-    10,
+    44,
     `total urls: ${details}`,
   );
 });

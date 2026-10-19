@@ -4,8 +4,51 @@ import { test } from "node:test";
 import catalog from "../data/feeds.json" with { type: "json" };
 import { METHODS, METHOD_DEFAULTS } from "../reader/methods.ts";
 import { FALLBACK_METHODS } from "../reader/retrieval.config.ts";
+import { validateFeedCatalog } from "../src/lib/rss/catalog.ts";
 
 const root = new URL("../", import.meta.url);
+
+test("WSJ catalog includes exactly the researched active article feeds, including Japan and legacy", () => {
+  const feeds = validateFeedCatalog(catalog);
+  assert.equal(feeds.length, 44);
+  assert.equal(new Set(feeds.map(({ site }) => site)).size, 10);
+  assert.equal(new Set(feeds.map(({ site, section }) => `${site}:${section}`)).size, 44);
+  const wsj = feeds.filter(({ site }) => site === "WSJ");
+  assert.equal(wsj.length, 35);
+  const current = wsj.filter(({ url }) => new URL(url).hostname === "feeds.content.dowjones.io");
+  assert.deepEqual(current.map(({ url }) => new URL(url).pathname.split("/").at(-1)), [
+    "RSSWorldNews", "RSSUSnews", "socialpoliticsfeed", "socialeconomyfeed", "WSJcomUSBusiness",
+    "RSSWSJD", "RSSMarketsMain", "RSSPersonalFinance", "latestnewsrealestate", "socialhealth",
+    "RSSOpinion", "RSSArtsCulture", "RSSLifestyle", "RSSStyle", "rsssportsfeed", "rssmarkets",
+    "socialmarketsfeed", "socialtechfeed", "socialcentralbankingfeed", "wsj_lifestyle",
+    "wsj_food_drink", "wsj_homepage", "wsj_world_news", "RSSJapanNewsWorld", "RSSJapanMarket",
+    "RSSJapanBusiness", "RSSJapanTechnology", "RSSJapanOpinion", "RSSJapanLife", "RSSJapanHeardonTheStreet",
+  ]);
+  assert.deepEqual(wsj.filter(({ url }) => new URL(url).hostname === "feeds.a.dj.com")
+    .map(({ url }) => new URL(url).pathname), [
+    "/rss/LatestNewsOpinion.xml", "/rss/LatestNewsRealEstate.xml", "/rss/LatestNewsSports.xml", "/rss/RSSWhatsNews.xml",
+  ]);
+  assert.equal(wsj[0].url, "https://flipboard.com/@WSJ.rss");
+  assert.ok(wsj.every(({ ordering, format, homepageScore }) => ordering === "newest" && format === "rss" && homepageScore === 8));
+  assert.equal(wsj.filter(({ edition }) => edition === "Japan").length, 7);
+  assert.ok(wsj.every(({ section, edition }) => section.startsWith("Japan — ") === (edition === "Japan")));
+  assert.ok(current.every(({ url }) => !/\\|\.xml$|\/json\//.test(url)));
+  assert.ok(wsj.every(({ url }) => !/podcast|simplecast|megaphone|youtube|RSSJapanBarrons|RSSJapanCapitalJournal|\/cfo$|\/cio$|socialoffduty/.test(url)));
+});
+
+test("feed README inventories every added WSJ section and documents the new catalog size", async () => {
+  const readme = await readFile(new URL("data/README.md", root), "utf8");
+  for (const { section, url } of catalog.filter(({ site, section }) => site === "WSJ" && section !== "Main feed")) {
+    const name = new URL(url).pathname.split("/").at(-1);
+    assert.ok(readme.includes(`| ${section} | \`${name}\` |`), section);
+  }
+  for (const path of ["README.md", "data/README.md", "scripts/fetch-links.md", "docs/prompts/daily-news-brief.md", "docs/skills/universal-article-reader/SKILL.md"]) {
+    const text = await readFile(new URL(path, root), "utf8");
+    assert.ok(text.includes("44"), `${path}: catalog total`);
+    assert.ok(text.includes("35"), `${path}: WSJ count`);
+    assert.doesNotMatch(text, /at most ten (?:links|candidates)|one `Main feed` each|No extra Opinion feed is added|at most one link per publisher\s+is selected/);
+  }
+});
 
 test("executable source has no dependency on the historical Markdown catalog or its parser", async () => {
   const obsolete = ["News site RSS feeds", "by section.md"].join(" ");
