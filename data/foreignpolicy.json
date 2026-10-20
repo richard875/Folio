@@ -7,5 +7,581 @@
     "format": "rss",
     "homepageScore": 7,
     "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Adam Tooze",
+    "url": "https://foreignpolicy.com/author/adam-tooze/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Afghanistan",
+    "url": "https://foreignpolicy.com/tag/afghanistan/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Africa",
+    "url": "https://foreignpolicy.com/tag/africa/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Africa Brief",
+    "url": "https://foreignpolicy.com/category/africa-brief/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Analysis",
+    "url": "https://foreignpolicy.com/category/analysis/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Argument",
+    "url": "https://foreignpolicy.com/category/argument/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Asia",
+    "url": "https://foreignpolicy.com/tag/asia/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Books",
+    "url": "https://foreignpolicy.com/category/books/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Brazil",
+    "url": "https://foreignpolicy.com/tag/brazil/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Canada",
+    "url": "https://foreignpolicy.com/tag/canada/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Central Asia",
+    "url": "https://foreignpolicy.com/tag/central-asia/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "China",
+    "url": "https://foreignpolicy.com/tag/china/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "China Brief",
+    "url": "https://foreignpolicy.com/category/china-brief/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Climate Change",
+    "url": "https://foreignpolicy.com/tag/climate-change/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Cuba",
+    "url": "https://foreignpolicy.com/tag/cuba/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Democracy",
+    "url": "https://foreignpolicy.com/tag/democracy/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Dispatch",
+    "url": "https://foreignpolicy.com/category/dispatch/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Drones",
+    "url": "https://foreignpolicy.com/tag/drones/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Egypt",
+    "url": "https://foreignpolicy.com/tag/egypt/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Elections",
+    "url": "https://foreignpolicy.com/tag/elections/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Essay",
+    "url": "https://foreignpolicy.com/category/essay/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Europe",
+    "url": "https://foreignpolicy.com/tag/europe/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "FP Analytics",
+    "url": "https://fpanalytics.foreignpolicy.com/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Geopolitics",
+    "url": "https://foreignpolicy.com/tag/geopolitics/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "History",
+    "url": "https://foreignpolicy.com/tag/history/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Human Rights",
+    "url": "https://foreignpolicy.com/tag/human-rights/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "India",
+    "url": "https://foreignpolicy.com/tag/india/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Interview",
+    "url": "https://foreignpolicy.com/category/interview/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Iran",
+    "url": "https://foreignpolicy.com/tag/iran/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Iraq",
+    "url": "https://foreignpolicy.com/tag/iraq/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Israel",
+    "url": "https://foreignpolicy.com/tag/israel/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "James Palmer",
+    "url": "https://foreignpolicy.com/author/james-palmer/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Japan",
+    "url": "https://foreignpolicy.com/tag/japan/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Keith Johnson",
+    "url": "https://foreignpolicy.com/author/keith-johnson/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Latin America Brief",
+    "url": "https://foreignpolicy.com/category/latin-america-brief/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Mexico",
+    "url": "https://foreignpolicy.com/tag/mexico/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Myanmar",
+    "url": "https://foreignpolicy.com/tag/myanmar/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "NATO",
+    "url": "https://foreignpolicy.com/tag/nato/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "News",
+    "url": "https://foreignpolicy.com/category/news/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Pakistan",
+    "url": "https://foreignpolicy.com/tag/pakistan/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Ravi Agrawal",
+    "url": "https://foreignpolicy.com/author/ravi-agrawal/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Report",
+    "url": "https://foreignpolicy.com/category/report/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Rishi Iyengar",
+    "url": "https://foreignpolicy.com/author/rishi-iyengar/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Russia",
+    "url": "https://foreignpolicy.com/tag/russia/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Saudi Arabia",
+    "url": "https://foreignpolicy.com/tag/saudi-arabia/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Situation Report",
+    "url": "https://foreignpolicy.com/category/situation-report/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "South Asia",
+    "url": "https://foreignpolicy.com/tag/south-asia/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "South Asia Brief",
+    "url": "https://foreignpolicy.com/category/south-asia-brief/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "South Korea",
+    "url": "https://foreignpolicy.com/tag/south-korea/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Southeast Asia",
+    "url": "https://foreignpolicy.com/tag/southeast-asia/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Stephen M. Walt",
+    "url": "https://foreignpolicy.com/author/stephen-m-walt/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Steven A. Cook",
+    "url": "https://foreignpolicy.com/author/steven-a-cook/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Sumit Ganguly",
+    "url": "https://foreignpolicy.com/author/sumit-ganguly/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Syria",
+    "url": "https://foreignpolicy.com/tag/syria/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Taiwan",
+    "url": "https://foreignpolicy.com/tag/taiwan/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Terrorism",
+    "url": "https://foreignpolicy.com/tag/terrorism/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Thailand",
+    "url": "https://foreignpolicy.com/tag/thailand/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Turkey",
+    "url": "https://foreignpolicy.com/tag/turkey/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Ukraine",
+    "url": "https://foreignpolicy.com/tag/ukraine/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "United Nations",
+    "url": "https://foreignpolicy.com/tag/united-nations/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "United States",
+    "url": "https://foreignpolicy.com/tag/united-states/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Venezuela",
+    "url": "https://foreignpolicy.com/tag/venezuela/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "World Brief",
+    "url": "https://foreignpolicy.com/category/world-brief/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
+  },
+  {
+    "site": "Foreign Policy",
+    "section": "Yemen",
+    "url": "https://foreignpolicy.com/tag/yemen/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "Only one"
   }
 ]

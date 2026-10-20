@@ -20,7 +20,7 @@ test("ten publisher files preserve the complete inventory but expose only one ma
     assert.ok(entries.every((feed) => feed.site === site));
     assert.equal(entries.filter(({ section }) => section === "Main feed").length, 1);
   }
-  assert.equal(catalog.length - mainFeeds.length, 774);
+  assert.equal(catalog.length - mainFeeds.length, 1238);
 });
 
 test("main selection fails closed on missing or duplicate mains, including identical duplicates", () => {
@@ -35,9 +35,9 @@ test("main selection fails closed on missing or duplicate mains, including ident
 
 test("WSJ catalog includes exactly the researched active article feeds, including Japan and legacy", () => {
   const feeds = validateFeedCatalog(catalog);
-  assert.equal(feeds.length, 784);
+  assert.equal(feeds.length, 1248);
   assert.equal(new Set(feeds.map(({ site }) => site)).size, 10);
-  assert.equal(new Set(feeds.map(({ site, url }) => `${site}:${url}`)).size, 784);
+  assert.equal(new Set(feeds.map(({ site, url }) => `${site}:${url}`)).size, 1248);
   const wsj = feeds.filter(({ site }) => site === "WSJ");
   assert.equal(wsj.length, 35);
   const current = wsj.filter(({ url }) => new URL(url).hostname === "feeds.content.dowjones.io");

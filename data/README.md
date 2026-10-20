@@ -22,11 +22,11 @@ An unavailable main feed is reported as failed; no subsection is promoted.
 | Bloomberg | [bloomberg.json](bloomberg.json) | 61 | 1 |
 | The Economist | [economist.json](economist.json) | 64 | 1 |
 | Financial Times | [ft.json](ft.json) | 427 | 1 |
-| Foreign Policy | [foreignpolicy.json](foreignpolicy.json) | 1 | 1 |
+| Foreign Policy | [foreignpolicy.json](foreignpolicy.json) | 65 | 1 |
 | CNBC | [cnbc.json](cnbc.json) | 1 | 1 |
 | Reuters | [reuters.json](reuters.json) | 1 | 1 |
 | Business Insider | [businessinsider.json](businessinsider.json) | 1 | 1 |
-| **Total** | | **758** | **10** |
+| **Total** | | **1248** | **10** |
 
 Each file must contain only its assigned publisher and exactly one main feed.
 Missing, duplicate (even identical), or malformed main-feed configuration fails
@@ -59,9 +59,9 @@ coverage ranking, and `feed` uses the existing publisher-profile fallback.
 
 ## Current coverage
 
-The stored inventory has **784 entries across ten publishers**: **35 WSJ feeds**,
+The stored inventory has **1248 entries across ten publishers**: **35 WSJ feeds**,
 **543 NY Times feeds**, **50 Washington Post feeds**, **61 Bloomberg feeds/sitemaps**,
-**64 Economist feeds**, **427 Financial Times feeds**, and one `Main feed` for each of the other five publishers.
+**64 Economist feeds**, **427 Financial Times feeds**, **65 Foreign Policy feeds**, and one `Main feed` for each of the other five publishers.
 `RSS_LINKS_PER_SECTION` caps each active publisher's `Main feed`. With a limit
 of 1, up to ten article entries can be returned (one per publisher); with the
 default of 5, up to 50. Empty, stale, failed or filtered main feeds can yield

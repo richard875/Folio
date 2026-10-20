@@ -244,10 +244,10 @@ Saved-file verification proves exact retrieval, not correct or complete extracti
 ### Feed summaries
 
 The [feed inventory](data/README.md) is split into ten publisher JSON files under
-`data/`: 784 stored entries, including 35 WSJ, 543 NY Times, 50 Washington Post,
-61 Bloomberg, 64 Economist and 427 Financial Times feeds/sitemaps.
+`data/`: 1248 stored entries, including 35 WSJ, 543 NY Times, 50 Washington Post,
+61 Bloomberg, 64 Economist, 427 Financial Times and 65 Foreign Policy feeds/sitemaps.
 **Only the ten `Main feed` entries are active**, one per publisher, for all fresh
-links/collection operations. The other 774 entries are reference-only, never fetched
+links/collection operations. The other 1238 entries are reference-only, never fetched
 or used as fallback feeds. Missing/duplicate mains fail configuration validation.
 With `RSS_LINKS_PER_SECTION=1`, collections return at most ten article entries;
 the default of 5 permits at most 50. Main URLs/metadata are unchanged, including
