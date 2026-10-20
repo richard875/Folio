@@ -7,5 +7,923 @@
     "format": "rss",
     "homepageScore": 9,
     "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Aerospace & Defense",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000693",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Analyst Interviews",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100004033",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Asia News",
+    "url": "https://www.cnbc.com/id/19832390/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Asia Top News and Analysis",
+    "url": "https://www.cnbc.com/id/19834788/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Autos",
+    "url": "https://www.cnbc.com/id/10000101/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Autos",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97081/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Bankruptcy",
+    "url": "https://www.cnbc.com/id/10000686/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Bankruptcy",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97084/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Banks",
+    "url": "https://www.cnbc.com/id/10000876/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Banks",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97085/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Bonds",
+    "url": "https://www.cnbc.com/id/15839203/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Bonds",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97129/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Buffett Watch",
+    "url": "https://www.cnbc.com/id/19206666/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Buffett Watch",
+    "url": "https://www.cnbc.com/id/19206667/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Business News",
+    "url": "https://www.cnbc.com/id/10001147/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "CEO Interviews",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100004032",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Closing Bell",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15838421",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "CNBC Make It",
+    "url": "https://www.cnbc.com/id/103395579/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "CNBC News (partner feed)",
+    "url": "https://search.cnbc.com/rs/search/all/view.rss?partnerId=cnbcbrazil",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "CNBC Select",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=105806347",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "CNBC Sport",
+    "url": "https://www.cnbc.com/id/17490692/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "CNBC Sport",
+    "url": "https://www.cnbc.com/id/10000117/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Commentary",
+    "url": "https://www.cnbc.com/id/100370673/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Consumer",
+    "url": "https://www.cnbc.com/id/10000826/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Currencies",
+    "url": "https://www.cnbc.com/id/15839178/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Currencies",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97220/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Deals and IPOs",
+    "url": "https://www.cnbc.com/id/10000621/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Earnings",
+    "url": "https://www.cnbc.com/id/15839135/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Economy",
+    "url": "https://www.cnbc.com/id/20910258/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Energy",
+    "url": "https://www.cnbc.com/id/19836768/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Energy stories",
+    "url": "https://www.cnbc.com/id/19856705/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Entertainment",
+    "url": "https://www.cnbc.com/id/10000971/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Europe News",
+    "url": "https://www.cnbc.com/id/19794221/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Europe Top News and Analysis",
+    "url": "https://www.cnbc.com/id/19811193/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Fast Money",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15838499",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Finance",
+    "url": "https://www.cnbc.com/id/10000664/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Financial Advisor",
+    "url": "https://www.cnbc.com/id/100646281/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Food & Beverage",
+    "url": "https://www.cnbc.com/id/10000740/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Food & Beverage",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97102/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Headlines from CNBC",
+    "url": "https://www.cnbc.com/id/10000161/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Health and Science",
+    "url": "https://www.cnbc.com/id/10000108/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Health and Science",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97106/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Hedge Funds",
+    "url": "https://www.cnbc.com/id/10000293/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Hedge Funds",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97047/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "India",
+    "url": "https://www.cnbc.com/id/10000019/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Industrials",
+    "url": "https://www.cnbc.com/id/10000098/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Industrials",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97110/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Insurance",
+    "url": "https://www.cnbc.com/id/10000878/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Insurance",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97114/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Interest Rates",
+    "url": "https://www.cnbc.com/id/10000836/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Interest Rates",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97097/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "International Top News and Analysis",
+    "url": "https://www.cnbc.com/id/100727362/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Investing",
+    "url": "https://www.cnbc.com/id/15839069/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Investment Strategy",
+    "url": "https://www.cnbc.com/id/10000953/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Investment Strategy",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97101/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Latest Video",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100004038",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Life",
+    "url": "https://www.cnbc.com/id/10001150/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Mad Money with Jim Cramer",
+    "url": "https://www.cnbc.com/id/15838459/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Mad Money with Jim Cramer",
+    "url": "https://www.cnbc.com/id/17628637/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Market Insider",
+    "url": "https://www.cnbc.com/id/20409666/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Market News (Stocks)",
+    "url": "https://www.cnbc.com/id/20761872/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Market News (Stocks)",
+    "url": "https://www.cnbc.com/id/15839215/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Media",
+    "url": "https://www.cnbc.com/id/10000110/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Media",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97118/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Net Net",
+    "url": "https://www.cnbc.com/id/38469904/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Net Net",
+    "url": "https://www.cnbc.com/id/38818154/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Oil and Gas",
+    "url": "https://www.cnbc.com/id/10000030/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Oil and Gas",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97123/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Options Action",
+    "url": "https://www.cnbc.com/id/28282083/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Options Action",
+    "url": "https://www.cnbc.com/id/28423862/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Personal Finance",
+    "url": "https://www.cnbc.com/id/21324812/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Politics",
+    "url": "https://www.cnbc.com/id/10000113/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Power Lunch",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15838342",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Private Equity and Hedge Funds",
+    "url": "https://www.cnbc.com/id/10000114/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Real Estate",
+    "url": "https://www.cnbc.com/id/10000115/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Retail",
+    "url": "https://www.cnbc.com/id/10000116/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Retail",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97133/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Russia",
+    "url": "https://www.cnbc.com/id/10000054/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Small Business",
+    "url": "https://www.cnbc.com/id/44877279/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Squawk Box",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15838368",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Squawk Box Asia",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15838831",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Squawk Box Europe",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15838652",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Squawk on the Street",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15838381",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Stock Picks",
+    "url": "https://www.cnbc.com/id/10001135/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Tech",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97138/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Tech stories",
+    "url": "https://www.cnbc.com/id/19855906/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Technology",
+    "url": "https://www.cnbc.com/id/19854910/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Telecom",
+    "url": "https://www.cnbc.com/id/10001105/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Telecom",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97144/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "The Faber Report",
+    "url": "https://www.cnbc.com/id/30699190/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "The Fed",
+    "url": "https://www.cnbc.com/id/10000709/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "The Fed",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97242/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Top News and Analysis (Pro)",
+    "url": "https://www.cnbc.com/id/19746125/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Top Videos",
+    "url": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839263",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Travel",
+    "url": "https://www.cnbc.com/id/10000739/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Travel",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97149/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "U.S. News",
+    "url": "https://www.cnbc.com/id/15837362/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "US Trading",
+    "url": "https://www.cnbc.com/id/10000088/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Utilities",
+    "url": "https://www.cnbc.com/id/10000118/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Utilities",
+    "url": "https://www.cnbc.com/id/20040302/rssCmp/97156/device/rss/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Venture Capital",
+    "url": "https://www.cnbc.com/id/10001015/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
+    "section": "Wealth",
+    "url": "https://www.cnbc.com/id/10001054/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
   }
 ]
