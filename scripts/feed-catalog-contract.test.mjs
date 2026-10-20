@@ -20,7 +20,7 @@ test("ten publisher files preserve the complete inventory but expose only one ma
     assert.ok(entries.every((feed) => feed.site === site));
     assert.equal(entries.filter(({ section }) => section === "Main feed").length, 1);
   }
-  assert.equal(catalog.length - mainFeeds.length, 698);
+  assert.equal(catalog.length - mainFeeds.length, 748);
 });
 
 test("main selection fails closed on missing or duplicate mains, including identical duplicates", () => {
@@ -35,9 +35,9 @@ test("main selection fails closed on missing or duplicate mains, including ident
 
 test("WSJ catalog includes exactly the researched active article feeds, including Japan and legacy", () => {
   const feeds = validateFeedCatalog(catalog);
-  assert.equal(feeds.length, 708);
+  assert.equal(feeds.length, 758);
   assert.equal(new Set(feeds.map(({ site }) => site)).size, 10);
-  assert.equal(new Set(feeds.map(({ site, section }) => `${site}:${section}`)).size, 708);
+  assert.equal(new Set(feeds.map(({ site, url }) => `${site}:${url}`)).size, 758);
   const wsj = feeds.filter(({ site }) => site === "WSJ");
   assert.equal(wsj.length, 35);
   const current = wsj.filter(({ url }) => new URL(url).hostname === "feeds.content.dowjones.io");
@@ -71,33 +71,33 @@ test("feed README inventories every added WSJ section and documents the new cata
     const text = await readFile(new URL(path, root), "utf8");
     assert.ok(text.includes(String(catalog.length)), `${path}: catalog total`);
     assert.ok(text.includes("35"), `${path}: WSJ count`);
-    assert.ok(text.includes("556"), `${path}: NY Times count`);
+    assert.ok(text.includes("543"), `${path}: NY Times count`);
     assert.doesNotMatch(text, /at most ten (?:links|candidates)|one `Main feed` each|No extra Opinion feed is added|at most one link per publisher\s+is selected/);
   }
 });
 
 test("NY Times catalog matches the offline workbook's selected live text-feed URL inventory", () => {
   const nyt = validateFeedCatalog(catalog).filter(({ site }) => site === "NY Times");
-  assert.equal(nyt.length, 556);
+  assert.equal(nyt.length, 543);
   // SHA-256 of sorted, newline-joined exact selected URL cells from All feeds.
   // Pins the complete reviewed source inventory without depending on Downloads.
   assert.equal(createHash("sha256").update(nyt.map(({ url }) => url).sort().join("\n")).digest("hex"),
-    "6abd81583ef6d48d7abbccb4ae320052284b6d8df95a320c0d9d7882bf2b13a8");
+    "f7dcb1f0ca04184f63848162614768c9c02b488862ff7c8a88f1005230ef6056");
   assert.equal(nyt.filter(({ url }) => new URL(url).hostname === "rss.nytimes.com").length, 66);
-  assert.equal(nyt.filter(({ url }) => url.includes("/svc/collections/")).length, 349);
-  assert.equal(nyt.filter(({ url }) => url.includes("/athletic/rss/")).length, 137);
+  assert.equal(nyt.filter(({ url }) => url.includes("/svc/collections/")).length, 337);
+  assert.equal(nyt.filter(({ url }) => url.includes("/athletic/rss/")).length, 136);
   for (const [prefix, expected] of Object.entries({
-    "Section — ": 26, "Column — ": 40, "Writer — ": 50, "Newsletter — ": 2,
-    "Spotlight — ": 7, "News event — ": 2, "Topic (subject) — ": 103,
-    "Topic (place) — ": 87, "Topic (company) — ": 15, "Topic (organization) — ": 15,
+    "Section — ": 26, "Column — ": 37, "Writer — ": 49, "Newsletter — ": 2,
+    "Spotlight — ": 6, "News event — ": 2, "Topic (subject) — ": 99,
+    "Topic (place) — ": 85, "Topic (company) — ": 14, "Topic (organization) — ": 15,
     "Topic (person) — ": 2,
   })) assert.equal(nyt.filter(({ section }) => section.startsWith(prefix)).length, expected, prefix);
-  assert.equal(new Set(nyt.map(({ section }) => section)).size, 556);
+  assert.equal(new Set(nyt.map(({ section }) => section)).size, 543);
   assert.ok(nyt.every(({ url, homepageScore, format }) => new URL(url).protocol === "https:" && homepageScore === 8 && format === "rss"));
   assert.ok(nyt.every(({ section, ordering }) => ordering === (section === "Main feed" ? "editorial" : "newest")));
   assert.equal(nyt.filter(({ edition }) => edition !== "US").length, 3);
   for (const [url, section, edition] of [
-    ["https://rss.nytimes.com/services/xml/rss/nyt/Style.xml", "Fashion", "US"],
+    ["https://rss.nytimes.com/services/xml/rss/nyt/Fashion.xml", "Fashion", "US"],
     ["https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml", "Style", "US"],
     ["https://rss.nytimes.com/services/xml/rss/nyt/es.xml", "The New York Times en Español", "Spanish"],
     ["https://cn.nytimes.com/rss/", "NYT Chinese (Simplified)", "Chinese (Simplified)"],
@@ -183,6 +183,28 @@ test("Bloomberg guide documents inactive RSS/sitemap references and reconciled r
   assert.match(text, /RSS is not the same as a news sitemap/);
   assert.match(text, /does not replace the sitemap Main feed or become its fallback/);
   assert.match(text, /All 60 additions remain inactive/);
+});
+
+test("Economist inventory matches the reviewed workbook's 64 selected text-feed URLs", () => {
+  const economist = validateFeedCatalog(catalog).filter(({ site }) => site === "The Economist");
+  assert.equal(economist.length, 64);
+  assert.equal(createHash("sha256").update(economist.map(({ url }) => url).sort().join("\n")).digest("hex"),
+    "1b2681ee43a822f0bbffafcf18d7a71bee7243841f63124cf028fa131ac8b6a4");
+  assert.equal(economist.filter(({ section }) => section.startsWith("Legacy RSS — ")).length, 17);
+  assert.equal(economist.filter(({ section }) => section.startsWith("Legacy print — ")).length, 15);
+  assert.equal(economist.filter(({ section }) => section.startsWith("EIU:")).length, 6);
+  assert.equal(economist.filter(({ section }) => section === "Weekly edition" || !section.startsWith("Legacy") && !section.startsWith("EIU") && !section.startsWith("Writer") && !section.startsWith("Partner")).length, 23);
+  assert.ok(economist.some(({ section, url }) => section === "Main feed" && url.endsWith("/latest/rss.xml")));
+  assert.ok(!economist.some(({ url }) => url.includes("bloomberg.com")));
+  assert.ok(economist.every(({ ordering, homepageScore }) => ordering === "newest" && homepageScore === 5));
+});
+
+test("corrected NYT and WaPo research provenance is documented", async () => {
+  const readme = (await readFile(new URL("data/README.md", root), "utf8")).replace(/\s+/g, " ");
+  for (const fact of ["corrected 20 october", "624", "23 of 858", "corrected workbooks", "wapo is unchanged at 56"]) {
+    assert.ok(readme.toLowerCase().includes(fact), fact);
+  }
+  assert.match(readme, /actual article|true dates|Feedly feed-level dates/i);
 });
 
 test("executable source has no dependency on the historical Markdown catalog or its parser", async () => {

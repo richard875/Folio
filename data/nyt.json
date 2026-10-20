@@ -146,7 +146,7 @@
   {
     "site": "NY Times",
     "section": "Fashion",
-    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Style.xml",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Fashion.xml",
     "ordering": "newest",
     "format": "rss",
     "homepageScore": 8,
@@ -192,15 +192,6 @@
     "site": "NY Times",
     "section": "Jobs",
     "url": "https://rss.nytimes.com/services/xml/rss/nyt/Jobs.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
-    "section": "Lens",
-    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Lens.xml",
     "ordering": "newest",
     "format": "rss",
     "homepageScore": 8,
@@ -381,6 +372,15 @@
     "site": "NY Times",
     "section": "Sports > N.F.L.",
     "url": "https://rss.nytimes.com/services/xml/rss/nyt/ProFootball.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "US"
+  },
+  {
+    "site": "NY Times",
+    "section": "Sports > Soccer",
+    "url": "https://rss.nytimes.com/services/xml/rss/nyt/Soccer.xml",
     "ordering": "newest",
     "format": "rss",
     "homepageScore": 8,
@@ -910,15 +910,6 @@
   },
   {
     "site": "NY Times",
-    "section": "Column — Fixes",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/fixes/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
     "section": "Column — Frank Bruni",
     "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/frank-bruni/rss.xml",
     "ordering": "newest",
@@ -930,15 +921,6 @@
     "site": "NY Times",
     "section": "Column — Frugal Traveler",
     "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/frugal-traveler/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
-    "section": "Column — Gail Collins",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/gail-collins/rss.xml",
     "ordering": "newest",
     "format": "rss",
     "homepageScore": 8,
@@ -1146,15 +1128,6 @@
     "site": "NY Times",
     "section": "Column — Vows",
     "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/vows/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
-    "section": "Column — Wealth Matters",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/column/wealth-matters/rss.xml",
     "ordering": "newest",
     "format": "rss",
     "homepageScore": 8,
@@ -1486,15 +1459,6 @@
   },
   {
     "site": "NY Times",
-    "section": "Writer — Katie Benner",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/katie-benner/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
     "section": "Writer — Kenneth Chang",
     "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/kenneth-chang/rss.xml",
     "ordering": "newest",
@@ -1612,8 +1576,8 @@
   },
   {
     "site": "NY Times",
-    "section": "Writer — Spencer Bokat-Lindell",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/spencer-bokat-lindell/rss.xml",
+    "section": "Writer — Tejal Rao",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/tejal-rao/rss.xml",
     "ordering": "newest",
     "format": "rss",
     "homepageScore": 8,
@@ -1621,8 +1585,8 @@
   },
   {
     "site": "NY Times",
-    "section": "Writer — Tejal Rao",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/tejal-rao/rss.xml",
+    "section": "Writer — Tripp Mickle",
+    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/by/tripp-mickle/rss.xml",
     "ordering": "newest",
     "format": "rss",
     "homepageScore": 8,
@@ -1659,15 +1623,6 @@
     "site": "NY Times",
     "section": "Spotlight — Artificial Intelligence",
     "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/spotlight/artificial-intelligence/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
-    "section": "Spotlight — Arts & Entertainment Guide",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/spotlight/arts-listings/rss.xml",
     "ordering": "newest",
     "format": "rss",
     "homepageScore": 8,
@@ -2053,15 +2008,6 @@
   },
   {
     "site": "NY Times",
-    "section": "Topic (subject) — Estate Planning",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/estate-planning/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
     "section": "Topic (subject) — Families and Family Life",
     "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/families-and-family-life/rss.xml",
     "ordering": "newest",
@@ -2368,15 +2314,6 @@
   },
   {
     "site": "NY Times",
-    "section": "Topic (subject) — Organic Foods and Products",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/organic-foods-and-products/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
     "section": "Topic (subject) — Parenting",
     "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/parenting/rss.xml",
     "ordering": "newest",
@@ -2595,24 +2532,6 @@
     "site": "NY Times",
     "section": "Topic (subject) — Terrorism",
     "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/terrorism/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
-    "section": "Topic (subject) — Traumatic Brain Injury",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/traumatic-brain-injury/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
-    "section": "Topic (subject) — Veganism",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/subject/veganism/rss.xml",
     "ordering": "newest",
     "format": "rss",
     "homepageScore": 8,
@@ -3187,15 +3106,6 @@
   },
   {
     "site": "NY Times",
-    "section": "Topic (place) — Portugal",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/portugal/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
     "section": "Topic (place) — Russia",
     "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/russia/rss.xml",
     "ordering": "newest",
@@ -3243,15 +3153,6 @@
     "site": "NY Times",
     "section": "Topic (place) — Singapore",
     "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/singapore/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
-    "section": "Topic (place) — Somalia",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/destination/somalia/rss.xml",
     "ordering": "newest",
     "format": "rss",
     "homepageScore": 8,
@@ -3547,15 +3448,6 @@
   },
   {
     "site": "NY Times",
-    "section": "Topic (company) — International Business Machines (I.B.M.)",
-    "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/international-business-machines-corporation/rss.xml",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
     "section": "Topic (company) — Morgan, J. P., Chase & Company",
     "url": "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/topic/company/jpmorgan-chase-company/rss.xml",
     "ordering": "newest",
@@ -3828,15 +3720,6 @@
     "site": "NY Times",
     "section": "Athletic — Leagues and sports — Golf",
     "url": "https://www.nytimes.com/athletic/rss/golf/",
-    "ordering": "newest",
-    "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
-  },
-  {
-    "site": "NY Times",
-    "section": "Athletic — Leagues and sports — Ink",
-    "url": "https://www.nytimes.com/athletic/rss/ink/",
     "ordering": "newest",
     "format": "rss",
     "homepageScore": 8,

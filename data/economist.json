@@ -7,5 +7,572 @@
     "format": "rss",
     "homepageScore": 5,
     "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Weekly edition",
+    "url": "https://www.economist.com/printedition/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "The world this week",
+    "url": "https://www.economist.com/the-world-this-week/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Leaders",
+    "url": "https://www.economist.com/leaders/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Letters",
+    "url": "https://www.economist.com/letters/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "By Invitation",
+    "url": "https://www.economist.com/by-invitation/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Briefing",
+    "url": "https://www.economist.com/briefing/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "United States",
+    "url": "https://www.economist.com/united-states/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "The Americas",
+    "url": "https://www.economist.com/the-americas/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Asia",
+    "url": "https://www.economist.com/asia/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "China",
+    "url": "https://www.economist.com/china/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Middle East & Africa",
+    "url": "https://www.economist.com/middle-east-and-africa/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Europe",
+    "url": "https://www.economist.com/europe/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Britain",
+    "url": "https://www.economist.com/britain/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "International",
+    "url": "https://www.economist.com/international/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Business",
+    "url": "https://www.economist.com/business/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Finance & economics",
+    "url": "https://www.economist.com/finance-and-economics/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Science & technology",
+    "url": "https://www.economist.com/science-and-technology/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Culture",
+    "url": "https://www.economist.com/culture/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Economic & financial indicators",
+    "url": "https://www.economist.com/economic-and-financial-indicators/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Obituary",
+    "url": "https://www.economist.com/obituary/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Graphic detail",
+    "url": "https://www.economist.com/graphic-detail/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "1843 magazine",
+    "url": "https://www.economist.com/1843/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Britain",
+    "url": "http://www.economist.com/rss/britain_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Business",
+    "url": "http://www.economist.com/rss/business_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — China",
+    "url": "http://www.economist.com/rss/china_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Europe",
+    "url": "http://www.economist.com/rss/europe_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Finance & economics",
+    "url": "http://www.economist.com/rss/finance_and_economics_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Middle East & Africa",
+    "url": "http://www.economist.com/rss/middle_east_and_africa_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Science & technology",
+    "url": "http://www.economist.com/rss/science_and_technology_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Asia",
+    "url": "http://www.economist.com/rss/asia_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — United States",
+    "url": "http://www.economist.com/rss/united_states_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — The Americas",
+    "url": "http://www.economist.com/rss/the_americas_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Briefing",
+    "url": "http://www.economist.com/rss/briefings_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Economic & financial indicators",
+    "url": "http://www.economist.com/rss/indicators_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — International",
+    "url": "http://www.economist.com/rss/international_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Leaders",
+    "url": "http://www.economist.com/rss/leaders_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Letters",
+    "url": "http://www.economist.com/rss/letters_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — Obituary",
+    "url": "http://www.economist.com/rss/obituary_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy RSS — The Economist",
+    "url": "http://www.economist.com/rss/the_world_this_week_rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Britain",
+    "url": "http://www.economist.com/feeds/print-sections/76/britain.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Business",
+    "url": "http://www.economist.com/feeds/print-sections/77/business.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — China",
+    "url": "http://www.economist.com/feeds/print-sections/77729/china.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Culture",
+    "url": "http://www.economist.com/feeds/print-sections/89/books-and-arts.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Europe",
+    "url": "http://www.economist.com/feeds/print-sections/75/europe.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Finance & economics",
+    "url": "http://www.economist.com/feeds/print-sections/79/finance-and-economics.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Middle East & Africa",
+    "url": "http://www.economist.com/feeds/print-sections/99/middle-east-africa.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Science & technology",
+    "url": "http://www.economist.com/feeds/print-sections/80/science-and-technology.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Asia",
+    "url": "http://www.economist.com/feeds/print-sections/73/asia.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — United States",
+    "url": "http://www.economist.com/feeds/print-sections/71/united-states.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Briefing",
+    "url": "http://www.economist.com/feeds/print-sections/102/briefings2.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — International",
+    "url": "http://www.economist.com/feeds/print-sections/74/international.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Leaders",
+    "url": "http://www.economist.com/feeds/print-sections/69/leaders.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Letters",
+    "url": "http://www.economist.com/feeds/print-sections/68/letters.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy print — Obituary",
+    "url": "http://www.economist.com/feeds/print-sections/82/obituary.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy section — Finance & economics",
+    "url": "http://www.economist.com/sections/economics/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy blog — Graphic detail (dailychart)",
+    "url": "http://www.economist.com/blogs/dailychart/index.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "Legacy blog — Graphic detail (graphicdetail)",
+    "url": "http://www.economist.com/blogs/graphicdetail/index.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "EIU: all articles",
+    "url": "https://www.eiu.com/n/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "EIU: Technology",
+    "url": "https://www.eiu.com/n/category/technology/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "EIU: Consumer",
+    "url": "https://www.eiu.com/n/category/consumer/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "EIU: Risk",
+    "url": "https://www.eiu.com/n/category/risk/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "EIU: Supply chains",
+    "url": "https://www.eiu.com/n/category/supply-chains/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
+  },
+  {
+    "site": "The Economist",
+    "section": "EIU: Trade",
+    "url": "https://www.eiu.com/n/category/trade/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 5,
+    "edition": "Only one"
   }
 ]
