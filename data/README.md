@@ -9,7 +9,7 @@ are not runtime data sources.
 
 **Only the single `section: "Main feed"` entry in each file is operational.**
 `GET`/`POST /api/links`, `GET`/`POST /api/collect`, and their downstream automatic
-article-saving workflows use exactly these ten sources. The other 748 entries
+article-saving workflows use exactly these ten sources. The other 1340 entries
 are inactive reference inventory: never fetched, ranked, used for corroboration,
 or used as fallback feeds. Query parameters and POST bodies cannot enable them.
 An unavailable main feed is reported as failed; no subsection is promoted.
@@ -474,7 +474,7 @@ feed participates in APIs, ranking, corroboration or automatic downstream saving
 
 ## Collection cost and downstream limits
 
-Each fresh collection attempts **ten main feed sources**, not all 759 stored
+Each fresh collection attempts **ten main feed sources**, not all 1350 stored
 entries. Retries and Google News resolution may require additional requests;
 ten sources does not mean exactly ten outbound requests. `RSS_LINKS_PER_SECTION`
 controls article output, not which feed sources are active. There is no new
