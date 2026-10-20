@@ -20,7 +20,7 @@ test("ten publisher files preserve the complete inventory but expose only one ma
     assert.ok(entries.every((feed) => feed.site === site));
     assert.equal(entries.filter(({ section }) => section === "Main feed").length, 1);
   }
-  assert.equal(catalog.length - mainFeeds.length, 638);
+  assert.equal(catalog.length - mainFeeds.length, 698);
 });
 
 test("main selection fails closed on missing or duplicate mains, including identical duplicates", () => {
@@ -35,9 +35,9 @@ test("main selection fails closed on missing or duplicate mains, including ident
 
 test("WSJ catalog includes exactly the researched active article feeds, including Japan and legacy", () => {
   const feeds = validateFeedCatalog(catalog);
-  assert.equal(feeds.length, 648);
+  assert.equal(feeds.length, 708);
   assert.equal(new Set(feeds.map(({ site }) => site)).size, 10);
-  assert.equal(new Set(feeds.map(({ site, section }) => `${site}:${section}`)).size, 648);
+  assert.equal(new Set(feeds.map(({ site, section }) => `${site}:${section}`)).size, 708);
   const wsj = feeds.filter(({ site }) => site === "WSJ");
   assert.equal(wsj.length, 35);
   const current = wsj.filter(({ url }) => new URL(url).hostname === "feeds.content.dowjones.io");
@@ -144,11 +144,45 @@ test("Washington Post reference inventory matches the workbook's 50 live text-fe
 test("Washington Post guide records exclusions, source discrepancies and inactive-reference status", async () => {
   const text = (await readFile(new URL("data/README.md", root), "utf8")).replace(/\s+/g, " ");
   for (const fact of ["wapo_rss_feeds.xlsx", "wapo_rss.md", "499", "449", "unknown",
-    "70 cached", "third-party", "legacy reference", "638", "648", "502"])
+    "70 cached", "third-party", "legacy reference", "502"])
     assert.ok(text.includes(fact), fact);
   assert.match(text, /Washington Post.*50/);
   assert.match(text, /none of these additions is enabled for API collection/);
   assert.match(text, /No live fetch or extraction audit/);
+});
+
+test("Bloomberg references match the reviewed workbook without replacing the sitemap Main feed", () => {
+  const bloomberg = validateFeedCatalog(catalog).filter(({ site }) => site === "Bloomberg");
+  assert.equal(bloomberg.length, 61);
+  assert.equal(createHash("sha256").update(bloomberg.map(({ url }) => url).sort().join("\n")).digest("hex"),
+    "ee83ea9d68eb2002e2fc5d4b2442ad4545fa3a0e7f92080ec2d7e1af359d49e3");
+  assert.equal(bloomberg.filter(({ section }) => section.startsWith("Writer — ")).length, 37);
+  assert.equal(bloomberg.filter(({ section }) => section.startsWith("Partner — ")).length, 9);
+  assert.equal(bloomberg.filter(({ url }) => url.startsWith("https://www.bloomberg.com/feeds/")).length, 10);
+  assert.equal(bloomberg.filter(({ format }) => format === "rss").length, 59);
+  assert.equal(bloomberg.filter(({ format }) => format === "news-sitemap").length, 2);
+  assert.equal(new Set(bloomberg.map(({ section }) => section)).size, 61);
+  assert.ok(bloomberg.every(({ ordering, homepageScore }) => ordering === "newest" && homepageScore === 4));
+  assert.deepEqual(mainFeeds.filter(({ site }) => site === "Bloomberg"), [{
+    site: "Bloomberg", section: "Main feed", url: "https://www.bloomberg.com/sitemaps/news/latest.xml",
+    ordering: "newest", format: "news-sitemap", homepageScore: 4, edition: "Only one",
+  }]);
+  assert.ok(bloomberg.some(({ section, url, format }) => section === "All Bloomberg news (RSS)" &&
+    url === "https://www.bloomberg.com/feeds/news.rss" && format === "rss"));
+  assert.ok(bloomberg.some(({ url, edition }) => url === "http://www.bloomberg.com.br/feed/" && edition === "Brazil (Portuguese)"));
+  assert.ok(bloomberg.every(({ url }) => !/podcasts?|omnycontent|megaphone|\/index\.xml$|sectionfronts|feeds\.bloomberg\.com|[<>]/.test(url)));
+  for (const name of ["gadfly", "wealth", "citylab", "green"])
+    assert.ok(!bloomberg.some(({ url }) => url.endsWith(`/feeds/${name}/news.rss`)), name);
+});
+
+test("Bloomberg guide documents inactive RSS/sitemap references and reconciled research exclusions", async () => {
+  const text = (await readFile(new URL("data/README.md", root), "utf8")).replace(/\s+/g, " ");
+  for (const fact of ["bloomberg_rss_feeds.xlsx", "bloomberg_rss.md", "217 records", "60 cached",
+    "61", "156", "128", "news:title", "fixed October archive", "HTTP", "not fresh verification by Folio"])
+    assert.ok(text.includes(fact), fact);
+  assert.match(text, /RSS is not the same as a news sitemap/);
+  assert.match(text, /does not replace the sitemap Main feed or become its fallback/);
+  assert.match(text, /All 60 additions remain inactive/);
 });
 
 test("executable source has no dependency on the historical Markdown catalog or its parser", async () => {

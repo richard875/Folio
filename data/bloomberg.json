@@ -7,5 +7,545 @@
     "format": "news-sitemap",
     "homepageScore": 4,
     "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "All Bloomberg news (RSS)",
+    "url": "https://www.bloomberg.com/feeds/news.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Business",
+    "url": "https://www.bloomberg.com/feeds/business/news.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Businessweek",
+    "url": "https://www.bloomberg.com/feeds/businessweek/news.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Economics",
+    "url": "https://www.bloomberg.com/feeds/economics/news.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Industries",
+    "url": "https://www.bloomberg.com/feeds/industries/news.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Markets",
+    "url": "https://www.bloomberg.com/feeds/markets/news.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Opinion",
+    "url": "https://www.bloomberg.com/feeds/bview/news.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Politics",
+    "url": "https://www.bloomberg.com/feeds/politics/news.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Technology",
+    "url": "https://www.bloomberg.com/feeds/technology/news.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Crypto",
+    "url": "https://www.bloomberg.com/feeds/crypto/news.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Jackie Cai",
+    "url": "https://www.bloomberg.com/authors/AWBnKhxDRMg/jackie-cai.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — John Authers",
+    "url": "https://www.bloomberg.com/authors/AT2bBytfUHQ/john-authers.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Lionel Laurent",
+    "url": "https://www.bloomberg.com/opinion/authors/ASpCEInTf5w/lionel-laurent.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — The Editorial Board",
+    "url": "https://www.bloomberg.com/authors/ASB62QVt-d0/the-editors.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Amanda Mull",
+    "url": "https://www.bloomberg.com/authors/AW1_jD-e1dM/amanda-mull.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Joe Weisenthal",
+    "url": "https://www.bloomberg.com/authors/AQ0VXvE12t0/joe-weisenthal.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Mark Gurman",
+    "url": "https://www.bloomberg.com/authors/AS7Hj1mBMGM/mark-gurman.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Matt Levine",
+    "url": "https://www.bloomberg.com/authors/ARbTQlRLRjE/matthew-s-levine.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Nguyen Kieu Giang",
+    "url": "https://www.bloomberg.com/authors/APNvX3T2rzE/giang-nguyen.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Paula Doenecke",
+    "url": "https://www.bloomberg.com/authors/AWPjhtcdUZc/paula-doenecke.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Swetha Gopinath",
+    "url": "https://www.bloomberg.com/authors/AUD3zCLcLLw/swetha-gopinath.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Tracy Alloway",
+    "url": "https://www.bloomberg.com/authors/AOW9ekpmwpk/tracy-alloway.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Anthony Capaccio",
+    "url": "https://www.bloomberg.com/authors/ABpy_ztRo4k/anthony-capaccio.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Irene Garcia Perez",
+    "url": "https://www.bloomberg.com/authors/ATuCGxVAo1Y/irene-garcia-perez.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Apple Ka Ying Li",
+    "url": "https://www.bloomberg.com/authors/AXInpcwPKZc/apple-ka-ying-li.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Jason Schreier",
+    "url": "https://www.bloomberg.com/authors/AUvqMRVAZCw/jason-schreier.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Megawati Wijaya",
+    "url": "https://www.bloomberg.com/authors/AWWrDsp1YeI/megawati-wijaya.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Stephen L. Carter",
+    "url": "https://www.bloomberg.com/opinion/authors/AB_PcwUZI4E/stephen-l-carter.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Giulia Morpurgo",
+    "url": "https://www.bloomberg.com/authors/ATsVaOf4dpY/giulia-morpurgo.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Javier Blas",
+    "url": "https://www.bloomberg.com/authors/ASIsQsgx0V8/javier-blas.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Justin Fox",
+    "url": "https://www.bloomberg.com/opinion/authors/APutSva_l9o/justin-fox.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Kari Soo Lindberg",
+    "url": "https://www.bloomberg.com/authors/AUIbkVtXqU4/kari-soo-lindberg.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Olga Kharif",
+    "url": "https://www.bloomberg.com/authors/APyzq5YvgSE/olga-kharif.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Saikat Das",
+    "url": "https://www.bloomberg.com/authors/AWEH-QuELDc/saikat-das.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Trista Xinyi Luo",
+    "url": "https://www.bloomberg.com/authors/AWI8tPIZrnw/trista-xinyi-luo.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Roxana Tiron",
+    "url": "https://www.bloomberg.com/authors/AQSfcWdmnaM/roxana-tiron.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Pearl Liu",
+    "url": "https://www.bloomberg.com/authors/AWXVC4ff7OM/pearl-liu.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Eyk Henning",
+    "url": "https://www.bloomberg.com/authors/ATKcxqTE1Cg/eyk-henning.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Laura Benitez",
+    "url": "https://www.bloomberg.com/authors/ATbVNWPJ0k4/laura-benitez.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Dipika Lalwani",
+    "url": "https://www.bloomberg.com/authors/AX9w0279DNM/dipika-lalwani.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Noah Feldman",
+    "url": "https://www.bloomberg.com/opinion/authors/AFZ_b1F72Xw/noah-feldman.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Lucas Shaw",
+    "url": "https://www.bloomberg.com/authors/AR-UXAoIWJM/lucas-shaw.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Dinesh Nair",
+    "url": "https://www.bloomberg.com/authors/ARyyGQR8v_w/dinesh-nair.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Brandon Presser",
+    "url": "https://www.bloomberg.com/authors/ATDodvogSV4/brandon-presser.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Crystal Tse",
+    "url": "https://www.bloomberg.com/authors/AS4bDXNa1ls/crystal-tse.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Spencer Soper",
+    "url": "https://www.bloomberg.com/authors/AR-vuVNWFbE/spencer-soper.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Writer — Chien Mi Wong",
+    "url": "https://www.bloomberg.com/authors/AW5bf22iPfk/chien-mi-wong.rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "News sitemap — October 2026 archive",
+    "url": "https://www.bloomberg.com/sitemaps/news/2026-10.xml",
+    "ordering": "newest",
+    "format": "news-sitemap",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "BloombergNEF",
+    "url": "https://about.bnef.com/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Bloomberg Professional Services (insights blog)",
+    "url": "https://www.bloomberg.com/professional/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Only one"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Bloomberg Professional (Brazil)",
+    "url": "http://www.bloomberg.com.br/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Brazil (Portuguese)"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Partner — Bloomberg HT (Turkey)",
+    "url": "https://www.bloomberght.com/rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Turkey"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Partner — Bloomberg Línea (Spanish, Latin America)",
+    "url": "https://www.bloomberglinea.com/arc/outboundfeeds/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Latin America (Spanish)"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Partner — Bloomberg Technoz (Indonesia)",
+    "url": "https://www.bloombergtechnoz.com/rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Indonesia"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Partner — Bloomberg TV Bulgaria",
+    "url": "https://www.bloombergtv.bg/rss/latest",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Bulgaria"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Partner — BNN Bloomberg (Canada): all stories",
+    "url": "https://www.bnnbloomberg.ca/arc/outboundfeeds/rss/?outputType=xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Canada"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Partner — BNN Bloomberg: Business",
+    "url": "https://www.bnnbloomberg.ca/arc/outboundfeeds/rss/category/business/?outputType=xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Canada"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Partner — Bloomberg Línea Brasil",
+    "url": "https://www.bloomberglinea.com.br/arc/outboundfeeds/rss.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Brazil (Portuguese)"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Partner — BNN Bloomberg: Investing",
+    "url": "https://www.bnnbloomberg.ca/arc/outboundfeeds/rss/category/investing/?outputType=xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Canada"
+  },
+  {
+    "site": "Bloomberg",
+    "section": "Partner — BNN Bloomberg: Markets",
+    "url": "https://www.bnnbloomberg.ca/arc/outboundfeeds/rss/category/markets/?outputType=xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "Canada"
   }
 ]

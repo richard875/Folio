@@ -52,9 +52,10 @@ websites[].sections[].articles[] = { url, summary? }
 ```
 
 These are candidates from configured feeds, not every article published by those
-outlets. Folio stores 648 inventory entries (including 35 WSJ, 556 NY Times and 50 Washington Post),
+outlets. Folio stores 708 inventory entries (including 35 WSJ, 556 NY Times,
+50 Washington Post and 61 Bloomberg feeds/sitemaps),
 but **only the ten Main feeds are active**, one per publisher. All links/collect
-operations exclude the other 638 reference feeds; no query option enables them,
+operations exclude the other 698 reference feeds; no query option enables them,
 and a main-feed failure never falls back to them. With `RSS_LINKS_PER_SECTION=1`,
 at most ten article entries are returned; the default of 5 permits at most 50.
 Retries and Google resolution can require more than ten outbound requests. Do

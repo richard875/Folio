@@ -9,7 +9,7 @@ are not runtime data sources.
 
 **Only the single `section: "Main feed"` entry in each file is operational.**
 `GET`/`POST /api/links`, `GET`/`POST /api/collect`, and their downstream automatic
-article-saving workflows use exactly these ten sources. The other 638 entries
+article-saving workflows use exactly these ten sources. The other 698 entries
 are inactive reference inventory: never fetched, ranked, used for corroboration,
 or used as fallback feeds. Query parameters and POST bodies cannot enable them.
 An unavailable main feed is reported as failed; no subsection is promoted.
@@ -19,14 +19,14 @@ An unavailable main feed is reported as failed; no subsection is promoted.
 | WSJ | [wsj.json](wsj.json) | 35 | 1 |
 | NY Times | [nyt.json](nyt.json) | 556 | 1 |
 | Washington Post | [wapo.json](wapo.json) | 50 | 1 |
-| Bloomberg | [bloomberg.json](bloomberg.json) | 1 | 1 |
+| Bloomberg | [bloomberg.json](bloomberg.json) | 61 | 1 |
 | The Economist | [economist.json](economist.json) | 1 | 1 |
 | Financial Times | [ft.json](ft.json) | 1 | 1 |
 | Foreign Policy | [foreignpolicy.json](foreignpolicy.json) | 1 | 1 |
 | CNBC | [cnbc.json](cnbc.json) | 1 | 1 |
 | Reuters | [reuters.json](reuters.json) | 1 | 1 |
 | Business Insider | [businessinsider.json](businessinsider.json) | 1 | 1 |
-| **Total** | | **648** | **10** |
+| **Total** | | **708** | **10** |
 
 Each file must contain only its assigned publisher and exactly one main feed.
 Missing, duplicate (even identical), or malformed main-feed configuration fails
@@ -59,9 +59,9 @@ coverage ranking, and `feed` uses the existing publisher-profile fallback.
 
 ## Current coverage
 
-The stored inventory has **648 feeds across ten publishers**: **35 WSJ feeds**,
-**556 NY Times feeds**, **50 Washington Post feeds**, and one `Main feed` for each
-of the other seven publishers.
+The stored inventory has **708 entries across ten publishers**: **35 WSJ feeds**,
+**556 NY Times feeds**, **50 Washington Post feeds**, **61 Bloomberg feeds/sitemaps**,
+and one `Main feed` for each of the other six publishers.
 `RSS_LINKS_PER_SECTION` caps each active publisher's `Main feed`. With a limit
 of 1, up to ten article entries can be returned (one per publisher); with the
 default of 5, up to 50. Empty, stale, failed or filtered main feeds can yield
@@ -314,9 +314,104 @@ feeds are dead. This specific row is retained as an explicitly labelled,
 unverified legacy reference. No claims about newsroom events in the research
 were used to infer feed statuses, invent URLs, or change publisher behavior.
 
+### Bloomberg stored article-feed inventory
+
+The existing `https://www.bloomberg.com/sitemaps/news/latest.xml` remains the sole
+Bloomberg `Main feed`, with its `format: news-sitemap` and all metadata unchanged.
+The 60 reference additions come from `bloomberg_rss_feeds.xlsx` (both `Summary`
+and all 217 records in `All feeds`) and `bloomberg_rss.md`, dated 20 October 2026.
+
+The workbook reports 126 live, 12 slowing, 58 stale, seven empty and 14 gone
+entries; all 60 cached Summary formula values reconcile with the source rows.
+The researcher reports direct checks of the selected URLs; other workbook rows
+use Feedly, as indicated in their `How checked` column. These are **supplied
+research results, not fresh verification by Folio**. `live` is the research's
+30-day freshness window, not a guarantee of current access, extraction quality,
+or an article within Folio's 72-hour window. No live network audit was performed.
+
+| Stored group | Entries | Operational entries |
+| --- | ---: | ---: |
+| Latest-news sitemap (`Main feed`) | 1 | 1 |
+| All-news/section RSS feeds | 10 | 0 |
+| Writers/editorial board | 37 | 0 |
+| October 2026 news sitemap | 1 | 0 |
+| Other Bloomberg feeds (NEF/Professional) | 3 | 0 |
+| Licensed partner editions | 9 | 0 |
+| **Total Bloomberg** | **61** | **1** |
+
+**RSS is not the same as a news sitemap.** The added all-news RSS URL,
+`https://www.bloomberg.com/feeds/news.rss`, is labelled `All Bloomberg news (RSS)`;
+it does not replace the sitemap Main feed or become its fallback. The sitemap
+has no RSS description/byline fields; Folio's existing Bloomberg `news:title`
+summary fallback remains unchanged. Its summaries are titles, not full-text
+excerpts. Added RSS references use `format: rss`, not the sitemap format.
+
+The ten RSS references use `https://www.bloomberg.com/feeds/` plus:
+
+| Section | Exact suffix |
+| --- | --- |
+| All Bloomberg news (RSS) | `news.rss` |
+| Business | `business/news.rss` |
+| Businessweek | `businessweek/news.rss` |
+| Economics | `economics/news.rss` |
+| Industries | `industries/news.rss` |
+| Markets | `markets/news.rss` |
+| Opinion | `bview/news.rss` |
+| Politics | `politics/news.rss` |
+| Technology | `technology/news.rss` |
+| Crypto | `crypto/news.rss` |
+
+All exact author IDs, slugs, URLs and labels are in [bloomberg.json](bloomberg.json).
+Writer labels use `Writer — …`; preserve the source's ID case and punctuation,
+and its `/authors/` versus `/opinion/authors/` path. Alternate cells, older
+`feeds.bloomberg.com` aliases and guessed section/writer patterns are not added.
+The dated `/sitemaps/news/2026-10.xml` reference is a fixed October archive, not
+an automatically rolling monthly feed. No index crawling or monthly URL generation
+is introduced; sitemap indexes are not supported feed inputs for this purpose.
+
+Other references include BloombergNEF, Professional Services insights, Professional
+Brazil, Bloomberg HT, Línea (Spanish and Brazilian editions), Technoz, TV Bulgaria,
+and BNN Bloomberg all-stories/Business/Investing/Markets. Partner records have
+`Partner — …` labels and informational edition labels; all remain filed under
+`site: Bloomberg`, not new operational publishers. These can contain overlapping,
+licensed, promotional, local-language or media-heavy material. The text-oriented
+RSS endpoints are stored, not a guarantee every item is a suitable article.
+
+Every entry inherits `ordering: newest` and `homepageScore: 4`, without inferring
+editorial order or new importance scores. Core entries retain the existing
+informational `edition: Only one` label; it is not a count of stored URLs. Region/
+language labels on partner/Brazil records are informational, not language filters.
+The supplied Professional Brazil URL is HTTP and is preserved verbatim as an
+inactive reference; it was not silently changed to an unverified HTTPS endpoint.
+No publisher-domain allowlists, retrieval orders, proxy policies or summary rules
+were expanded for partner domains. They are never fetched through collection.
+
+#### Bloomberg exclusions
+
+Of 217 workbook rows, 61 are retained and 156 are excluded:
+
+| Exclusion | Rows |
+| --- | ---: |
+| All current/partner/Law/Tax podcast feeds and old podcast addresses | 128 |
+| Slowing writer feeds | 4 |
+| Stale writer feeds | 13 |
+| Empty section/writer feeds | 5 |
+| Gone section feeds (Green and CityLab) | 2 |
+| Discovery/media sitemap indexes and section fronts | 4 |
+
+Podcast exclusions include 61 live URL rows, some redirecting to the same shows;
+they are excluded for being audio, not called dead merely for exclusion. The four
+non-article sitemap references omitted are the news archive index, section fronts,
+audio index and video index. Empty Gadfly/Wealth and empty Christopher Balding,
+Eli Lake and Jonathan Bernstein writer feeds are not stored. Slowing is not proof
+of permanent closure; the inventory conservatively follows the research's live
+classification. Unverified YouTube feeds and unlisted regional/subsection guesses
+are not added. All 60 additions remain inactive: only the original sitemap Main
+feed participates in APIs, ranking, corroboration or automatic downstream saving.
+
 ## Collection cost and downstream limits
 
-Each fresh collection attempts **ten main feed sources**, not all 648 stored
+Each fresh collection attempts **ten main feed sources**, not all 708 stored
 entries. Retries and Google News resolution may require additional requests;
 ten sources does not mean exactly ten outbound requests. `RSS_LINKS_PER_SECTION`
 controls article output, not which feed sources are active. There is no new
