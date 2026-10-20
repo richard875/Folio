@@ -9,7 +9,7 @@ are not runtime data sources.
 
 **Only the single `section: "Main feed"` entry in each file is operational.**
 `GET`/`POST /api/links`, `GET`/`POST /api/collect`, and their downstream automatic
-article-saving workflows use exactly these ten sources. The other 589 entries
+article-saving workflows use exactly these ten sources. The other 638 entries
 are inactive reference inventory: never fetched, ranked, used for corroboration,
 or used as fallback feeds. Query parameters and POST bodies cannot enable them.
 An unavailable main feed is reported as failed; no subsection is promoted.
@@ -18,7 +18,7 @@ An unavailable main feed is reported as failed; no subsection is promoted.
 | --- | --- | ---: | ---: |
 | WSJ | [wsj.json](wsj.json) | 35 | 1 |
 | NY Times | [nyt.json](nyt.json) | 556 | 1 |
-| Washington Post | [wapo.json](wapo.json) | 1 | 1 |
+| Washington Post | [wapo.json](wapo.json) | 50 | 1 |
 | Bloomberg | [bloomberg.json](bloomberg.json) | 1 | 1 |
 | The Economist | [economist.json](economist.json) | 1 | 1 |
 | Financial Times | [ft.json](ft.json) | 1 | 1 |
@@ -26,7 +26,7 @@ An unavailable main feed is reported as failed; no subsection is promoted.
 | CNBC | [cnbc.json](cnbc.json) | 1 | 1 |
 | Reuters | [reuters.json](reuters.json) | 1 | 1 |
 | Business Insider | [businessinsider.json](businessinsider.json) | 1 | 1 |
-| **Total** | | **599** | **10** |
+| **Total** | | **648** | **10** |
 
 Each file must contain only its assigned publisher and exactly one main feed.
 Missing, duplicate (even identical), or malformed main-feed configuration fails
@@ -59,8 +59,9 @@ coverage ranking, and `feed` uses the existing publisher-profile fallback.
 
 ## Current coverage
 
-The stored inventory has **599 feeds across ten publishers**: **35 WSJ feeds**, **556 NY
-Times feeds**, and one `Main feed` for each of the other eight publishers.
+The stored inventory has **648 feeds across ten publishers**: **35 WSJ feeds**,
+**556 NY Times feeds**, **50 Washington Post feeds**, and one `Main feed` for each
+of the other seven publishers.
 `RSS_LINKS_PER_SECTION` caps each active publisher's `Main feed`. With a limit
 of 1, up to ten article entries can be returned (one per publisher); with the
 default of 5, up to 50. Empty, stale, failed or filtered main feeds can yield
@@ -231,9 +232,91 @@ as What to Watch and Graphics remain stored references, not operational feeds.
 out of the stored inventory. NYT Open is in that group. No row status proves that
 Folio can successfully fetch or extract that source.
 
-#### Collection cost and downstream limits
+### Washington Post stored article-feed inventory
 
-Each fresh collection attempts **ten main feed sources**, not all 599 stored
+The existing Arc front-page `Main feed` is retained unchanged. The 49 reference
+additions come from the user-supplied `wapo_rss_feeds.xlsx` (`Summary` and all 499
+records in `All feeds`) and `wapo_rss.md`. The research is dated 19 October 2026;
+the file additions were made on 20 October. The Markdown refers to a different
+workbook filename, but the supplied `wapo_rss_feeds.xlsx` is the actual source read.
+
+**These are research-indexed URLs, not newly verified working feeds.** The
+researcher could not directly access the main WaPo site and used third-party
+Feedly/Apple records. Its old-host 502 observations are historical reports, not tests run by
+Folio. `live` means a new indexed item within the research's 30-day window;
+low-subscriber feeds may have lagging dates. No live fetch or extraction audit
+was performed, and none of these additions is enabled for API collection.
+
+| Stored group | Feeds | Operational feeds |
+| --- | ---: | ---: |
+| Arc front page (`Main feed`) | 1 | 1 |
+| Arc sections/subsections | 13 | 0 |
+| Arc writers | 33 | 0 |
+| Older writer pages | 2 | 0 |
+| Legacy George F. Will XML feed | 1 | 0 |
+| **Total Washington Post** | **50** | **1** |
+
+Section URLs use `https://www.washingtonpost.com/arcio/rss/category/` plus:
+
+| Section | Exact suffix |
+| --- | --- |
+| Capital Weather Gang | `local/weather/` |
+| D.C., Md. & Va. | `local/` |
+| Elections | `elections/` |
+| Europe | `world/europe/` |
+| Local Crime & Public Safety | `local/public-safety/` |
+| Maryland | `local/maryland/` |
+| Middle East | `world/middle-east/` |
+| Opinions | `opinions/` |
+| Politics | `politics/` |
+| Technology | `technology/` |
+| U.S. News | `national/` |
+| Virginia | `local/virginia/` |
+| Washington Capitals | `sports/capitals/` |
+
+Every exact writer/legacy URL and section label is in [wapo.json](wapo.json).
+Arc writers use `Writer — …`; the two older pages use `Writer (legacy page) — …`,
+and the XML entry uses `Writer (legacy XML) — George F. Will`. Preserve source
+case, trailing slashes and percent escapes; notably R. Eric Thomas's supplied
+suffix is `R%20%20Eric%20-Thomas/`. Do not guess a corrected endpoint. Distinct
+Carolyn Hax/Will URL formats are retained as references, not assumed identical
+responses or extra independent sources. Alternate-URL cells and unconfirmed
+patterns (such as Arc World/Business) were not expanded into extra entries.
+
+All entries retain publisher `Washington Post`, `ordering: newest`, `format: rss`,
+`homepageScore: 6`, and `edition: US`. No new importance scores or editorial-order
+claims are inferred. The stored Capitals section does **not** change the existing
+WaPo sports/AP/media filters. The ten active Main feeds and their metadata are
+unchanged; adding these references creates no feed fetches or proxy traffic.
+
+#### Washington Post exclusions and source discrepancies
+
+Of the workbook's 499 rows, 50 text-feed URLs are stored and 449 are excluded:
+
+| Exclusion | Rows |
+| --- | ---: |
+| `host down` (old-host feeds reported as returning 502) | 46 |
+| `slowing` (31–365 days without an indexed item) | 112 |
+| `stale` (over a year without an indexed item) | 284 |
+| `unknown` (Arc Editorials; no last-item date) | 1 |
+| `live` audio podcasts | 6 |
+
+All podcast categories, including ended/sponsored/co-produced shows, are excluded;
+non-live podcasts are counted under their status above, not counted twice.
+Slowing is not proof of permanent closure, and a host outage may recover. Both
+remain excluded from this research-based inventory addition.
+
+The 70 cached Summary formula counts match the 499 source rows, but its four
+status columns total only 498 because they omit the one `unknown` row. The
+workbook specifically marks the pre-2014 Will XML URL `live`, with a last item
+dated 16 October, contradicting the Markdown's blanket claim that all pre-2014
+feeds are dead. This specific row is retained as an explicitly labelled,
+unverified legacy reference. No claims about newsroom events in the research
+were used to infer feed statuses, invent URLs, or change publisher behavior.
+
+## Collection cost and downstream limits
+
+Each fresh collection attempts **ten main feed sources**, not all 648 stored
 entries. Retries and Google News resolution may require additional requests;
 ten sources does not mean exactly ten outbound requests. `RSS_LINKS_PER_SECTION`
 controls article output, not which feed sources are active. There is no new

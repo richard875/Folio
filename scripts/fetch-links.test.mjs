@@ -32,7 +32,7 @@ const rss = `<?xml version="1.0"?><rss version="2.0"><channel><title>News</title
 
 test("catalog preserves the ten primary feed URLs and metadata alongside WSJ and NY Times additions", async () => {
   const allFeeds = validateFeedCatalog(catalog);
-  assert.equal(allFeeds.length, 599);
+  assert.equal(allFeeds.length, 648);
   const feeds = allFeeds.filter((item) => item.section === "Main feed");
   assert.equal(feeds.length, 10);
   assert.equal(new Set(feeds.map((item) => item.site)).size, 10);
@@ -136,7 +136,7 @@ test("a smaller JSON catalog fetches only its explicit URLs and yields at most o
   );
 });
 
-test("limit one fetches only the ten main feeds, never the 589 reference feeds", async () => {
+test("limit one fetches only the ten main feeds, never the reference feeds", async () => {
   const feeds = mainFeeds;
   let feedRequests = 0;
   let resolveRequests = 0;

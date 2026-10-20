@@ -20,7 +20,7 @@ test("ten publisher files preserve the complete inventory but expose only one ma
     assert.ok(entries.every((feed) => feed.site === site));
     assert.equal(entries.filter(({ section }) => section === "Main feed").length, 1);
   }
-  assert.equal(catalog.length - mainFeeds.length, 589);
+  assert.equal(catalog.length - mainFeeds.length, 638);
 });
 
 test("main selection fails closed on missing or duplicate mains, including identical duplicates", () => {
@@ -35,9 +35,9 @@ test("main selection fails closed on missing or duplicate mains, including ident
 
 test("WSJ catalog includes exactly the researched active article feeds, including Japan and legacy", () => {
   const feeds = validateFeedCatalog(catalog);
-  assert.equal(feeds.length, 599);
+  assert.equal(feeds.length, 648);
   assert.equal(new Set(feeds.map(({ site }) => site)).size, 10);
-  assert.equal(new Set(feeds.map(({ site, section }) => `${site}:${section}`)).size, 599);
+  assert.equal(new Set(feeds.map(({ site, section }) => `${site}:${section}`)).size, 648);
   const wsj = feeds.filter(({ site }) => site === "WSJ");
   assert.equal(wsj.length, 35);
   const current = wsj.filter(({ url }) => new URL(url).hostname === "feeds.content.dowjones.io");
@@ -69,7 +69,7 @@ test("feed README inventories every added WSJ section and documents the new cata
   }
   for (const path of ["README.md", "data/README.md", "scripts/fetch-links.md", "docs/prompts/daily-news-brief.md", "docs/skills/universal-article-reader/SKILL.md"]) {
     const text = await readFile(new URL(path, root), "utf8");
-    assert.ok(text.includes("599"), `${path}: catalog total`);
+    assert.ok(text.includes(String(catalog.length)), `${path}: catalog total`);
     assert.ok(text.includes("35"), `${path}: WSJ count`);
     assert.ok(text.includes("556"), `${path}: NY Times count`);
     assert.doesNotMatch(text, /at most ten (?:links|candidates)|one `Main feed` each|No extra Opinion feed is added|at most one link per publisher\s+is selected/);
@@ -114,6 +114,41 @@ test("NY Times catalog excludes known aliases, inactive feeds, non-text collecti
   assert.ok(nyt.every(({ url }) => !url.includes("/blogs/") && !url.includes("blogs.nytimes.com")));
   assert.ok(nyt.some(({ url }) => url === "https://cooking.nytimes.com/next/api/v1/rss/recipes"));
   assert.ok(nyt.some(({ url }) => url === "https://www.nytimes.com/wirecutter/feed/"));
+});
+
+test("Washington Post reference inventory matches the workbook's 50 live text-feed URL cells", () => {
+  const wapo = validateFeedCatalog(catalog).filter(({ site }) => site === "Washington Post");
+  assert.equal(wapo.length, 50);
+  // Reviewed offline against all 499 workbook rows; no Downloads dependency in QA.
+  assert.equal(createHash("sha256").update(wapo.map(({ url }) => url).sort().join("\n")).digest("hex"),
+    "3b0d6833da2d315429cf606fe580a9e7603fcc69d97d7708be1acaf08d1f0a18");
+  assert.equal(wapo.filter(({ url }) => url.includes("/arcio/rss/category/")).length, 13);
+  assert.equal(wapo.filter(({ section }) => section.startsWith("Writer — ")).length, 33);
+  assert.equal(wapo.filter(({ section }) => section.startsWith("Writer (legacy page) — ")).length, 2);
+  assert.equal(wapo.filter(({ section }) => section.startsWith("Writer (legacy XML) — ")).length, 1);
+  assert.equal(new Set(wapo.map(({ section }) => section)).size, 50);
+  assert.ok(wapo.every(({ site, url, ordering, format, homepageScore, edition }) =>
+    site === "Washington Post" && new URL(url).hostname === "www.washingtonpost.com" &&
+    new URL(url).protocol === "https:" && ordering === "newest" && format === "rss" && homepageScore === 6 && edition === "US"));
+  assert.deepEqual(mainFeeds.filter(({ site }) => site === "Washington Post"), [{
+    site: "Washington Post", section: "Main feed", url: "https://www.washingtonpost.com/arcio/rss/",
+    ordering: "newest", format: "rss", homepageScore: 6, edition: "US",
+  }]);
+  assert.ok(wapo.some(({ url }) => url.endsWith("/author/R%20%20Eric%20-Thomas/")));
+  assert.ok(wapo.some(({ url }) => url.endsWith("/author/Ashley-Fetters%20Maloy/")));
+  assert.ok(wapo.every(({ url }) => !/feeds\.washingtonpost\.com|posttv\.com|acast\.com|[<>]/.test(url)));
+  assert.ok(!wapo.some(({ url }) => /\/category\/(?:editorials|world\/africa|politics\/courts-law)\/$/.test(url)));
+  assert.ok(!wapo.some(({ url }) => /\/category\/(?:world|business)\/$/.test(url)));
+});
+
+test("Washington Post guide records exclusions, source discrepancies and inactive-reference status", async () => {
+  const text = (await readFile(new URL("data/README.md", root), "utf8")).replace(/\s+/g, " ");
+  for (const fact of ["wapo_rss_feeds.xlsx", "wapo_rss.md", "499", "449", "unknown",
+    "70 cached", "third-party", "legacy reference", "638", "648", "502"])
+    assert.ok(text.includes(fact), fact);
+  assert.match(text, /Washington Post.*50/);
+  assert.match(text, /none of these additions is enabled for API collection/);
+  assert.match(text, /No live fetch or extraction audit/);
 });
 
 test("executable source has no dependency on the historical Markdown catalog or its parser", async () => {

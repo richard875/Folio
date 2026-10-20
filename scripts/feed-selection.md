@@ -62,7 +62,7 @@ See the [links API and JSON schema](fetch-links.md) for the stored report contra
 
 ## Freshness and importance
 
-The [stored inventory](../data/README.md) includes 35 WSJ and 556 NY Times entries,
+The [stored inventory](../data/README.md) includes 35 WSJ, 556 NY Times and 50 Washington Post entries,
 but operations use only each publisher's Main feed. Research freshness/status
 claims for reference feeds do not enable them. Main-feed ordering and existing
 freshness rules are unchanged; no reference-feed candidates influence ranking.

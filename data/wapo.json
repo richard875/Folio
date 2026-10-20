@@ -7,5 +7,446 @@
     "format": "rss",
     "homepageScore": 6,
     "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Capital Weather Gang",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/local/weather/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "D.C., Md. & Va.",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/local/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Elections",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/elections/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Europe",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/world/europe/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Local Crime & Public Safety",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/local/public-safety/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Maryland",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/local/maryland/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Middle East",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/world/middle-east/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Opinions",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/opinions/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Politics",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/politics/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Technology",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/technology/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "U.S. News",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/national/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Virginia",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/local/virginia/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Washington Capitals",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/sports/capitals/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Ashley Fetters Maloy",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Ashley-Fetters%20Maloy/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Carolyn Hax",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Carolyn-Hax/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Cat Zakrzewski",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Cat-Zakrzewski/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Dan Diamond",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Dan-Diamond/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Dan Lamothe",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Dan-Lamothe/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — David Ignatius",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/David-Ignatius/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Drew Harwell",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Drew-Harwell/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Elizabeth Dwoskin",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Elizabeth-Dwoskin/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Fareed Zakaria",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Fareed-Zakaria/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Gene Park",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Gene-Park/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Gerrit De Vynck",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Gerrit-De%20Vynck/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Gerry Shih",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Gerry-Shih/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Gretchen Reynolds",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Gretchen-Reynolds/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Hannah Knowles",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Hannah-Knowles/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Henry Olsen",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Henry-Olsen/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Jay Mathews",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Jay-Mathews/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Jim Geraghty",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Jim-Geraghty/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Judith Martin",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Judith-Martin/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Matthew Cappucci",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Matthew-Cappucci/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Megan McArdle",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Megan-McArdle/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Michael Birnbaum",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Michael-Birnbaum/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Michelle Singletary",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Michelle-Singletary/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Monica Hesse",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Monica-Hesse/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Philip Kennicott",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Philip-Kennicott/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Pranshu Verma",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Pranshu-Verma/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — R. Eric Thomas",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/R%20%20Eric%20-Thomas/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Richard Sima",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Richard-Sima/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Sahaj Kaur Kohli",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Sahaj-Kaur%20Kohli/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Sarah Kaplan",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Sarah-Kaplan/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Steve Hendrix",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Steve-Hendrix/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Theodoric Meyer",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Theodoric-Meyer/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — Travis Andrews",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/Travis-Andrews/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — William Booth",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/William-Booth/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer (legacy page) — Carolyn Hax",
+    "url": "https://www.washingtonpost.com/people/carolyn-hax/?outputType=rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer (legacy page) — George F. Will",
+    "url": "https://www.washingtonpost.com/people/george-f-will/?outputType=rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer (legacy XML) — George F. Will",
+    "url": "https://www.washingtonpost.com/wp-dyn/rss/linkset/2005/03/24/LI2005032402294.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
   }
 ]
