@@ -88,7 +88,7 @@ Example body (replace with selected candidates):
 ```json
 {
   "urls": [
-    { "url": "https://example.com/story", "website": "Example News", "section": "World" }
+    { "url": "https://example.com/story", "website": "Example News", "section": "Main feed" }
   ],
   "format": "markdown"
 }
@@ -117,6 +117,10 @@ needed. Terminal statuses are `completed`, `partial`, and `error`, with phase
 Do not submit the same batch repeatedly. An ambiguous POST timeout is not proof
 that no job started; reconcile its state before retrying. HTTP 409 on start means
 another collection/save-batch job is running, not a stale reading snapshot.
+If you retained the `callId`, resume polling its status endpoint. If the start
+response was lost and no `callId` is known, there is no job-list or idempotency-key
+API to recover it automatically. Report the ambiguity and stop for recovery rather
+than resubmitting blindly or treating `/api/agent/latest` as proof of your job.
 If no articles were saved, report failure and stop—do not substitute old articles.
 
 ## 4. Get and validate the saved-article manifest
