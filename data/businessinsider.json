@@ -7,5 +7,1157 @@
     "format": "news-sitemap",
     "homepageScore": 7,
     "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All Business Insider stories (main feed)",
+    "url": "https://feeds.businessinsider.com/custom/all",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All Insider content (Atom)",
+    "url": "https://feeds.insider.com/custom/all",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All Insider stories",
+    "url": "https://feeds.insider.com/custom/insider-all",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All stories",
+    "url": "https://businessinsider.com.pl/.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All stories",
+    "url": "https://www.businessinsider.jp/feed/index.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All stories",
+    "url": "https://africa.businessinsider.com/rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All stories",
+    "url": "https://www.businessinsider.tw/rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All stories (feed-service address)",
+    "url": "https://feeds.businessinsider.com/pull/bi/all",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All stories (FeedBurner)",
+    "url": "http://feeds2.feedburner.com/businessinsider",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All stories (FeedBurner, alternate host)",
+    "url": "http://feeds.feedburner.com/businessinsider",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All stories (Lo último)",
+    "url": "https://www.businessinsider.es/rss/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All stories (old Flipboard address)",
+    "url": "https://www.businessinsider.es/feeds/flipoard",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "All stories (short address)",
+    "url": "https://www.businessinsider.com/rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Better Capitalism",
+    "url": "https://www.businessinsider.de/better-capitalism/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Better Capitalism: Technologie",
+    "url": "https://www.businessinsider.de/better-capitalism/technologie-bc/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "BI Prime (paid)",
+    "url": "https://www.businessinsider.jp/feed/prime.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Big Tech",
+    "url": "https://www.businessinsider.es/rss/big-tech/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Biznes",
+    "url": "https://businessinsider.com.pl/biznes.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Biznes: Media",
+    "url": "https://businessinsider.com.pl/biznes/media.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Business",
+    "url": "https://www.businessinsider.jp/feed/business.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Business Insider",
+    "url": "https://www.businessinsider.de/bi/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Careers",
+    "url": "https://www.businessinsider.jp/feed/careers.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Deep Thinking",
+    "url": "https://www.businessinsider.jp/feed/deep-thinking.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Defensa y espacio",
+    "url": "https://www.businessinsider.es/rss/defensa-espacio/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Economía",
+    "url": "https://www.businessinsider.es/rss/economia/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Feed for Feedly",
+    "url": "https://feeds.businessinsider.com/custom/feedly",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Feed for Glance",
+    "url": "https://feeds.businessinsider.com/custom/glance",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Feed for NewsBreak (BI)",
+    "url": "https://feeds.businessinsider.com/custom/newsbreak",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Feed for NewsBreak (Insider)",
+    "url": "https://feeds.insider.com/custom/newsbreak",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Feed for Upday (BI)",
+    "url": "https://feeds.businessinsider.com/custom/upday",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Feed for Upday (Insider)",
+    "url": "https://feeds.insider.com/custom/upday",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Finanse",
+    "url": "https://businessinsider.com.pl/finanse.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Giełda",
+    "url": "https://businessinsider.com.pl/gielda.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Gospodarka",
+    "url": "https://businessinsider.com.pl/gospodarka.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Gospodarka: Makroekonomia",
+    "url": "https://businessinsider.com.pl/gospodarka/makroekonomia.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Gründerszene",
+    "url": "https://www.businessinsider.de/gruenderszene/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Gründerszene (old address)",
+    "url": "http://www.gruenderszene.de/?feed=rss2",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Gründerszene: Business",
+    "url": "https://www.businessinsider.de/gruenderszene/business/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Gründerszene: Karriere",
+    "url": "https://www.businessinsider.de/gruenderszene/karriere-startup/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Gründerszene: Media",
+    "url": "https://www.businessinsider.de/gruenderszene/media/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Gründerszene: News",
+    "url": "https://www.businessinsider.de/gruenderszene/news/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Gründerszene: Perspektive",
+    "url": "https://www.businessinsider.de/gruenderszene/perspektive/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Gründerszene: Technologie",
+    "url": "https://www.businessinsider.de/gruenderszene/technologie/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Guides Google News sitemap",
+    "url": "https://www.businessinsider.com/guides/sitemap/google-news.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Guides latest sitemap",
+    "url": "https://www.businessinsider.com/guides/sitemap/latest.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Entertainment",
+    "url": "https://feeds.insider.com/custom/insider-entertainment",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Food",
+    "url": "https://feeds.insider.com/custom/insider-food",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Health",
+    "url": "https://feeds.insider.com/custom/insider-health",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Lifestyle",
+    "url": "https://feeds.insider.com/custom/insider-lifestyle",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Parenting",
+    "url": "https://feeds.insider.com/custom/insider-parenting",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Picks",
+    "url": "https://www.businessinsider.de/insider-picks/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Picks: Auto-Leasing",
+    "url": "https://www.businessinsider.de/insider-picks/auto-leasing/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Picks: Bücher",
+    "url": "https://www.businessinsider.de/insider-picks/buecher/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Picks: Finanzen",
+    "url": "https://www.businessinsider.de/insider-picks/finanztipps/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Picks: Geschenkideen",
+    "url": "https://www.businessinsider.de/insider-picks/geschenkideen/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Picks: Gesundheit und Fitness",
+    "url": "https://www.businessinsider.de/insider-picks/gesundheit-fitness/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Picks: Haushalt",
+    "url": "https://www.businessinsider.de/insider-picks/haushalt/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Picks: Living",
+    "url": "https://www.businessinsider.de/insider-picks/living/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Picks: Mode und Pflege",
+    "url": "https://www.businessinsider.de/insider-picks/mode-pflege/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Picks: Reisen",
+    "url": "https://www.businessinsider.de/insider-picks/reisen-insider-picks/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Picks: Technik",
+    "url": "https://www.businessinsider.de/insider-picks/technik/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Politics",
+    "url": "https://feeds.insider.com/custom/insider-politics",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Reviews",
+    "url": "https://feeds.insider.com/custom/insider-reviews",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Insider Travel",
+    "url": "https://feeds.insider.com/custom/insider-travel",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Investment",
+    "url": "https://www.businessinsider.jp/feed/investment.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Japan (domestic)",
+    "url": "https://www.businessinsider.jp/feed/domestic.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Karriere",
+    "url": "https://www.businessinsider.de/karriere/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Karriere: Arbeitsleben",
+    "url": "https://www.businessinsider.de/karriere/arbeitsleben/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Karriere: Bewerbung",
+    "url": "https://www.businessinsider.de/karriere/bewerbung/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Latest-stories sitemap",
+    "url": "https://www.businessinsider.com/sitemap/latest.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Leben",
+    "url": "https://www.businessinsider.de/leben/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Leben: Beziehung",
+    "url": "https://www.businessinsider.de/leben/beziehung/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Leben: Fitness",
+    "url": "https://www.businessinsider.de/leben/fitness/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Leben: Wohnen",
+    "url": "https://www.businessinsider.de/leben/wohnen/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Liderazgo",
+    "url": "https://www.businessinsider.es/rss/liderazgo/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Life",
+    "url": "https://www.businessinsider.jp/feed/thelife.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Lifestyle",
+    "url": "https://businessinsider.com.pl/lifestyle.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Lifestyle",
+    "url": "https://africa.businessinsider.com/lifestyle/rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Local",
+    "url": "https://africa.businessinsider.com/local/rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Local: Careers",
+    "url": "https://africa.businessinsider.com/local/careers/rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Local: Leaders",
+    "url": "https://africa.businessinsider.com/local/leaders/rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Local: Lifestyle",
+    "url": "https://africa.businessinsider.com/local/lifestyle/rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Local: Markets",
+    "url": "https://africa.businessinsider.com/local/markets/rss",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Markets Insider news ticker",
+    "url": "https://markets.businessinsider.com/rss/news",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Mercados",
+    "url": "https://www.businessinsider.es/rss/mercados/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Najnowsze",
+    "url": "https://businessinsider.com.pl/najnowsze.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Neobancos",
+    "url": "https://www.businessinsider.es/rss/neobancos/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "News",
+    "url": "https://www.businessinsider.jp/feed/news.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Nieruchomości",
+    "url": "https://businessinsider.com.pl/nieruchomosci.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Panorama",
+    "url": "https://www.businessinsider.de/panorama/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Panorama: Filme & Serien",
+    "url": "https://www.businessinsider.de/panorama/filme-serien/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Panorama: Reisen",
+    "url": "https://www.businessinsider.de/panorama/reisen/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Politics",
+    "url": "https://www.businessinsider.jp/feed/politics.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Politik",
+    "url": "https://www.businessinsider.de/politik/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Politik: Ausland",
+    "url": "https://www.businessinsider.de/politik/welt/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Politik: International-Politics",
+    "url": "https://www.businessinsider.de/politik/international-politics/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Polityka",
+    "url": "https://businessinsider.com.pl/polityka.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Poradnik finansowy",
+    "url": "https://businessinsider.com.pl/poradnik-finansowy.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Poradnik finansowy: Inwestowanie",
+    "url": "https://businessinsider.com.pl/poradnik-finansowy/inwestowanie.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Poradnik finansowy: Oszczędzanie",
+    "url": "https://businessinsider.com.pl/poradnik-finansowy/oszczedzanie.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Poradnik finansowy: Ubezpieczenia",
+    "url": "https://businessinsider.com.pl/poradnik-finansowy/ubezpieczenia.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Praca",
+    "url": "https://businessinsider.com.pl/praca.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Prawo",
+    "url": "https://businessinsider.com.pl/prawo.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Prawo: Firma",
+    "url": "https://businessinsider.com.pl/prawo/firma.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Prawo: Opinie",
+    "url": "https://businessinsider.com.pl/prawo/opinie.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Prawo: Praca",
+    "url": "https://businessinsider.com.pl/prawo/praca.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Premium",
+    "url": "https://businessinsider.com.pl/premium.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Reviews (Business Insider)",
+    "url": "https://feeds.businessinsider.com/custom/reviews",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Reviews (Business Insider, feed-service address)",
+    "url": "https://feeds.businessinsider.com/pull/bi/reviews",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Riqueza",
+    "url": "https://www.businessinsider.es/rss/riqueza/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Sostenibilidad",
+    "url": "https://www.businessinsider.es/rss/sostenibilidad/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Sport",
+    "url": "https://businessinsider.com.pl/sport.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "startups",
+    "url": "https://www.businessinsider.es/rss/startups/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Tech",
+    "url": "https://www.businessinsider.de/tech/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Tech",
+    "url": "https://www.businessinsider.jp/feed/tech-news.xml",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Tech: Produkte",
+    "url": "https://www.businessinsider.de/tech/produkte/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Technologie",
+    "url": "https://businessinsider.com.pl/technologie.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Technologie: Motoryzacja",
+    "url": "https://businessinsider.com.pl/technologie/motoryzacja.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Technologie: Nowe technologie",
+    "url": "https://businessinsider.com.pl/technologie/nowe-technologie.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Tecnología",
+    "url": "https://www.businessinsider.es/rss/tecnologia/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Wiadomości",
+    "url": "https://businessinsider.com.pl/wiadomosci.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Wideo",
+    "url": "https://businessinsider.com.pl/wideo.feed",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Wirtschaft",
+    "url": "https://www.businessinsider.de/wirtschaft/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Wirtschaft: Finanzen",
+    "url": "https://www.businessinsider.de/wirtschaft/finanzen/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Wirtschaft: Mobility",
+    "url": "https://www.businessinsider.de/wirtschaft/mobility/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Wirtschaft: Verbraucher",
+    "url": "https://www.businessinsider.de/wirtschaft/verbraucher/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Wissenschaft",
+    "url": "https://www.businessinsider.de/wissenschaft/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
+  },
+  {
+    "site": "Business Insider",
+    "section": "Wissenschaft: Gesundheit",
+    "url": "https://www.businessinsider.de/wissenschaft/gesundheit/feed/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 7,
+    "edition": "US"
   }
 ]

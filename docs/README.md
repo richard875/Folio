@@ -21,8 +21,8 @@
 - [Root README](../README.md): setup, API map, single-proxy operation and round-robin account pools.
 - [Deployment](../deployment.md): single-process Render Free and temporary storage.
 - [Reader overview](../reader/README.md) and [maintainer guide](../reader/AI-GUIDE.md).
-- [Feed catalog](../data/README.md): ten publisher JSON files, 1425 stored entries
-  (35 WSJ, 543 NY Times, 50 Washington Post, 61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 103 CNBC and 76 Reuters feeds), but only ten Main feeds active; provenance and exclusions;
+- [Feed catalog](../data/README.md): ten publisher JSON files, 1553 stored entries
+  (35 WSJ, 543 NY Times, 50 Washington Post, 61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 103 CNBC, 76 Reuters and 129 Business Insider feeds), but only ten Main feeds active; provenance and exclusions;
   [selection policy](../scripts/feed-selection.md).
 - [JSON link reports and publisher summary rules](../scripts/fetch-links.md), [collection](../scripts/collect-articles.md),
   [save/save-batch](../scripts/save-articles.md), [agent reading](../scripts/agent-reader.md),

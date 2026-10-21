@@ -76,9 +76,9 @@ can use the generic reader, but successful extraction is not guaranteed.
   in `src/lib/rss/sources.ts`. Their `site`, `section`, `url`, `ordering`
   and `format` are explicit; `homepageScore` and `edition` are optional. Do not
   derive behavior from research prose or add alternate URLs mentioned in notes.
-- The inventory preserves 1425 entries, including 35 WSJ, 543 NY Times, 50
-  Washington Post, 61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 103 CNBC and 76 Reuters feeds/sitemaps. **Only ten Main feeds are operational**,
-  one per publisher. The other 1415 are
+- The inventory preserves 1553 entries, including 35 WSJ, 543 NY Times, 50
+  Washington Post, 61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 103 CNBC, 76 Reuters and 129 Business Insider feeds/sitemaps. **Only ten Main feeds are operational**,
+  one per publisher. The other 1543 are
   reference-only: never fetched, ranked, used for corroboration or fallback.
   All GET/POST links and collect requests share this restriction. Missing or
   duplicate mains fail closed; query/body options cannot activate reference feeds.
