@@ -89,6 +89,39 @@ test("daily briefing prompt covers selective saving and job-bound verified readi
   assert.match(prompt, /key in chat/);
 });
 
+test("scheduled briefing prompt specifies two Sydney cloud tasks and a self-contained bounded run", async () => {
+  const prompt = await readGuide("docs/prompts/daily-news-brief.md");
+  const [setup, run] = prompt.split("## Part B — Self-contained recurring execution prompt");
+  assert.ok(setup && run, "Separate setup instructions from recurring execution");
+  const normalizedSetup = setup.replace(/[*`]/g, "").replace(/\s+/g, " ");
+  const normalizedRun = run.replace(/[*`]/g, "").replace(/\s+/g, " ");
+  for (const fact of ["Folio — Morning Brief", "04:00 (4am)", "Folio — Afternoon Brief", "14:00 (2pm)", "Australia/Sydney", "including weekends", "no end date", "powered off", "approved secure credential mechanism", "native confirmation", "next run times"])
+    assert.ok(normalizedSetup.includes(fact), `Setup missing ${fact}`);
+  assert.match(normalizedSetup, /do not use a fixed UTC offset/);
+  assert.match(normalizedSetup, /do not create|instead of creating duplicates/i);
+  assert.match(normalizedSetup, /Part A is setup-only/);
+  assert.match(normalizedSetup, /Editing this file alone creates no tasks/);
+  assert.match(normalizedRun, /do not create, edit, duplicate or reschedule tasks/);
+  for (const fact of ["Australia/Sydney", "RSS_LINKS_PER_SECTION=10", "SAVE_CONCURRENCY=1", "READ_CONCURRENCY=1", "up to 100 candidates per run", "at most 30 minutes", "60 polls", "15 seconds", "maximum 15", "previous successful briefing", "prior cloud history was unavailable"])
+    assert.ok(normalizedRun.toLowerCase().includes(fact.toLowerCase()), `Run missing ${fact}`);
+  assert.match(normalizedRun, /not a fixed daily total/);
+  assert.match(normalizedRun, /These are server settings, not API query options/);
+  assert.match(normalizedRun, /never create another schedule/);
+  assert.match(normalizedRun, /No local|no local/i);
+  const ranking = /### Editorial priorities[^\n]*\n([\s\S]*?)\nTreat overlapping categories/.exec(run)?.[1];
+  assert.ok(ranking, "Missing fixed editorial ranking");
+  const items = [...ranking.matchAll(/^(\d+)\. (.+)$/gm)];
+  assert.deepEqual(items.map(match => Number(match[1])), Array.from({ length: 13 }, (_, index) => index + 1));
+  assert.deepEqual(items.map(match => match[2]), [
+    "US News", "US Business News", "US Politics", "US Economy", "US Markets and Finance",
+    "World News", "Economy for the following countries: UK, Canada, Australia, Western Europe",
+    "Economy for the rest of the world", "General Opinion Sections", "Tech", "US Sports",
+    "World Sports", "Anything else (like lifestyle, personal finance, misc...)",
+  ]);
+  assert.match(normalizedRun, /Do not impose category quotas/);
+  assert.match(normalizedRun, /does not change that server setting/);
+});
+
 test("current guides do not reinstate obsolete Markdown link-report contracts", async () => {
   for (const path of guides) {
     const text = (await readGuide(path)).replace(/\s+/g, " ");
