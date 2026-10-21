@@ -27,6 +27,9 @@ registered by `src/lib/rss/sources.ts`. Only their ten Main feeds are used by
 links/collection operations; non-main entries are inactive references, not fallback
 sources. See [feed configuration](../data/README.md). This does not restrict manually
 supplied article URLs or change the publisher extraction orders below.
+The separate [interactive selective workflow](../scripts/selective-feeds.md)
+may explicitly fetch catalog IDs, but never expands daily collection or extraction
+domain policies automatically.
 
 ## Publisher order at a glance
 

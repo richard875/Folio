@@ -1,9 +1,11 @@
 # Article-only feed selection
 
 The ten publisher JSON files under `data/` store the feed inventory;
-`src/lib/rss/sources.ts` exposes only their ten `Main feed` entries for operations.
-Non-main sections are reference-only, excluded before fetching, ranking or
-cross-publisher scoring. No main-feed failure falls back to a stored subsection.
+`src/lib/rss/sources.ts` exposes their ten `Main feed` entries for daily links/collect.
+Non-main sections are reference-only for those operations, excluded before fetching,
+ranking or cross-publisher scoring. No main-feed failure falls back to a stored
+subsection. The separate [selective workflow](selective-feeds.md) discovers the
+full catalog and fetches only explicitly selected IDs with per-feed limits.
 Each entry explicitly sets `site`, `section`, `url`, `ordering` and `format`,
 with optional numeric `homepageScore` and `edition`. No Markdown table, description,
 bold text, research note or reference URL is parsed. Unknown fields and invalid
@@ -13,6 +15,11 @@ The score is only a bounded weight for cross-publisher coverage, not a claim tha
 an individual article has that importance score. Edition is informational.
 
 ## Publisher rules
+
+The table describes daily Main feeds. Selective fetching preserves publisher
+filters and each selected record's explicit ordering; it does not activate
+reference feeds in the daily path. Its parser also handles JSON Feed, Reuters
+JSON, plain sitemaps and bounded sitemap indexes (see the selective guide).
 
 | Source              | Filtering and priority                                                                                                                                                                                                                                                                                                       |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -64,7 +71,7 @@ See the [links API and JSON schema](fetch-links.md) for the stored report contra
 
 The [stored inventory](../data/README.md) includes 35 WSJ, 543 NY Times,
 50 Washington Post, 61 Bloomberg and 64 Economist entries,
-but operations use only each publisher's Main feed. Research freshness/status
+but daily operations use only each publisher's Main feed. Research freshness/status
 claims for reference feeds do not enable them. Main-feed ordering and existing
 freshness rules are unchanged; no reference-feed candidates influence ranking.
 

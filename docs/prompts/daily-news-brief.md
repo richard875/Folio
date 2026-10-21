@@ -21,8 +21,8 @@ in your own environment, not inside Folio.
 
 - `/api/links`, `/api/save-batch`, and `/api/save-batch/status` require the
   URL-encoded `hash=<ACCESS_HASH>` query parameter.
-- `/api/agent/latest` and `/api/agent/read` accept either that query parameter or
-  `Authorization: Bearer <ACCESS_HASH>`; prefer the header for agent reads.
+- Use the same `hash=<ACCESS_HASH>` query parameter for `/api/agent/latest` and
+  `/api/agent/read`, including all manifest/chunk pagination requests.
 - Resolve returned API URLs against `<FOLIO_ORIGIN>`. Validate the same origin
   and expected API path before sending credentials. Returned URLs omit credentials;
   add authentication on every request using a URL/query builder, not string guessing.
@@ -40,6 +40,8 @@ GET is supported; POST with the same query parameters is preferred because this
 operation starts a fresh feed collection and saves a report. Neither reads an old
 report. Allow several minutes for collection; do not repeatedly trigger it while
 waiting. Omit `format` or use `format=json`.
+HTTP 429 means another feed operation holds shared admission; honor `Retry-After`.
+HTTP 409 means a links collection is already running; do not create a retry storm.
 
 The versioned JSON response contains `schemaVersion`, `generatedAt`, `savedFile`,
 `feedCount`, `failedFeedCount`, `linkCount`, and:
@@ -54,7 +56,7 @@ websites[].sections[].articles[] = { url, summary? }
 These are candidates from configured feeds, not every article published by those
 outlets. Folio stores 1553 inventory entries (including 35 WSJ, 543 NY Times,
 50 Washington Post, 61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 103 CNBC, 76 Reuters and 129 Business Insider feeds/sitemaps),
-but **only the ten Main feeds are active**, one per publisher. All links/collect
+but **only the ten Main feeds are active for this daily workflow**, one per publisher. All links/collect
 operations exclude the other 1543 reference feeds; no query option enables them,
 and a main-feed failure never falls back to them. With `RSS_LINKS_PER_SECTION=1`,
 at most ten article entries are returned; the default of 5 permits at most 50.
@@ -63,6 +65,12 @@ not repeat a timed-out trigger without reconciling its state. Deduplicate before
 saving. Research statuses are not direct availability verification. Summaries are optional
 feed excerpts or headlines, not full-text analysis. Record unavailable sections
 and failed feeds; HTTP 502 means all feeds failed even if a report was returned.
+
+Do not use `/api/feed-catalog` or `/api/feed-fetch` to broaden a scheduled daily
+collection. They are separate opt-in tools for a user's interactive topic question;
+see the [selective workflow](../../scripts/selective-feeds.md) and the portable
+[Folio news skill](../skills/folio-news/SKILL.md). No automatic schedule is installed
+by this prompt or skill; configure the external agent's scheduler separately.
 
 ## 2. Select articles before saving
 
@@ -128,8 +136,7 @@ If no articles were saved, report failure and stop—do not substitute old artic
 After the job finishes and has successful saves, request:
 
 ```text
-GET <FOLIO_ORIGIN>/api/agent/latest
-Authorization: Bearer <ACCESS_HASH>
+GET <FOLIO_ORIGIN>/api/agent/latest?hash=<ACCESS_HASH>
 ```
 
 This returns metadata and reading instructions, not the full article bodies.

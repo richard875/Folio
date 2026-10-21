@@ -7,12 +7,22 @@ are not runtime data sources.
 
 ## Main-feed-only operation
 
-**Only the single `section: "Main feed"` entry in each file is operational.**
+**Only the single `section: "Main feed"` entry in each file is operational for daily collection.**
 `GET`/`POST /api/links`, `GET`/`POST /api/collect`, and their downstream automatic
 article-saving workflows use exactly these ten sources. The other 1543 entries
-are inactive reference inventory: never fetched, ranked, used for corroboration,
-or used as fallback feeds. Query parameters and POST bodies cannot enable them.
+are inactive reference inventory in those operations: never fetched, ranked, used
+for corroboration, or used as fallback feeds there. Their query parameters and
+POST bodies cannot enable them.
 An unavailable main feed is reported as failed; no subsection is promoted.
+
+The separate [interactive selective workflow](../scripts/selective-feeds.md)
+adds authenticated OR-keyword `/api/feed-catalog` discovery over all entries and
+`POST /api/feed-fetch` for bounded explicit catalog-ID selections. This is the
+only exception to reference-only sourcing, not a daily fallback or activation of
+all inventories. Descriptions derive from catalog labels; formats are detected
+from content. Availability and extraction compatibility remain unverified.
+In the publisher research sections below, "inactive" refers to daily collection;
+explicit selective fetching may attempt those stored references within its limits.
 
 | Publisher | File | Stored entries | Active entries |
 | --- | --- | ---: | ---: |

@@ -3,15 +3,14 @@
 ## Entry point
 
 ```text
-GET /api/agent/latest
-Authorization: Bearer YOUR_ACCESS_HASH
+GET /api/agent/latest?hash=YOUR_ACCESS_HASH
 ```
 
-For browser-style agents that cannot set headers, the existing access key can
-instead be supplied as `?hash=YOUR_ACCESS_HASH`. Prefer the header: it avoids
-putting secrets in browser history and URL/access logs. All read requests also
-need authentication. Returned URLs omit credentials; the agent must keep the
-same header or append the hash when following them. Never put the key in article
+Current agent workflows use the existing access key as `?hash=YOUR_ACCESS_HASH`.
+Bearer authentication remains supported, but is not needed by the portable skill.
+Query URLs are secrets: avoid browser history and URL/access logs where possible.
+All read requests also need authentication. Returned URLs omit credentials;
+append the hash with a URL builder when following them. Never put the key in article
 text or in the agent's report.
 
 The entry point returns JSON with owner-authored reading instructions and a

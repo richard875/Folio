@@ -16,7 +16,7 @@ Paths below are relative to the repository root, not this skill directory.
 
 | Concern | Authoritative files |
 | --- | --- |
-| Feed sources and explicit metadata | Publisher `data/*.json` files (see `data/README.md`); only Main feeds selected by `src/lib/rss/sources.ts`, validated by `src/lib/rss/catalog.ts` |
+| Feed sources and explicit metadata | Publisher `data/*.json` files (see `data/README.md`); daily Main feeds selected by `src/lib/rss/sources.ts`, validated by `src/lib/rss/catalog.ts`; explicit discovery/selection in `src/lib/rss/discovery.ts` and `src/lib/rss/selective.ts` |
 | Publisher article-fetch order | `reader/retrieval.config.ts`, expanded by `reader/targets.ts` |
 | Retrieval URLs, user agents, headers, timeouts | `reader/methods.ts`, executed by `reader/fetch.ts` |
 | Candidate selection and caches | `reader/read.ts` |
@@ -43,6 +43,8 @@ is still available or that its current environment matches local settings.
 | Read one URL | `GET /api/read?url=…&hash=…&format=json` | Extract now; does not save a file |
 | Read and save | `GET /api/save?url=…&hash=…&format=json` | Save JSON and return the article; omit format for Markdown |
 | Collect feed links | `POST /api/links?hash=…&format=json` | Wait for selection and save a link report |
+| Discover topic feeds | `GET /api/feed-catalog?hash=…&q=…&q=…` | OR-keyword metadata search, paginated, no network |
+| Fetch explicit feeds | `POST /api/feed-fetch?hash=…` | Catalog version and selected IDs with independent candidate limits; no saves |
 | Collect and save articles | `POST /api/collect?hash=…&format=json` | Return 202 and `callId`; JSON selects article save format |
 | Poll collection | `GET /api/collect/status?callId=…&hash=…` | Check progress until terminal status |
 | Save selected URLs | `POST /api/save-batch?hash=…` | JSON body with `urls` and optional `format`; no feed collection |
@@ -55,8 +57,8 @@ is still available or that its current environment matches local settings.
 | Health | `/healthz`, `/api/health` | Only `/healthz` is public |
 
 Authentication is the server-only `ACCESS_HASH`, not database-backed accounts.
-Most operations above use the `hash` query parameter; agent endpoints also accept
-`Authorization: Bearer …`, which is preferred there. Query credentials are secrets:
+Use the `hash` query parameter for these workflows, including agent reads.
+Agent endpoints also retain optional Bearer support. Query credentials are secrets:
 do not echo authenticated URLs, copy them into files, or send them to publishers.
 Use URL encoding for article/query parameters. Do not recover old credentials from
 history. Request the current key privately when authorized access needs it.
@@ -77,15 +79,24 @@ can use the generic reader, but successful extraction is not guaranteed.
   and `format` are explicit; `homepageScore` and `edition` are optional. Do not
   derive behavior from research prose or add alternate URLs mentioned in notes.
 - The inventory preserves 1553 entries, including 35 WSJ, 543 NY Times, 50
-  Washington Post, 61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 103 CNBC, 76 Reuters and 129 Business Insider feeds/sitemaps. **Only ten Main feeds are operational**,
-  one per publisher. The other 1543 are
-  reference-only: never fetched, ranked, used for corroboration or fallback.
+  Washington Post, 61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 103 CNBC, 76 Reuters and 129 Business Insider feeds/sitemaps. **Only ten Main feeds are operational for daily links/collect**,
+  one per publisher. The other 1543 are reference-only for those operations:
+  never fetched, ranked, used for corroboration or fallback there.
   All GET/POST links and collect requests share this restriction. Missing or
   duplicate mains fail closed; query/body options cannot activate reference feeds.
   WSJ uses Flipboard; NY Times uses HomePage. See `data/README.md` for all file
   names and provenance. Research statuses are not direct availability verification.
   Reuters uses Google News RSS, not the inactive native JSON
   branch. Bloomberg and Business Insider use news sitemaps. Others use RSS.
+- The separate interactive `/api/feed-catalog` accepts repeated OR `q` keywords;
+  descriptions are derived catalog labels, not availability claims. Follow
+  credential-free pagination URLs with `hash` added. `/api/feed-fetch` accepts
+  a catalog version and 1–8 explicit IDs with independent 1–20 candidate limits,
+  sum at most 100; it creates no report/job. Only this operation can attempt
+  non-main reference feeds. Existing publisher filters still apply. See
+  `scripts/selective-feeds.md` and the portable `docs/skills/folio-news/` bundle.
+  Content detection supports RSS/Atom/RDF, news/plain sitemaps, bounded shallow
+  sitemap indexes, JSON Feed and Reuters JSON; HTML errors are not feeds.
 - Preserve existing publisher filters: WSJ Buyside/media and Flipboard tracking;
   Washington Post sports/AP bylines; CNBC shopping/media/AP; Reuters bare-publisher
   and stock-price titles; Economist podcasts/media. Filter non-articles generally.

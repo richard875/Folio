@@ -222,6 +222,8 @@ The home page includes an **API documentation** control. Swagger is served at `/
 | `/api/read` | Extract an article as Markdown or JSON |
 | `/api/save` | Extract and save an article |
 | `/api/links` | Collect, save and return a JSON-only feed-links report; prefer POST |
+| `/api/feed-catalog` | Discover all catalog feeds with repeated OR keywords; no network fetching |
+| `/api/feed-fetch` | POST explicit catalog IDs and per-feed candidate limits; no article saving |
 | `/api/collect` | Start a background collection; prefer POST |
 | `/api/collect/status` | Poll a job using its `callId` |
 | `/api/save-batch` | POST selected URLs for background saving, without collecting feeds |
@@ -239,6 +241,8 @@ Most endpoints authenticate through the `hash` query parameter; agent endpoints 
 See the [collection guide](scripts/collect-articles.md),
 [save and save-batch guide](scripts/save-articles.md), and
 [agent reading protocol](scripts/agent-reader.md) for request formats and statuses.
+For interactive topics, see [selective feed discovery/fetching](scripts/selective-feeds.md)
+and the [portable Claude skill](docs/skills/folio-news/README.md).
 Saved-file verification proves exact retrieval, not correct or complete extraction.
 
 ### Feed summaries
@@ -246,9 +250,12 @@ Saved-file verification proves exact retrieval, not correct or complete extracti
 The [feed inventory](data/README.md) is split into ten publisher JSON files under
 `data/`: 1553 stored entries, including 35 WSJ, 543 NY Times, 50 Washington Post,
 61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 103 CNBC, 76 Reuters and 129 Business Insider feeds/sitemaps.
-**Only the ten `Main feed` entries are active**, one per publisher, for all fresh
-links/collection operations. The other 1543 entries are reference-only, never fetched
-or used as fallback feeds. Missing/duplicate mains fail configuration validation.
+**Only the ten `Main feed` entries are active** for daily `/api/links` and
+`/api/collect`, one per publisher. Other entries remain reference-only for those
+operations: never fetched or used as fallback feeds. The separate, explicit
+[`/api/feed-catalog` and `/api/feed-fetch` workflow](scripts/selective-feeds.md)
+supports OR-keyword discovery and bounded fetching of selected catalog IDs.
+Missing/duplicate mains fail configuration validation.
 With `RSS_LINKS_PER_SECTION=1`, collections return at most ten article entries;
 the default of 5 permits at most 50. Main URLs/metadata are unchanged, including
 NY Times HomePage editorial ordering. Explicit article read/save URLs and historical

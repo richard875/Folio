@@ -5,6 +5,7 @@
 | [handovers/2026-10-19.md](handovers/2026-10-19.md) | Shared Claude Code/OpenCode resources, duplicate audit, migration commit, validation, and maintenance caveats |
 | [handovers/2026-10-18_2.md](handovers/2026-10-18_2.md) | Historical continuation snapshot of WallHop, reader/JSON refactors, documentation cleanup and stash recovery |
 | [skills/universal-article-reader/SKILL.md](skills/universal-article-reader/SKILL.md) | Current Folio workflow for AI agents |
+| [skills/folio-news/README.md](skills/folio-news/README.md) | Portable Claude chat skill with scripts/references for daily and interactive topic news; package with `npm run skill:package` |
 | [prompts/daily-news-brief.md](prompts/daily-news-brief.md) | Current external-agent prompt: select links, save/poll a batch, verify/read its snapshot, and produce a briefing; private values remain placeholders |
 | [handovers/2026-10-12.md](handovers/2026-10-12.md) | Recovered historical handover; credentials redacted and outdated claims labelled |
 | [handovers/2026-10-18.md](handovers/2026-10-18.md) | Historical continuation handover; not a current configuration source |
@@ -22,11 +23,12 @@
 - [Deployment](../deployment.md): single-process Render Free and temporary storage.
 - [Reader overview](../reader/README.md) and [maintainer guide](../reader/AI-GUIDE.md).
 - [Feed catalog](../data/README.md): ten publisher JSON files, 1553 stored entries
-  (35 WSJ, 543 NY Times, 50 Washington Post, 61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 103 CNBC, 76 Reuters and 129 Business Insider feeds), but only ten Main feeds active; provenance and exclusions;
+  (35 WSJ, 543 NY Times, 50 Washington Post, 61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 103 CNBC, 76 Reuters and 129 Business Insider feeds), but only ten Main feeds active for daily collection; provenance and exclusions;
   [selection policy](../scripts/feed-selection.md).
 - [JSON link reports and publisher summary rules](../scripts/fetch-links.md), [collection](../scripts/collect-articles.md),
   [save/save-batch](../scripts/save-articles.md), [agent reading](../scripts/agent-reader.md),
   and [Swagger](../scripts/swagger.md).
+- [Interactive topic discovery and selected-feed fetching](../scripts/selective-feeds.md).
 - [App Builder reference scope](../.claude/README.md): optional generic recipes,
   not the active Folio architecture or deployment.
 

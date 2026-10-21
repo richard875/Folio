@@ -25,7 +25,11 @@ greeting, audit or documentation request.
   `/healthz` is public. `VITE_AUTH_ENABLED=false` disables optional account-auth
   scaffolding, **not** Folio's API authentication. Leave `DATABASE_URL` unset.
 - **Sources of truth:** ten publisher `data/*.json` inventories, with only the
-  ten `Main feed` entries selected by `src/lib/rss/sources.ts` for operations;
+  ten `Main feed` entries selected by `src/lib/rss/sources.ts` for daily links/collect.
+  Explicit interactive discovery/fetching uses `src/lib/rss/discovery.ts` and
+  `src/lib/rss/selective.ts`: OR keywords, catalog IDs/version, per-feed limits,
+  shared feed admission and query-hash auth. Never broaden daily sourcing or
+  silently promote subsection fallback feeds. See `scripts/selective-feeds.md`;
   `reader/retrieval.config.ts` for publisher orders; `reader/methods.ts` for
   retrieval services/headers/timeouts. Root `reader/` is active extraction code;
   `@reader/*` maps there. Feed/batch/agent/runtime helpers live in `src/lib/`.

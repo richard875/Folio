@@ -24,6 +24,7 @@
     "test:proxy": "node --import ./scripts/test-env.mjs --experimental-strip-types --test src/lib/runtime/network.test.ts",
     "test:production": "node --import ./scripts/test-env.mjs scripts/production-smoke.mjs",
     "lint": "eslint .",
+    "skill:package": "python3 -B scripts/package-folio-skill.py",
     "format": "prettier --write ."
   },
   "dependencies": {

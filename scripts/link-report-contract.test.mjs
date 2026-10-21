@@ -12,6 +12,9 @@ const guides = [
   "scripts/save-articles.md", "scripts/agent-reader.md", "scripts/swagger.md",
   "docs/skills/universal-article-reader/SKILL.md",
   "docs/prompts/daily-news-brief.md",
+  "scripts/selective-feeds.md", "docs/skills/folio-news/SKILL.md",
+  "docs/skills/folio-news/README.md", "docs/skills/folio-news/references/api.md",
+  "docs/skills/folio-news/references/workflows.md",
   ".claude/skills/_INDEX.md", ".claude/references/_INDEX.md",
   ".claude/references/browser-qa.md", ".claude/references/deploy-target.md",
   ".claude/references/hibernate-revive.md", ".claude/references/data-and-auth.md",
@@ -102,4 +105,21 @@ test("summary policy is documented consistently for all three publisher exceptio
       assert.ok(text.includes(fact), `${path}: missing ${fact}`);
     }
   }
+});
+
+test("interactive guide and portable skill describe actual separate query-hash workflows", async () => {
+  const guide = await readGuide("scripts/selective-feeds.md");
+  for (const fact of ["/api/feed-catalog", "q=canada&q=economy", "OR", "catalogVersion", "candidateLimit", "1–8", "16,384", "sitemap", "JSON Feed", "no report", "hash"])
+    assert.ok(guide.toLowerCase().includes(fact.toLowerCase()), fact);
+  const skill = await readGuide("docs/skills/folio-news/SKILL.md");
+  assert.match(skill, /^---\nname: folio-news\ndescription:/);
+  assert.match(skill, /does \*\*not\*\* grant HTTP access/);
+  assert.match(skill, /OR/);
+  const api = await readGuide("docs/skills/folio-news/references/api.md");
+  assert.ok(api.includes("hash") && api.includes("202") && api.includes("catalogVersion"));
+  for (const fact of ["72 hours", "168 hours", "ceiling", "Never invent", "partial-week coverage"])
+    assert.ok(api.includes(fact), `Portable skill missing ${fact}`);
+  const prompt = await readGuide("docs/prompts/daily-news-brief.md");
+  assert.ok(prompt.includes("Do not use `/api/feed-catalog` or `/api/feed-fetch`"));
+  assert.doesNotMatch(prompt, /Authorization: Bearer/);
 });
