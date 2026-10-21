@@ -1,3 +1,5 @@
+import { feedPaths, feedSchemas } from "./feed-openapi.ts";
+
 const ref = (name: string) => ({ $ref: `#/components/schemas/${name}` });
 const string = { type: "string" };
 const integer = { type: "integer", minimum: 0 };
@@ -36,7 +38,7 @@ const savedHeaders = {
   "X-Saved-File": { description: "Saved file path relative to the project root.", schema: string },
 };
 const jobParameters = [
-  parameter("callId", "Call ID returned by /api/collect.", true, {
+  parameter("callId", "Call ID returned by the job start endpoint.", true, {
     type: "string",
     format: "uuid",
   }),
@@ -91,6 +93,7 @@ const linksOperation = {
     },
     "400": error("Link reports support JSON only."),
     "409": error("A link collection is already running."),
+    "429": { ...error("Another feed operation is active; retry after the supplied delay."), headers: { "Retry-After": { schema: string } } },
     "502": {
       description: "All feeds failed, but a report was saved.",
       content: {
@@ -120,6 +123,7 @@ export const openApiDocument = {
     { name: "Operations" },
   ],
   paths: {
+    ...feedPaths,
     "/api/import": {
       post: {
         tags: ["Operations"], summary: "Import one archived output file into temporary storage", operationId: "importOutput",
@@ -218,7 +222,7 @@ export const openApiDocument = {
         summary: "Save multiple articles in a single request",
         operationId: "saveArticleBatch",
         description:
-          "Accepts a list of URLs and saves each article. Returns individual results for each URL. Maximum 100 URLs per request. Use this endpoint to selectively save articles after reviewing /api/links output.",
+          "Starts an asynchronous job for 1–100 selected URLs and returns 202 with callId and statusEndpoint, not completed results. Poll /api/save-batch/status until terminal status. Select articles after /api/links or /api/feed-fetch. Shares the collection job lock; overlapping starts return 409. A completed job can contain partial extractions. Do not blindly retry a lost start response; there is no idempotency-key or job-list recovery API.",
         requestBody: {
           required: true,
           content: {
@@ -229,6 +233,7 @@ export const openApiDocument = {
                 properties: {
                   urls: {
                     type: "array",
+                    minItems: 1,
                     maxItems: 100,
                     items: {
                       type: "object",
@@ -246,51 +251,23 @@ export const openApiDocument = {
               },
             },
           },
-          "application/json": {
-            schema: {
-              type: "object",
-              required: ["urls"],
-              properties: {
-                urls: {
-                  type: "array",
-                  maxItems: 100,
-                  items: { type: "string", format: "uri" },
-                },
-                format: { type: "string", enum: ["markdown", "json"], default: "markdown" },
-              },
-            },
-          },
         },
         responses: {
-          "200": response("Batch save results (some may have failed).", {
+          "202": response("Save job accepted; poll the returned statusEndpoint with hash.", {
             type: "object",
+            required: ["callId", "status", "phase", "total", "processed", "saved", "failed", "active", "statusEndpoint"],
             properties: {
-              results: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    url: string,
-                    status: { type: "string", enum: ["saved", "failed"] },
-                    savedFile: string,
-                    partial: { type: "boolean" },
-                    error: string,
-                  },
-                },
-              },
-              summary: {
-                type: "object",
-                properties: {
-                  total: { type: "integer" },
-                  saved: { type: "integer" },
-                  failed: { type: "integer" },
-                },
-              },
+              callId: { type: "string", format: "uuid" },
+              status: { type: "string", enum: ["in progress"] },
+              phase: { type: "string", enum: ["saving articles"] },
+              total: integer, processed: integer, saved: integer, failed: integer, active: integer,
+              statusEndpoint: string,
             },
           }),
           "400": error("Invalid request body, format, or callId."),
           "404": error("Call ID not found."),
           "405": error("Method not allowed. Use POST."),
+          "409": error("A collection or save-batch job is already running."),
           ...commonErrors,
         },
       },
@@ -508,6 +485,7 @@ export const openApiDocument = {
       },
     },
     schemas: {
+      ...feedSchemas,
       Error: { type: "object", properties: { error: string, status: string }, required: ["error"] },
       Article: {
         type: "object",

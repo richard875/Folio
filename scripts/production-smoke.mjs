@@ -63,8 +63,11 @@ try {
     return [feed.url, xml];
   }));
   const preload = join(root, "fixture-transport.mjs");
+  const selectiveSource = feedInventory.find(({ site, section }) => site === "Financial Times" && section === "Canada");
+  assert.ok(selectiveSource);
+  const selectiveXml = `<rss><channel>${Array.from({ length: 4 }, (_, index) => `<item><title>Canadian economy fixture ${index}</title><link>https://www.ft.com/content/fixture-canada-${index}</link><description>A detailed synthetic feed description for Canadian economic reporting.</description></item>`).join("")}</channel></rss>`;
   const inactiveFeeds = feedInventory.filter(({ section }) => section !== "Main feed").map(({ url }) => url);
-  await writeFile(preload, `const original = globalThis.fetch; const html = ${JSON.stringify(fixtureHtml)}; const feeds = ${JSON.stringify(feedFixtures)}; const inactive = new Set(${JSON.stringify(inactiveFeeds)}); globalThis.fetch = (input, init) => { if (inactive.has(String(input))) throw Error("Inactive reference feed reached transport"); return Object.hasOwn(feeds, String(input)) ? Promise.resolve(new Response(feeds[String(input)], {headers:{"content-type":"application/xml"}})) : String(input).includes("fixture.folio.example") ? Promise.resolve(new Response(html, {headers:{"content-type":"text/html"}})) : original(input, init); };`);
+  await writeFile(preload, `const original = globalThis.fetch; const html = ${JSON.stringify(fixtureHtml)}; const feeds = ${JSON.stringify(feedFixtures)}; const inactive = new Set(${JSON.stringify(inactiveFeeds)}); globalThis.fetch = (input, init) => { if (String(input) === ${JSON.stringify(selectiveSource.url)}) { console.info("SELECTIVE_REFERENCE_FETCH"); return Promise.resolve(new Response(${JSON.stringify(selectiveXml)}, {headers:{"content-type":"application/xml"}})); } if (inactive.has(String(input))) throw Error("Inactive reference feed reached transport"); return Object.hasOwn(feeds, String(input)) ? Promise.resolve(new Response(feeds[String(input)], {headers:{"content-type":"application/xml"}})) : String(input).includes("fixture.folio.example") ? Promise.resolve(new Response(html, {headers:{"content-type":"text/html"}})) : original(input, init); };`);
   child = spawn(process.execPath, ["--max-old-space-size=256", "--max-semi-space-size=16", "--import", preload, join(project, "scripts/start-production.mjs")], {
     cwd: root, env, stdio: ["ignore", "pipe", "pipe"],
   });
@@ -83,9 +86,10 @@ try {
   assert.equal((await get("/api/import", false, { method: "POST" })).status, 401);
   assert.equal(JSON.parse(await readFile(join(root, "output/jobs", `${callId}.json`), "utf8")).status, "error");
 
-  for (const path of ["/api/read", "/api/save", "/api/links", "/api/collect", "/api/collect/status", "/api/agent/latest", "/api/agent/read", "/api/health", "/api/docs", "/api/openapi", "/api/docs/assets", "/api/purge"]) {
+  for (const path of ["/api/read", "/api/save", "/api/links", "/api/feed-catalog", "/api/collect", "/api/collect/status", "/api/agent/latest", "/api/agent/read", "/api/health", "/api/docs", "/api/openapi", "/api/docs/assets", "/api/purge"]) {
     assert.equal((await get(path, false)).status, 401, path);
   }
+  assert.equal((await get("/api/feed-fetch", false, { method: "POST" })).status, 401);
   const invalid = await get(`/api/read?${new URLSearchParams({ hash, url: "http://169.254.169.254/opc/v2/instance/", format: "json" })}`, false);
   assert.equal(invalid.status, 400);
   assert.equal(invalid.headers.get("cache-control"), "no-store");
@@ -119,6 +123,35 @@ try {
   assert.equal(getReport.feedCount, 10);
   assert.ok(getReport.websites.every(({ sections }) => sections.length === 1 && sections[0].name === "Main feed"));
   assert.ok(!logs.includes("Inactive reference feed reached transport"));
+  assert.ok(!logs.includes("SELECTIVE_REFERENCE_FETCH"), "Daily endpoints fetched a reference feed");
+
+  // New opt-in workflow, with one synthetic reference feed and no real publisher calls.
+  const discoveryQuery = new URLSearchParams({ hash, publisher: "Financial Times", limit: "100" });
+  discoveryQuery.append("q", "canada");
+  discoveryQuery.append("q", "economy");
+  const discoveryResponse = await get(`/api/feed-catalog?${discoveryQuery}`, false);
+  assert.equal(discoveryResponse.status, 200);
+  const discovery = await discoveryResponse.json();
+  assert.equal(discovery.inventoryCount, feedInventory.length);
+  assert.equal(discovery.matchMode, "OR");
+  const chosen = discovery.items.find(({ section }) => section === "Canada");
+  assert.ok(chosen && !chosen.isMain);
+  const beforeReports = (await readdir(join(root, "output/links"))).sort();
+  const selectiveResponse = await get(`/api/feed-fetch?${new URLSearchParams({ hash })}`, false, {
+    method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ catalogVersion: discovery.catalogVersion, selections: [{ feedId: chosen.feedId, candidateLimit: 3 }] }),
+  });
+  assert.equal(selectiveResponse.status, 200);
+  const selective = await selectiveResponse.json();
+  assert.equal(selective.feedCount, 1);
+  assert.equal(selective.candidateCount, 3);
+  assert.equal(selective.failedFeedCount, 0);
+  assert.equal(selective.feeds[0].section, "Canada");
+  assert.ok(selective.feeds[0].candidates.every(({ title, url }) => title && url.startsWith("https://www.ft.com/content/")));
+  assert.deepEqual((await readdir(join(root, "output/links"))).sort(), beforeReports, "Selective fetching created a report");
+  const specification = await (await get("/api/openapi")).json();
+  assert.ok(specification.paths["/api/feed-catalog"] && specification.paths["/api/feed-fetch"]);
+  assert.ok(specification.paths["/api/save-batch"].post.responses["202"]);
 
   const manifest = [];
   let manifestUrl = "/api/agent/latest?limit=3";

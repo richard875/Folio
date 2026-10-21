@@ -120,6 +120,8 @@ test("OpenAPI describes all routes, uses unique operation IDs and resolves every
     "/api/read",
     "/api/save",
     "/api/links",
+    "/api/feed-catalog",
+    "/api/feed-fetch",
     "/api/collect",
     "/api/collect/status",
     "/api/agent/latest",
@@ -153,4 +155,21 @@ test("OpenAPI describes all routes, uses unique operation IDs and resolves every
   };
   visit(openApiDocument);
   assert.deepEqual(openApiDocument.security, [{ AccessHash: [] }]);
+});
+
+test("selective Swagger describes OR discovery, strict bounded selection and asynchronous saving", () => {
+  const catalog = openApiDocument.paths["/api/feed-catalog"].get;
+  assert.match(catalog.description, /OR matching/);
+  const keywords = catalog.parameters.find((parameter) => parameter.name === "q");
+  assert.ok(keywords && "explode" in keywords);
+  assert.equal(keywords.explode, true);
+  const fetch = openApiDocument.paths["/api/feed-fetch"].post;
+  assert.ok(fetch.responses["409"] && fetch.responses["413"] && fetch.responses["429"]);
+  const selection = openApiDocument.components.schemas.SelectedFeedRequest;
+  assert.equal(selection.additionalProperties, false);
+  assert.equal(selection.properties.selections.maxItems, 8);
+  assert.equal(selection.properties.selections.items.properties.candidateLimit.maximum, 20);
+  const batch = openApiDocument.paths["/api/save-batch"].post;
+  assert.ok(batch.responses["202"] && batch.responses["409"]);
+  assert.equal("200" in batch.responses, false);
 });
