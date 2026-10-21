@@ -2,7 +2,7 @@ import { mkdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { selectMainFeeds, type Feed } from "./catalog.ts";
-import { articleUrl, parseCandidates, rankCandidates, type Candidate } from "./selection.ts";
+import { articleUrl, parseCandidates, parseFeedDocument, rankCandidates, UnsupportedFeedError, type Candidate, type FeedDocumentFormat } from "./selection.ts";
 import { isGoogleNewsArticle, resolveGoogleNewsUrl } from "./google-news.ts";
 import { boundedBytes, publicFetch, publicFetchRedirects } from "../runtime/network.ts";
 import { writeNewFile } from "../runtime/storage.ts";
@@ -18,6 +18,11 @@ export type FeedResult = Feed & {
   articles?: FeedArticle[];
   ok: boolean;
   candidates?: Candidate[];
+  documentFormat?: FeedDocumentFormat;
+  entryCount?: number;
+  childSitemaps?: string[];
+  errorCode?: "fetch_failed" | "parse_failed" | "deadline_exceeded" | "unsupported";
+  httpStatus?: number;
 };
 export type FetchOptions = {
   fetchImpl?: typeof fetch;
@@ -27,6 +32,8 @@ export type FetchOptions = {
   concurrency?: number;
   onProgress?: (result: FeedResult, index: number) => void;
   now?: () => number;
+  signal?: AbortSignal;
+  maximumBytes?: number;
 };
 export type SaveLinksOptions = {
   now?: () => Date;
@@ -65,55 +72,40 @@ export async function fetchFeed(
     timeoutMs = 15000,
     limit = 5,
     now = Date.now,
+    signal: parentSignal,
+    maximumBytes = 8_000_000,
   }: FetchOptions = {},
 ): Promise<FeedResult> {
   const isReutersJson = feed.site === "Reuters" && feed.url.includes("/pf/api/v3/");
   
   for (let attempt = 0; ; attempt++) {
+    let parsing = false;
+    let httpStatus: number | undefined;
+    const signal = AbortSignal.any([AbortSignal.timeout(timeoutMs), ...(parentSignal ? [parentSignal] : [])]);
     try {
-      const signal = AbortSignal.timeout(timeoutMs);
+      signal.throwIfAborted();
       const response = await fetchImpl(feed.url, {
         signal,
         headers: {
           "user-agent": USER_AGENT,
           accept: isReutersJson 
             ? "application/json" 
-            : "application/rss+xml, application/atom+xml, application/xml, text/xml",
+             : "application/rss+xml, application/atom+xml, application/xml, text/xml, application/feed+json, application/json",
         },
       });
       if (!response.ok) {
+        httpStatus = response.status;
         await response.body?.cancel();
         throw new Error(`HTTP ${response.status}`);
       }
       
-      if (isReutersJson) {
-        const json = await response.json();
-        const articles = parseReutersJson(json, feed, limit, now);
-        // Create candidates for post-processing compatibility
-        const candidates = articles.map((a, i) => ({
-          url: a.url,
-          title: a.summary || "Reuters article",
-          summary: a.summary,
-          creator: "",
-          categories: [],
-          publishedAt: null,
-          index: i,
-          source: feed.site,
-          ordering: "newest" as const,
-          sourceWeight: Math.max(0, Math.min(1, (feed.homepageScore ?? 7) / 10)),
-        }));
-        return {
-          ...feed,
-          urls: articles.map((a) => a.url),
-          articles,
-          candidates,
-          ok: true,
-        };
-      }
-      
-      const xml = new TextDecoder().decode(await boundedBytes(response, 8_000_000, signal));
-      const candidates = parseCandidates(xml, { ...feed, url: response.url || feed.url }, now());
-      const articles = rankCandidates(candidates, candidates, now())
+      const xml = new TextDecoder().decode(await boundedBytes(response, maximumBytes, signal));
+      signal.throwIfAborted();
+      parsing = true;
+      const document = parseFeedDocument(xml, { ...feed, url: response.url || feed.url }, now());
+      signal.throwIfAborted();
+      const { candidates } = document;
+      const articles = (limit > 0 ? rankCandidates(candidates, candidates, now()) : [])
         .slice(0, limit)
         .map(({ url, summary }) => ({ url, ...(summary && { summary }) }));
       return {
@@ -121,11 +113,16 @@ export async function fetchFeed(
         urls: articles.map((article) => article.url),
         articles,
         candidates,
+        documentFormat: document.format,
+        entryCount: document.entryCount,
+        childSitemaps: document.childSitemaps,
         ok: true,
       };
-    } catch {
-      if (attempt === retryLimit) return { ...feed, urls: [], ok: false };
-      await sleep(Math.min(250 * 2 ** attempt, 2000));
+    } catch (error) {
+      if (attempt === retryLimit || parentSignal?.aborted)
+        return { ...feed, urls: [], ok: false, errorCode: signal.aborted ? "deadline_exceeded" : error instanceof UnsupportedFeedError ? "unsupported" : parsing ? "parse_failed" : "fetch_failed", ...(httpStatus && { httpStatus }) };
+      try { await sleep(Math.min(250 * 2 ** attempt, 2000), undefined, { signal: parentSignal }); }
+      catch { return { ...feed, urls: [], ok: false, errorCode: "deadline_exceeded" }; }
     }
   }
 }

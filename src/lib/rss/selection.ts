@@ -117,7 +117,7 @@ function media(item: Node): boolean {
   );
 }
 
-function cleanTitle(value: unknown): string {
+export function cleanTitle(value: unknown): string {
   return text(value)
     .replace(/&#(?:x([0-9a-f]+)|([0-9]+));/gi, (match, hex, decimal) => {
       const point = Number.parseInt(hex || decimal, hex ? 16 : 10);
@@ -129,25 +129,70 @@ function cleanTitle(value: unknown): string {
 }
 
 export function parseCandidates(xml: string, feed: Feed, now = Date.now()): Candidate[] {
-  if (
-    Buffer.byteLength(xml) > 8_000_000 ||
-    XMLValidator.validate(xml) !== true ||
-    /<!DOCTYPE/i.test(xml)
-  )
-    throw new Error("Invalid or oversized feed XML");
-  const document = parser.parse(xml) as Node;
+  return parseFeedDocument(xml, feed, now).candidates;
+}
+
+export type FeedDocumentFormat = "rss" | "atom" | "rdf" | "news-sitemap" | "sitemap" | "sitemap-index" | "json-feed" | "reuters-json";
+export type FeedDocument = {
+  format: FeedDocumentFormat;
+  candidates: Candidate[];
+  entryCount: number;
+  childSitemaps: string[];
+};
+export class UnsupportedFeedError extends Error {}
+
+/** Detect content, not filename/MIME: some publishers serve XML at .html URLs. */
+export function parseFeedDocument(body: string, feed: Feed, now = Date.now()): FeedDocument {
+  if (Buffer.byteLength(body) > 8_000_000) throw new Error("Oversized feed");
   let items: unknown[];
   let sitemap = false;
   let atom = false;
-  if (document.rss) items = list(node(node(document.rss).channel).item);
-  else if (document.feed) {
-    items = list(node(document.feed).entry);
-    atom = true;
-  } else if (document.urlset) {
-    items = list(node(document.urlset).url);
-    sitemap = true;
-  } else if (document.RDF) items = list(node(document.RDF).item);
-  else throw new Error("Not an RSS, Atom or news sitemap document");
+  let format: FeedDocumentFormat;
+  if (/^\s*[{[]/.test(body)) {
+    const document = node(JSON.parse(body));
+    if (typeof document.version === "string" && /^https:\/\/jsonfeed\.org\/version\/(?:1|1\.1)$/.test(document.version) && Array.isArray(document.items)) {
+      format = "json-feed";
+      if (document.items.length > 2000) throw new Error("Feed exceeds the 2000-entry safety limit");
+      items = document.items.map((value) => {
+        const item = node(value);
+        return {
+          link: item.url, title: item.title, description: item.summary || item.content_text || item.content_html,
+          published: item.date_published, updated: item.date_modified,
+          category: item.tags, author: item.authors || item.author,
+          enclosure: list(item.attachments).map((value) => ({ "@_type": node(value).mime_type })),
+        };
+      });
+    } else if (feed.site === "Reuters" && Array.isArray(node(document.result).articles)) {
+      format = "reuters-json";
+      const articles = node(document.result).articles as unknown[];
+      if (articles.length > 2000) throw new Error("Feed exceeds the 2000-entry safety limit");
+      items = articles.map((value) => {
+        const item = node(value);
+        let link = "";
+        try { link = new URL(text(item.canonical_url), "https://www.reuters.com").href; } catch { /* Invalid entry. */ }
+        return { link, title: item.title, description: item.description, published: item.published_time, category: node(item.kicker).names };
+      });
+    } else throw new UnsupportedFeedError("Unsupported feed JSON");
+  } else {
+    if (XMLValidator.validate(body) !== true || /<!DOCTYPE|<!ENTITY/i.test(body))
+      throw new Error("Invalid or oversized feed XML");
+    const document = parser.parse(body) as Node;
+    if (Object.hasOwn(document, "rss")) { items = list(node(node(document.rss).channel).item); format = "rss"; }
+    else if (Object.hasOwn(document, "feed")) {
+      items = list(node(document.feed).entry);
+      atom = true;
+      format = "atom";
+    } else if (Object.hasOwn(document, "urlset")) {
+      items = list(node(document.urlset).url);
+      sitemap = true;
+      format = items.some((item) => node(item).news) ? "news-sitemap" : "sitemap";
+    } else if (Object.hasOwn(document, "RDF")) { items = list(node(document.RDF).item); format = "rdf"; }
+    else if (Object.hasOwn(document, "sitemapindex")) {
+      const entries = list(node(document.sitemapindex).sitemap);
+      if (entries.length > 2000) throw new Error("Sitemap index exceeds the 2000-entry safety limit");
+      return { format: "sitemap-index", entryCount: entries.length, candidates: [], childSitemaps: entries.map((item) => text(node(item).loc)).filter(Boolean) };
+    } else throw new Error("Not a supported feed document");
+  }
   if (items.length > 2000) throw new Error("Feed exceeds the 2000-entry safety limit");
   const ordering = orderingFor(feed);
   const seen = new Set<string>();
@@ -248,7 +293,7 @@ export function parseCandidates(xml: string, feed: Feed, now = Date.now()): Cand
       sourceWeight: Math.max(0, Math.min(1, (feed.homepageScore ?? 7) / 10)),
     });
   }
-  return candidates;
+  return { format, candidates, entryCount: items.length, childSitemaps: [] };
 }
 
 const STOP = new Set(
