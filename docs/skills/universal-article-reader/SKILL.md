@@ -1,7 +1,7 @@
 ---
 name: universal-article-reader
 description: Use when working with Folio to read or save an article URL, collect news from its configured feeds, read saved articles through its agent API, or explain/debug its extraction pipeline. Follow Folio's actual publisher-specific retrieval configuration, authentication and quality limits; do not substitute an unrelated universal scraper workflow.
-version: 2.0.0
+version: 2.0.1
 ---
 
 # Folio article reading and news collection
@@ -47,7 +47,7 @@ is still available or that its current environment matches local settings.
 | Fetch explicit feeds | `POST /api/feed-fetch?hash=…` | Catalog version and selected IDs with independent candidate limits; no saves |
 | Collect and save articles | `POST /api/collect?hash=…&format=json` | Return 202 and `callId`; JSON selects article save format |
 | Poll collection | `GET /api/collect/status?callId=…&hash=…` | Check progress until terminal status |
-| Save selected URLs | `POST /api/save-batch?hash=…` | JSON body with `urls` and optional `format`; no feed collection |
+| Save selected URLs | `POST /api/save-batch?hash=…` | Return 202 with `callId`/`statusEndpoint`; JSON body with `urls` and optional `format`; no feed collection |
 | Poll selective save | `GET /api/save-batch/status?callId=…&hash=…` | Check that job's progress |
 | Discover saved articles | `GET /api/agent/latest` | Authenticated, paginated snapshot manifest |
 | Read saved content | `GET /api/agent/read` | Follow manifest `readUrl` and chunk `nextUrl` |
@@ -61,7 +61,12 @@ Use the `hash` query parameter for these workflows, including agent reads.
 Agent endpoints also retain optional Bearer support. Query credentials are secrets:
 do not echo authenticated URLs, copy them into files, or send them to publishers.
 Use URL encoding for article/query parameters. Do not recover old credentials from
-history. Request the current key privately when authorized access needs it.
+history or ask for keys in chat. Use an approved secure tool/environment mechanism;
+if credentials or authorized HTTP access are unavailable, stop live operations
+and offer to analyze uploaded credential-free outputs. A skill grants neither
+network access nor secret provisioning. Validate returned API URLs against the
+same origin and exact expected endpoint before adding authentication; reject
+redirects, embedded credentials, fragments and unexpected query parameters.
 
 Collection and saving create files and consume network/proxy resources. Do not
 start broad collections, import history, purge output, commit or push merely to
@@ -86,8 +91,10 @@ can use the generic reader, but successful extraction is not guaranteed.
   duplicate mains fail closed; query/body options cannot activate reference feeds.
   WSJ uses Flipboard; NY Times uses HomePage. See `data/README.md` for all file
   names and provenance. Research statuses are not direct availability verification.
-  Reuters uses Google News RSS, not the inactive native JSON
-  branch. Bloomberg and Business Insider use news sitemaps. Others use RSS.
+  Reuters' daily Main feed uses Google News RSS, not native JSON.
+  The shared content detector also supports Reuters JSON when explicitly supplied;
+  there is no separate legacy parser branch. Bloomberg and Business Insider use
+  news sitemaps. Others use RSS.
 - The separate interactive `/api/feed-catalog` accepts repeated OR `q` keywords;
   descriptions are derived catalog labels, not availability claims. Follow
   credential-free pagination URLs with `hash` added. `/api/feed-fetch` accepts
@@ -97,6 +104,13 @@ can use the generic reader, but successful extraction is not guaranteed.
   `scripts/selective-feeds.md` and the portable `docs/skills/folio-news/` bundle.
   Content detection supports RSS/Atom/RDF, news/plain sitemaps, bounded shallow
   sitemap indexes, JSON Feed and Reuters JSON; HTML errors are not feeds.
+  Corrected labels/URLs change feed IDs and metadata changes can change catalog
+  versions: rediscover on 409 rather than hardcoding stale selections. Reuters'
+  five `All Reuters stories — … edition` references are locale variants, not
+  country-topic filters. Their all-stories query does not guarantee local reporting.
+  Sitemap child URLs resolve against the final index URL after validated redirects;
+  only unique same-origin children are considered. Combined child source positions
+  determine `feedRank`; article duplicates retain their first occurrence.
 - Preserve existing publisher filters: WSJ Buyside/media and Flipboard tracking;
   Washington Post sports/AP bylines; CNBC shopping/media/AP; Reuters bare-publisher
   and stock-price titles; Economist podcasts/media. Filter non-articles generally.
@@ -287,6 +301,16 @@ Jobs are JSON under `output/jobs/`; preserve selective save-batch as well as col
 
 ## Read all saved articles through the agent API
 
+For a newly started save/collection, first retain its `callId`, poll to a terminal
+status and verify that successful `savedFile` results match the manifest folder
+and filenames, with that call ID in `collections[]`. Latest is folder-oriented,
+not a job-by-ID lookup. A same-minute folder may contain extra files: distinguish
+them and base a new briefing on the selected job's files unless asked otherwise.
+If latest cannot locate the job, stop rather than substituting older material.
+An ambiguous start timeout without a call ID is not safe to resubmit automatically;
+there is no idempotency-key or job-list recovery API. For explicitly requested
+existing-latest reading, no new-job binding is required.
+
 1. Obtain `/api/agent/latest` with authorized credentials. Follow every
    `nextManifestUrl` until null; verify unique filenames equal `articleCount`.
 2. Pin `folder` and `snapshotId`. Do not refresh latest halfway through a read.
@@ -296,8 +320,10 @@ Jobs are JSON under `output/jobs/`; preserve selective save-batch as well as col
 4. Concatenate chunks in offset order without trimming or rewriting. Verify
    Unicode character count, UTF-8 bytes and SHA-256 against the manifest. For JSON
    files, reconstruct/verify the entire file before parsing it.
-5. On 409, discard the incomplete session and restart from a fresh full manifest;
-   never mix snapshots. Report missing/unreadable/unverified files as incomplete.
+5. A newer latest folder does not invalidate an already pinned snapshot. On 409,
+   discard the incomplete session; any explicit restart must obtain a fresh full
+   manifest and repeat the job/files check for new saves. The portable client does
+   not restart automatically. Never mix snapshots. Report missing/unreadable/unverified files as incomplete.
 6. Report verified file coverage separately from extraction quality. A valid checksum,
    HTTP 200, saved-file count or `partial=false` is not proof of correct/full content.
 

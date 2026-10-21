@@ -11,15 +11,31 @@ All requests target the configured HTTPS root origin and append only query authe
 - Response: `schemaVersion:1`, `catalogVersion` (64 lowercase hex), `matchMode:"OR"`, `keywords`, `publishers:[{name,feedCount}]`, `inventoryCount`, `totalMatched`, `items`, `nextCursor`, `nextUrl`, `limits`.
 - Each item: `feedId:"feed_" + 64 hex`, `publisher`, `section`, `url`, `ordering`, `format`, `isMain`, `description`, `descriptionSource:"catalog-label"`, `compatibility:"unverified"`, `matchedKeywords`, `matchedFields`, and possibly additional metadata. Labels are inventory metadata; descriptions derive from those labels, **not** publication-authored descriptions. No semantic alias expansion is performed. A broad inventory is not a guarantee a feed works.
 
+Feed IDs derive from publisher, section and normalized URL, not array position.
+Corrected labels/URLs change IDs; other metadata changes can change the catalog
+version. Rediscover after 409, never reuse a cached plan blindly. In particular,
+the five Reuters `All Reuters stories — … edition` references use the all-stories
+query `when:24h site:reuters.com` with AU/CA/IN/SG/GB locale parameters. They are
+not country-topic filters and do not guarantee local reporting. Do not mistake
+the Canada edition for Canada-only economic coverage. `edition` and
+`homepageScore` are informational/weight metadata, not relevance or access guarantees.
+
 `POST /api/feed-fetch`
 
 ```json
 {"catalogVersion":"<64 hex from discovery>","selections":[{"feedId":"feed_<64 hex>","candidateLimit":10}]}
 ```
 
-Strict body: 1–8 unique IDs, each candidate limit 1–20; sum at most 100. Use the matching catalog version. Response: `schemaVersion:1`, `catalogVersion`, `generatedAt`, `feedCount`, `failedFeedCount`, `candidateCount`, `uniqueCandidateCount`, `partial`, `feeds`.
+Strict body: 1–8 unique IDs, each candidate limit 1–20; sum at most 100. Use the matching catalog version. The body is limited to 16,384 bytes with a three-second read deadline; arbitrary URLs/headers or extra fields are rejected. Response: `schemaVersion:1`, `catalogVersion`, `generatedAt`, `feedCount`, `failedFeedCount`, `candidateCount`, `uniqueCandidateCount`, `partial`, `feeds`.
 
 Each feed has `feedId,publisher,section,url,requestedLimit,status`, optional `documentFormat`, `entryCount,eligibleCount,truncated,candidates,warnings` (string array), optional `httpStatus`. Status is `ok|empty|fetch_failed|parse_failed|deadline_exceeded|unsupported`. Candidates have `url,title,summary?`, `publishedAt` (ISO or null), `feedRank`. They are not full extracted articles. Do not turn absent dates into today's date.
+
+`feedRank` is the original 1-based source position, not a relevance score. For
+sitemap indexes it spans the combined child entry positions, including filtered
+entries; duplicate article URLs retain their first occurrence. Child URLs resolve
+against the final index URL after server-validated redirects, are deduplicated,
+and must share that index's origin. The client still rejects redirects from Folio
+itself; publisher redirects are handled only by the server's bounded transport.
 
 `candidateLimit` is a ceiling on eligible candidate output, not a guarantee of
 relevance or that many articles. Feeds are finite snapshots, not historical search.
@@ -32,11 +48,15 @@ On unsupported/empty results inspect warnings, choose another returned catalog
 ID within the round budget or report a gap. Never invent IDs/URLs, override
 compatibility, change format/domain allowlists, or bypass filtering.
 
-Server work is bounded: 25-second network deadline (not a cold-start/CPU/end-to-end promise), concurrency 2 and one request per origin, 8 seconds per feed including shallow same-origin sitemap traversal, 2 MB per document, 16 MB and 80 transport requests overall, at most 3 child sitemaps per index and 10 distinct Google resolution attempts overall. Parsers reject malformed/unsupported documents and HTML error pages; RSS/Atom/RDF, news/plain sitemaps, JSON Feed and Reuters JSON use shared filtering. HTTP 200 may contain failed feeds/partial results. HTTP 400 invalid input; 401 authentication; 409 stale catalog (rediscover and reselect, no blind replay); 413 oversized; 429 busy (`Retry-After: 5`, wait explicitly). Topic discovery does not create persisted reports or jobs.
+Server work is bounded: 25-second network deadline (not a cold-start/CPU/end-to-end promise), concurrency 2 and one request per origin, 8 seconds per feed fetch including shallow same-origin sitemap traversal, 2 MB per document, 16 MB and 80 transport requests overall, at most 3 child sitemaps per index and 10 distinct Google resolution attempts overall. Each later Google resolution attempt has up to 8 seconds within the same 25-second request deadline, not an additional request-wide allowance. Parsers reject malformed/unsupported documents and HTML error pages; RSS/Atom/RDF, news/plain sitemaps, JSON Feed and Reuters JSON use shared filtering. HTTP 200 may contain failed feeds/partial results. HTTP 400 invalid input; 401 authentication; 409 stale catalog (rediscover and reselect, no blind replay); 413 oversized/slow body; 429 busy (`Retry-After: 5`, wait explicitly). Topic discovery does not create persisted reports or jobs.
 
 ## Daily candidates
 
 `POST /api/links` and `GET /api/links` both start a fresh collection and save a new report; neither reads an old report. The CLI uses POST. Daily collection uses only ten Main feeds, not the whole catalog. Reports are versioned JSON with `websites[].sections[].articles[]` containing `url` and optional `summary`; counters include `feedCount,failedFeedCount` and `savedFile`. HTTP 502 means all feeds failed. Do not replay legacy Markdown reports. Summaries are feed metadata, not proof of full article reading.
+
+`live`, `slowing` or official-listing claims in supplied research are not live
+Folio availability checks. Some stored references are explicitly slowing or
+unconfirmed; catalog membership never overrides freshness/domain/media filters.
 
 ## Selected-article saving
 

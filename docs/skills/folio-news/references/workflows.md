@@ -4,10 +4,16 @@
 
 1. Establish topic, date window, breadth and desired depth. Before discovery, generate multiple literal terms and synonyms; for “Canadian economy”, use `canada`, `canadian`, `economy`, `economics`. Explain OR metadata search, then select promising Canadian/economic sections. Do not claim all matches concern Canada's economy. Disclose that non-editorial feeds retain only 72 hours of dated candidates (editorial 168 hours), so "this week" is not a comprehensive archive search; undated candidates have uncertain recency.
 2. Inspect up to four catalog pages per round, not unlimited full-inventory pagination. Reuse the same catalog version; keep exact publisher filters if requested. Choose at most eight feeds per fetch, with a total candidate limit at most 100. Section labels and aliases are inferred; compatibility is unverified.
+   Inspect the feed query as well as its label: Reuters all-stories country
+   editions change Google News locale, not topic coverage. Rediscover changed
+   IDs/versions; do not turn locale preference into a claim of local reporting.
 3. Fetch one bounded batch, then inspect statuses/warnings and deduplicate candidate URLs and stories. Counts are ceilings, not relevance/quantity guarantees. Consider recency, direct relevance, source diversity and redundancy. An empty feed is not proof no relevant news exists. Do not override unsupported-source/domain restrictions or invent replacement URLs/IDs; choose another discovered ID or report the gap. A second targeted discovery/fetch round is allowed if needed, then stop and report limits (maximum two rounds).
 4. Select a manageable set (default roughly 5–10 stories, fewer for narrow topics). Only submit URLs actually returned as candidates; do not invent publisher URLs or follow raw feed/Google wrappers. Explain if only headline/snippet evidence is available.
 5. Save selected articles once. Record call ID, poll explicitly at five-second intervals (bounded to 24 polls per chat run), and retain terminal status JSON locally without credentials. If still running, report pending with ID, not fabricated completion.
 6. Read latest with `--status-file` and an explicit new `--output-dir`. If it no longer contains this call and its saved files, report that latest cannot locate the batch; do not quietly read an unrelated folder. Never resubmit to repair a lost ID automatically.
+   After that initial job/files check, keep the folder/snapshot pinned even if a
+   newer folder becomes latest. If a pinned read returns 409, the client stops;
+   do not mix snapshots or claim a successful automatic restart.
 7. Inspect verified local article files for the requested selection. Summarize in chat with publisher links, dates and coverage caveats; distinguish file integrity, reading completion and extraction quality.
 
 ## Daily briefing now

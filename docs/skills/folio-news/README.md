@@ -12,6 +12,19 @@ This folder is a multi-file skill for ordinary Claude chat. Claude supplies anal
 
 Python 3 standard library only. No account OAuth, bearer header, package installation, publisher scraping or arbitrary request command is required/supported. HTTPS only, including tests (network tests are entirely mocked). CLI commands read secrets only from the environment, never from flags or files; avoid shell tracing and HTTP debug logs.
 
+Run these mocked client tests from the repository root with `npm run test:skill`
+in addition to the Node-only `npm test` gate. Python 3 is required for client QA
+and packaging, but not for Folio's Node build/runtime; no third-party Python
+packages are needed.
+
+The current instructions cover corrected Reuters locale labels/IDs, bounded
+sitemap child resolution/source ranks, and job-bound snapshot reading even when
+a newer folder becomes latest. Re-upload the regenerated ZIP to replace an older
+installed copy; editing this repository does not update Claude's installed skill.
+The repository-oriented `../universal-article-reader/SKILL.md` is a separate skill,
+not part of this portable ZIP. The daily briefing prompt is also separate from
+the bundle; `SKILL.md` and its references contain the portable workflow.
+
 ```sh
 python3 scripts/folio.py --help
 python3 -B -m unittest discover -s scripts -p 'test_*.py' -v

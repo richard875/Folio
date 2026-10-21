@@ -76,14 +76,17 @@ test("daily briefing prompt covers selective saving and job-bound verified readi
     "/api/links", "/api/save-batch?hash=", "/api/save-batch/status?callId=",
     "/api/agent/latest", "nextManifestUrl", "snapshotId", "collections[]",
     "savedFile", "endOfArticle=true", "UTF-8 byte count", "SHA-256",
-    "save times", "untrusted data", "Retry-After",
-  ]) assert.ok(prompt.includes(fact), `Prompt missing ${fact}`);
+    "save times", "untrusted data", "Retry-After", "FOLIO_ACCESS_HASH",
+    "72-hour", "168 hours", "at most 24 polls", "selected job's saved files",
+  ]) assert.ok(prompt.replace(/\s+/g, " ").includes(fact), `Prompt missing ${fact}`);
   const example = /```json\s*\n([\s\S]*?)\n```/.exec(prompt)?.[1];
   assert.ok(example, "Missing save-batch request example");
   const body = JSON.parse(example);
   assert.equal(body.format, "markdown");
   assert.ok(body.urls.length >= 1 && body.urls.length <= 100);
   assert.ok(body.urls.every((item) => new URL(item.url).protocol === "https:" && !item.callId));
+  assert.match(prompt, /Reject redirects/);
+  assert.match(prompt, /key in chat/);
 });
 
 test("current guides do not reinstate obsolete Markdown link-report contracts", async () => {
@@ -125,4 +128,23 @@ test("interactive guide and portable skill describe actual separate query-hash w
   const prompt = await readGuide("docs/prompts/daily-news-brief.md");
   assert.ok(prompt.includes("Do not use `/api/feed-catalog` or `/api/feed-fetch`"));
   assert.doesNotMatch(prompt, /Authorization: Bearer/);
+});
+
+test("Claude skills describe corrected catalog identities, locale scope and pinned reading", async () => {
+  const portable = await readGuide("docs/skills/folio-news/SKILL.md");
+  const api = await readGuide("docs/skills/folio-news/references/api.md");
+  const workflows = await readGuide("docs/skills/folio-news/references/workflows.md");
+  const reader = await readGuide("docs/skills/universal-article-reader/SKILL.md");
+  for (const [path, text] of [["portable skill", portable], ["API reference", api], ["reader skill", reader]]) {
+    assert.ok(text.replace(/\s+/g, " ").includes("not country-topic filters"), `${path}: locale caveat`);
+  }
+  assert.match(api, /final index URL/);
+  assert.match(api, /duplicate article URLs retain their first occurrence/);
+  assert.match(api, /16,384 bytes/);
+  assert.match(api, /not an additional request-wide allowance/);
+  assert.match(portable, /even if a newer folder becomes latest/);
+  assert.match(workflows.replace(/\s+/g, " "), /newer folder becomes latest/);
+  assert.match(reader, /collections\[\]/);
+  assert.match(reader, /no separate legacy parser branch/);
+  assert.doesNotMatch(reader, /inactive native JSON\s+branch|Request the current key privately/);
 });

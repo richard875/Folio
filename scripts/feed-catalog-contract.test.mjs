@@ -318,7 +318,7 @@ test("executable source has no dependency on the historical Markdown catalog or 
 test("Folio skill names the actual data/configuration files and all configured publishers", async () => {
   const skill = await readFile(new URL("docs/skills/universal-article-reader/SKILL.md", root), "utf8");
   assert.match(skill, /^---\nname: universal-article-reader\n/m);
-  assert.match(skill, /version: 2\.0\.0/);
+  assert.match(skill, /version: 2\.0\.1/);
   for (const path of ["data/README.md", "src/lib/rss/sources.ts", "reader/retrieval.config.ts", "reader/methods.ts", "reader/AI-GUIDE.md", "src/lib/agent/api.ts"]) {
     assert.ok(skill.includes(path), path);
     await readFile(new URL(path, root));
