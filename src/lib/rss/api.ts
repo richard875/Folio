@@ -1,6 +1,7 @@
 import { hashMatches } from "../../../reader/auth.ts";
 import { generateLinks } from "./links.ts";
 import { selectMainFeeds } from "./catalog.ts";
+import { feedOperationLimit } from "../runtime/limits.ts";
 
 /** One collection at a time per Node process, to avoid duplicate feed storms. */
 export function createLinksHandler(catalog: unknown, generate = generateLinks) {
@@ -17,11 +18,13 @@ export function createLinksHandler(catalog: unknown, generate = generateLinks) {
       return errorResponse("A link collection is already running. Please try again later.", 409);
     running = true;
     try {
-      const report = await generate(selectMainFeeds(catalog));
+      const report = await feedOperationLimit.run(() => generate(selectMainFeeds(catalog)));
       const status = report.failedFeedCount === report.feedCount ? 502 : 200;
       const responseHeaders = { ...headers, "x-saved-file": report.savedFile };
       return Response.json(report, { status, headers: responseHeaders });
-    } catch {
+    } catch (error) {
+      if ((error as { status?: number })?.status === 429)
+        return Response.json({ error: "Feed collection is busy. Retry later." }, { status: 429, headers: { ...headers, "retry-after": "5" } });
       return errorResponse("Unable to collect article links. Please try again later.", 500);
     } finally {
       running = false;

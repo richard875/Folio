@@ -13,6 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as HealthzRouteImport } from './routes/healthz'
 import { Route as ApiCollectRouteImport } from './routes/api/collect'
 import { Route as ApiDocsRouteImport } from './routes/api/docs'
+import { Route as ApiFeedCatalogRouteImport } from './routes/api/feed-catalog'
+import { Route as ApiFeedFetchRouteImport } from './routes/api/feed-fetch'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as ApiImportRouteImport } from './routes/api/import'
 import { Route as ApiLinksRouteImport } from './routes/api/links'
@@ -45,6 +47,16 @@ const ApiCollectRoute = ApiCollectRouteImport.update({
 const ApiDocsRoute = ApiDocsRouteImport.update({
   id: '/api/docs',
   path: '/api/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiFeedCatalogRoute = ApiFeedCatalogRouteImport.update({
+  id: '/api/feed-catalog',
+  path: '/api/feed-catalog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiFeedFetchRoute = ApiFeedFetchRouteImport.update({
+  id: '/api/feed-fetch',
+  path: '/api/feed-fetch',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
@@ -118,6 +130,8 @@ export interface FileRoutesByFullPath {
   '/healthz': typeof HealthzRoute
   '/api/collect': typeof ApiCollectRouteWithChildren
   '/api/docs': typeof ApiDocsRouteWithChildren
+  '/api/feed-catalog': typeof ApiFeedCatalogRoute
+  '/api/feed-fetch': typeof ApiFeedFetchRoute
   '/api/health': typeof ApiHealthRoute
   '/api/import': typeof ApiImportRoute
   '/api/links': typeof ApiLinksRoute
@@ -137,6 +151,8 @@ export interface FileRoutesByTo {
   '/healthz': typeof HealthzRoute
   '/api/collect': typeof ApiCollectRouteWithChildren
   '/api/docs': typeof ApiDocsRouteWithChildren
+  '/api/feed-catalog': typeof ApiFeedCatalogRoute
+  '/api/feed-fetch': typeof ApiFeedFetchRoute
   '/api/health': typeof ApiHealthRoute
   '/api/import': typeof ApiImportRoute
   '/api/links': typeof ApiLinksRoute
@@ -157,6 +173,8 @@ export interface FileRoutesById {
   '/healthz': typeof HealthzRoute
   '/api/collect': typeof ApiCollectRouteWithChildren
   '/api/docs': typeof ApiDocsRouteWithChildren
+  '/api/feed-catalog': typeof ApiFeedCatalogRoute
+  '/api/feed-fetch': typeof ApiFeedFetchRoute
   '/api/health': typeof ApiHealthRoute
   '/api/import': typeof ApiImportRoute
   '/api/links': typeof ApiLinksRoute
@@ -178,6 +196,8 @@ export interface FileRouteTypes {
     | '/healthz'
     | '/api/collect'
     | '/api/docs'
+    | '/api/feed-catalog'
+    | '/api/feed-fetch'
     | '/api/health'
     | '/api/import'
     | '/api/links'
@@ -197,6 +217,8 @@ export interface FileRouteTypes {
     | '/healthz'
     | '/api/collect'
     | '/api/docs'
+    | '/api/feed-catalog'
+    | '/api/feed-fetch'
     | '/api/health'
     | '/api/import'
     | '/api/links'
@@ -216,6 +238,8 @@ export interface FileRouteTypes {
     | '/healthz'
     | '/api/collect'
     | '/api/docs'
+    | '/api/feed-catalog'
+    | '/api/feed-fetch'
     | '/api/health'
     | '/api/import'
     | '/api/links'
@@ -236,6 +260,8 @@ export interface RootRouteChildren {
   HealthzRoute: typeof HealthzRoute
   ApiCollectRoute: typeof ApiCollectRouteWithChildren
   ApiDocsRoute: typeof ApiDocsRouteWithChildren
+  ApiFeedCatalogRoute: typeof ApiFeedCatalogRoute
+  ApiFeedFetchRoute: typeof ApiFeedFetchRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiImportRoute: typeof ApiImportRoute
   ApiLinksRoute: typeof ApiLinksRoute
@@ -276,6 +302,20 @@ declare module '@tanstack/react-router' {
       path: '/api/docs'
       fullPath: '/api/docs'
       preLoaderRoute: typeof ApiDocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/feed-catalog': {
+      id: '/api/feed-catalog'
+      path: '/api/feed-catalog'
+      fullPath: '/api/feed-catalog'
+      preLoaderRoute: typeof ApiFeedCatalogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/feed-fetch': {
+      id: '/api/feed-fetch'
+      path: '/api/feed-fetch'
+      fullPath: '/api/feed-fetch'
+      preLoaderRoute: typeof ApiFeedFetchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/health': {
@@ -412,6 +452,8 @@ const rootRouteChildren: RootRouteChildren = {
   HealthzRoute: HealthzRoute,
   ApiCollectRoute: ApiCollectRouteWithChildren,
   ApiDocsRoute: ApiDocsRouteWithChildren,
+  ApiFeedCatalogRoute: ApiFeedCatalogRoute,
+  ApiFeedFetchRoute: ApiFeedFetchRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiImportRoute: ApiImportRoute,
   ApiLinksRoute: ApiLinksRoute,

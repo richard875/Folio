@@ -25,7 +25,7 @@ export const publisherCatalogs = [
   { site: "Business Insider", file: "businessinsider.json", entries: businessinsider },
 ] as const;
 
-/** Full inventory for validation/reference only; never pass it to transport. */
+/** Discovery inventory. Only explicitly selected IDs may reach selective transport. */
 export const feedInventory = publisherCatalogs.flatMap(({ site, entries }) => {
   const feeds = validateFeedCatalog(entries);
   if (!feeds.length || feeds.some((feed) => feed.site !== site))
@@ -34,5 +34,5 @@ export const feedInventory = publisherCatalogs.flatMap(({ site, entries }) => {
   return feeds;
 });
 
-/** The sole operational catalog: ten main feeds in stable publisher order. */
+/** Daily links/collect catalog: ten main feeds in stable publisher order. */
 export const mainFeeds = selectMainFeeds(feedInventory);

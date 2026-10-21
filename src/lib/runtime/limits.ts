@@ -20,6 +20,8 @@ export class WorkLimit {
 
 export const extractionLimit = new WorkLimit(() => boundedInteger(process.env.READ_CONCURRENCY, 1, 10));
 export const agentLimit = new WorkLimit(() => 1);
+/** Daily links and explicit selective feeds share admission, not a job queue. */
+export const feedOperationLimit = new WorkLimit(() => 1);
 
 /** Count AND size bounds; expired data is removed on access, without background timers. */
 export class BoundedCache<T> {
