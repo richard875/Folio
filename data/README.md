@@ -9,7 +9,7 @@ are not runtime data sources.
 
 **Only the single `section: "Main feed"` entry in each file is operational.**
 `GET`/`POST /api/links`, `GET`/`POST /api/collect`, and their downstream automatic
-article-saving workflows use exactly these ten sources. The other 1340 entries
+article-saving workflows use exactly these ten sources. The other 1415 entries
 are inactive reference inventory: never fetched, ranked, used for corroboration,
 or used as fallback feeds. Query parameters and POST bodies cannot enable them.
 An unavailable main feed is reported as failed; no subsection is promoted.
@@ -24,9 +24,9 @@ An unavailable main feed is reported as failed; no subsection is promoted.
 | Financial Times | [ft.json](ft.json) | 427 | 1 |
 | Foreign Policy | [foreignpolicy.json](foreignpolicy.json) | 65 | 1 |
 | CNBC | [cnbc.json](cnbc.json) | 103 | 1 |
-| Reuters | [reuters.json](reuters.json) | 1 | 1 |
+| Reuters | [reuters.json](reuters.json) | 76 | 1 |
 | Business Insider | [businessinsider.json](businessinsider.json) | 1 | 1 |
-| **Total** | | **1350** | **10** |
+| **Total** | | **1425** | **10** |
 
 Each file must contain only its assigned publisher and exactly one main feed.
 Missing, duplicate (even identical), or malformed main-feed configuration fails
@@ -59,10 +59,10 @@ coverage ranking, and `feed` uses the existing publisher-profile fallback.
 
 ## Current coverage
 
-The stored inventory has **1350 entries across ten publishers**: **35 WSJ feeds**,
+The stored inventory has **1425 entries across ten publishers**: **35 WSJ feeds**,
 **543 NY Times feeds**, **50 Washington Post feeds**, **61 Bloomberg feeds/sitemaps**,
 **64 Economist feeds**, **427 Financial Times feeds**, **65 Foreign Policy feeds**,
-**103 CNBC feeds**, and one `Main feed` for each of the other three publishers.
+**103 CNBC feeds**, **76 Reuters feeds**, and one `Main feed` for each of the other three publishers.
 `RSS_LINKS_PER_SECTION` caps each active publisher's `Main feed`. With a limit
 of 1, up to ten article entries can be returned (one per publisher); with the
 default of 5, up to 50. Empty, stale, failed or filtered main feeds can yield
@@ -474,7 +474,7 @@ feed participates in APIs, ranking, corroboration or automatic downstream saving
 
 ## Collection cost and downstream limits
 
-Each fresh collection attempts **ten main feed sources**, not all 1350 stored
+Each fresh collection attempts **ten main feed sources**, not all 1425 stored
 entries. Retries and Google News resolution may require additional requests;
 ten sources does not mean exactly ten outbound requests. `RSS_LINKS_PER_SECTION`
 controls article output, not which feed sources are active. There is no new

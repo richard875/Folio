@@ -7,5 +7,680 @@
     "format": "rss",
     "homepageScore": 4,
     "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Aerospace & Defense",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/business/aerospace-defense&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Africa",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/world/africa&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "AI and Us (series)",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/technology/ai-and-us&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "All Reuters stories (no time limit)",
+    "url": "https://news.google.com/rss/search?q=site:reuters.com&hl=en-US&gl=US&ceid=US:en",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Americas",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/world/americas&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Artificial Intelligence",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/technology/artificial-intelligence&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Asia Pacific",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com/world/asia-pacific&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Asian Markets",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/markets/asia&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Athletics",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sports/athletics&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Autos & Transportation",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/business/autos-transportation&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Boards, Policy & Regulation",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sustainability/boards-policy-regulation&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Breakingviews",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/commentary/breakingviews&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Business",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com/business&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "China",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/world/china&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Climate & Energy",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sustainability/climate-energy&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Commentary (all)",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/commentary&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Commodities",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/markets/commodities&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "COP climate summits",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sustainability/cop&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Culture Current",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/lifestyle/culture-current&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Currencies",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/markets/currencies&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Cybersecurity",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/technology/cybersecurity&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Davos",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/business/davos&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Deals",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/markets/deals&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Emerging Markets",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/markets/emerging&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Energy",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com/business/energy&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Environment",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/business/environment&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Europe",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com/world/europe&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "European Markets",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/markets/europe&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Fact Check",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/fact-check&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Finance",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/business/finance&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Formula 1",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sports/formula1&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Golf",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sports/golf&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Government",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/legal/government&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Graphics",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/graphics&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Healthcare & Pharmaceuticals",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/business/healthcare-pharmaceuticals&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "India",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/world/india&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Investigations",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/investigations&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Japan",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/world/japan&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Land Use & Biodiversity",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sustainability/land-use-biodiversity&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Legal",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com/legal&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Legal Industry",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/legal/legalindustry&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Lifestyle",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/lifestyle&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Litigation",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/legal/litigation&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Live blogs",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/live&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Markets",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com/markets&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Markets (without company and quote pages)",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/markets+-site:reuters.com/markets/companies+-site:reuters.com/markets/quote&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Media & Telecom",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/business/media-telecom&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Middle East",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com/world/middle-east&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "On the Money",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/markets/on-the-money&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Pictures",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/pictures&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Podcast pages",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/podcasts&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Rates & Bonds",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/markets/rates-bonds&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Retail & Consumer",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/business/retail-consumer&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Reuters Investigates (special reports)",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/investigates&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Reuters Open Interest (ROI)",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/commentary/reuters-open-interest&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Science",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/science&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Soccer",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sports/soccer&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Society & Equity",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sustainability/society-equity&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Space",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/technology/space&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Sports",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com/sports&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Sustainability",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sustainability&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Sustainable Finance & Reporting",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sustainability/sustainable-finance-reporting&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Technology",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com/technology&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Tennis",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/sports/tennis&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "The Wider Image",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/wider-image&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Transactional",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/legal/transactional&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "U.S. Markets",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/markets/us&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "U.S. politics (keyword version)",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/world/us+politics&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Ukraine and Russia war",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/world/ukraine-russia-war&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "United Kingdom",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/world/uk&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "United States",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com/world/us&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Video",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/video&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "Wealth",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/markets/wealth&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "World",
+    "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com/world&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
+  },
+  {
+    "site": "Reuters",
+    "section": "World at Work",
+    "url": "https://news.google.com/rss/search?q=when:7d+site:reuters.com/business/world-at-work&ceid=US:en&hl=en-US&gl=US",
+    "ordering": "google-ranked",
+    "format": "rss",
+    "homepageScore": 4,
+    "edition": "US"
   }
 ]

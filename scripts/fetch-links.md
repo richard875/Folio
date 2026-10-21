@@ -79,10 +79,10 @@ environment variables override `.env`. Article retrieval has separate retry caps
 The ten publisher JSON files under `data/` are bundled through
 `src/lib/rss/sources.ts`. Changes require rebuilding/restarting production;
 the deployed server does not need source attachments at runtime.
-The stored inventory has 1350 entries (35 WSJ, 543 NY Times, 50 Washington Post,
-61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy and 103 CNBC feeds/sitemaps), but **only the ten
+The stored inventory has 1425 entries (35 WSJ, 543 NY Times, 50 Washington Post,
+61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 103 CNBC and 76 Reuters feeds/sitemaps), but **only the ten
 `Main feed` entries are selected before any fetching or ranking**, one per publisher.
-The other 1340 entries are inactive reference data, never used as fallback sources.
+The other 1415 entries are inactive reference data, never used as fallback sources.
 Bloomberg's Main feed remains its latest-news sitemap, not the stored all-news RSS feed.
 Missing/duplicate mains fail closed. GET and POST, and background `/api/collect`,
 share this policy; query parameters/body cannot opt into reference feeds.
