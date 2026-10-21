@@ -96,7 +96,9 @@ JSON/XML use the same article/media/domain/freshness filters. HTML error pages,
 unknown JSON, malformed XML, DTD/entities and oversized payloads fail explicitly;
 there is no JS/browser execution or generic HTML scraping fallback.
 
-Sitemap indexes consider at most the first three unique same-origin child URLs
+Sitemap indexes resolve child URLs against the final index URL after validated
+redirects, deduplicate resolved URLs, and consider at most the first three unique
+same-origin child URLs
 in document order, non-recursively, with at most 2000 combined child entries.
 Omissions/failures are warnings. This is not exhaustive sitemap crawling.
 Each document is bounded to 2,000,000 decompressed bytes and 2000 entries.

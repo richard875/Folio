@@ -133,6 +133,35 @@ test("sitemap index traversal is same-origin, shallow, bounded and explicit abou
   assert.ok(report.feeds[0].warnings.length > 0);
 });
 
+test("redirected sitemap indexes resolve and deduplicate children against the final document URL", async () => {
+  const calls = [];
+  const input = { ...plan(), selections: [plan().selections[0]] };
+  const report = await fetchSelectedFeeds(input, catalog, { fetchImpl: async (raw) => {
+    const url = String(raw); calls.push(url);
+    if (url.includes("/Canada/feed")) return new Response(null, { status: 302, headers: { location: "https://cdn.example.com/maps/index.xml" } });
+    if (url.endsWith("index.xml")) return new Response('<sitemapindex><sitemap><loc>./child.xml</loc></sitemap><sitemap><loc>child.xml</loc></sitemap><sitemap><loc>https://evil.example/map.xml</loc></sitemap></sitemapindex>');
+    assert.equal(url, "https://cdn.example.com/maps/child.xml");
+    return new Response('<urlset><url><loc>https://example.com/articles/one</loc></url></urlset>');
+  } });
+  assert.equal(calls.length, 3);
+  assert.equal(report.feeds[0].status, "ok");
+  assert.equal(report.candidateCount, 1);
+});
+
+test("sitemap candidates preserve combined source ranks and the first duplicate occurrence", async () => {
+  const input = { ...plan(), selections: [{ ...plan().selections[0], candidateLimit: 5 }] };
+  const report = await fetchSelectedFeeds(input, catalog, { fetchImpl: async (raw) => {
+    const url = String(raw);
+    if (url.endsWith("/feed")) return new Response('<sitemapindex><sitemap><loc>/one.xml</loc></sitemap><sitemap><loc>/two.xml</loc></sitemap></sitemapindex>');
+    const paths = url.endsWith("one.xml") ? ["/", "/video/skip", "/articles/first"] : ["/articles/first", "/articles/second"];
+    return new Response(`<urlset>${paths.map((path) => `<url><loc>https://example.com${path}</loc></url>`).join("")}</urlset>`);
+  } });
+  assert.deepEqual(report.feeds[0].candidates.map(({ url, feedRank }) => [url, feedRank]), [
+    ["https://example.com/articles/first", 3], ["https://example.com/articles/second", 5],
+  ]);
+  assert.equal(report.feeds[0].entryCount, 5);
+});
+
 test("partial failures, HTML rejection and filtered partner-domain articles are reported instead of silently promoted", async () => {
   const report = await fetchSelectedFeeds(plan(), catalog, { fetchImpl: async (input) => String(input).includes("Canada") ? new Response(rss()) : new Response("unavailable", { status: 503 }) });
   assert.equal(report.failedFeedCount, 1);

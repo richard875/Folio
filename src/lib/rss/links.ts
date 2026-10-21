@@ -8,7 +8,6 @@ import { boundedBytes, publicFetch, publicFetchRedirects } from "../runtime/netw
 import { writeNewFile } from "../runtime/storage.ts";
 import { boundedInteger } from "../runtime/limits.ts";
 import { parseLinksReport, linksReportSchema, type LinksReport } from "./report.ts";
-import { feedSummary } from "./summary.ts";
 
 const USER_AGENT = "Mozilla/5.0 (compatible; FolioRSS/1.0)";
 
@@ -21,6 +20,7 @@ export type FeedResult = Feed & {
   documentFormat?: FeedDocumentFormat;
   entryCount?: number;
   childSitemaps?: string[];
+  documentUrl?: string;
   errorCode?: "fetch_failed" | "parse_failed" | "deadline_exceeded" | "unsupported";
   httpStatus?: number;
 };
@@ -102,7 +102,8 @@ export async function fetchFeed(
       const xml = new TextDecoder().decode(await boundedBytes(response, maximumBytes, signal));
       signal.throwIfAborted();
       parsing = true;
-      const document = parseFeedDocument(xml, { ...feed, url: response.url || feed.url }, now());
+      const documentUrl = response.url || feed.url;
+      const document = parseFeedDocument(xml, { ...feed, url: documentUrl }, now());
       signal.throwIfAborted();
       const { candidates } = document;
       const articles = (limit > 0 ? rankCandidates(candidates, candidates, now()) : [])
@@ -116,6 +117,7 @@ export async function fetchFeed(
         documentFormat: document.format,
         entryCount: document.entryCount,
         childSitemaps: document.childSitemaps,
+        documentUrl,
         ok: true,
       };
     } catch (error) {
@@ -125,41 +127,6 @@ export async function fetchFeed(
       catch { return { ...feed, urls: [], ok: false, errorCode: "deadline_exceeded" }; }
     }
   }
-}
-
-export function parseReutersJson(
-  json: { result?: { articles?: Array<{ canonical_url: string; title: string; description?: string; published_time?: string; kicker?: { names?: string[] } }> } },
-  feed: Feed,
-  limit: number,
-  now: () => number,
-): FeedArticle[] {
-  const articles = json.result?.articles || [];
-  const results: FeedArticle[] = [];
-  
-  for (const article of articles) {
-    if (results.length >= limit) break;
-    
-    // Skip stock-quote pages and wire-only headlines
-    const title = article.title || "";
-    if (/stock price/i.test(title) || /^Reuters$/i.test(title)) continue;
-    
-    const canonicalUrl = article.canonical_url;
-    if (!canonicalUrl) continue;
-    
-    const url = `https://www.reuters.com${canonicalUrl}`;
-    
-    // Validate URL is a proper article
-    const validated = articleUrl(url, feed);
-    if (!validated) continue;
-    
-    const summary = feedSummary([article.description], title, feed.site);
-    results.push({
-      url: validated,
-      ...(summary && { summary }),
-    });
-  }
-  
-  return results;
 }
 
 export async function collectFeeds(

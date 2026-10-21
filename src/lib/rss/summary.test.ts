@@ -4,7 +4,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parseCandidates } from "./selection.ts";
-import { collectFeeds, generateLinks, buildLinksReport, parseReutersJson } from "./links.ts";
+import { collectFeeds, generateLinks, buildLinksReport, fetchFeed } from "./links.ts";
 import { parseLinksFile } from "../batch/jobs.ts";
 import { createLinksHandler } from "./api.ts";
 import { parseLinksReport } from "./report.ts";
@@ -146,15 +146,16 @@ test("Bloomberg news:title survives selection, JSON storage and the links API", 
   assert.deepEqual((await response.json()).websites[0].sections[0].articles, [{ url, summary: title }]);
 });
 
-test("Reuters JSON descriptions use the shared summary cleanup and omission rules", () => {
+test("Reuters JSON descriptions use shared summary rules through the actual feed transport/parser", async () => {
   const source = { ...feed, site: "Reuters", url: "https://www.reuters.com/pf/api/v3/content/fetch/articles" };
   const title = "A long headline about central bank measures and lending across the country";
   for (const description of [undefined, "", "Read more", title, `${title} Reuters`, "<script>bad()</script>"]) {
-    const articles = parseReutersJson({ result: { articles: [{ canonical_url: "/world/story/", title, description }] } }, source, 5, Date.now);
-    assert.deepEqual(articles, [{ url: "https://www.reuters.com/world/story/" }]);
+    const result = await fetchFeed(source, { retryLimit: 0, fetchImpl: async () => Response.json({ result: { articles: [{ canonical_url: "/world/story/", title, description }] } }) });
+    assert.equal(result.documentFormat, "reuters-json");
+    assert.deepEqual(result.articles, [{ url: "https://www.reuters.com/world/story/" }]);
   }
-  const articles = parseReutersJson({ result: { articles: [{ canonical_url: "/world/story/", title, description: `<p>${summary}</p><script>bad()</script>` }] } }, source, 5, Date.now);
-  assert.deepEqual(articles, [{ url: "https://www.reuters.com/world/story/", summary }]);
+  const result = await fetchFeed(source, { retryLimit: 0, fetchImpl: async () => Response.json({ result: { articles: [{ canonical_url: "/world/story/", title, description: `<p>${summary}</p><script>bad()</script>` }] } }) });
+  assert.deepEqual(result.articles, [{ url: "https://www.reuters.com/world/story/", summary }]);
 });
 
 const reutersGoogleFeed = {

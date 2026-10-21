@@ -104,13 +104,14 @@ export async function fetchSelectedFeeds(input: unknown, catalog: DiscoveryCatal
     const fetchOptions = { fetchImpl, retryLimit: 0, timeoutMs: options.feedTimeoutMs ?? limits.feedTimeoutMs, maximumBytes: limits.maximumBytes, signal: feedSignal, limit: 0 };
     let result = await fetchFeed(feed, fetchOptions);
     if (result.ok && result.documentFormat === "sitemap-index") {
-      const children = [...new Set(result.childSitemaps)].flatMap((value) => {
+      const documentUrl = result.documentUrl ?? feed.url;
+      const children = [...new Set((result.childSitemaps ?? []).flatMap((value) => {
         try {
-          const url = publicUrl(new URL(value, feed.url).href);
+          const url = publicUrl(new URL(value, documentUrl).href);
           // No arbitrary cross-origin traversal or recursive sitemap crawling.
-          return url.origin === new URL(feed.url).origin ? [url.href] : [];
+          return url.origin === new URL(documentUrl).origin ? [url.href] : [];
         } catch { return []; }
-      });
+      }))];
       const selected = children.slice(0, limits.maxChildSitemaps);
       indexTruncated.add(index);
       warnings[index].push("Sitemap index: only the first three unique same-origin children are considered; no recursive crawling.");
@@ -125,16 +126,21 @@ export async function fetchSelectedFeeds(input: unknown, catalog: DiscoveryCatal
           warnings[index].push(child.errorCode === "deadline_exceeded" ? "Child sitemap deadline exceeded." : "A child sitemap failed or required unsupported recursive traversal.");
           continue;
         }
+        const base = entryCount;
         entryCount += child.entryCount ?? 0;
         if (entryCount > 2000) {
           childFailed = true;
           warnings[index].push("Combined sitemap entry limit reached (2000); remaining children omitted.");
           break;
         }
-        const base = candidates.length;
         candidates.push(...(child.candidates ?? []).map((candidate) => ({ ...candidate, index: base + candidate.index })));
       }
-      const unique = [...new Map(candidates.map((candidate) => [candidate.url, candidate])).values()];
+      const seen = new Set<string>();
+      const unique = candidates.filter((candidate) => {
+        if (seen.has(candidate.url)) return false;
+        seen.add(candidate.url);
+        return true;
+      });
       result = { ...result, entryCount: Math.min(entryCount, 2000), candidates: unique, ok: selected.length > 0 && (!childFailed || unique.length > 0),
         ...((!selected.length || childFailed && !unique.length) && { errorCode: feedSignal.aborted ? "deadline_exceeded" as const : "fetch_failed" as const }) };
       if (!selected.length) warnings[index].push("No eligible same-origin sitemap children.");
