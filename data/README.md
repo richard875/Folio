@@ -9,7 +9,7 @@ are not runtime data sources.
 
 **Only the single `section: "Main feed"` entry in each file is operational for daily collection.**
 `GET`/`POST /api/links`, `GET`/`POST /api/collect`, and their downstream automatic
-article-saving workflows use exactly these ten sources. The other 1543 entries
+article-saving workflows use exactly these ten sources. The other 1544 entries
 are inactive reference inventory in those operations: never fetched, ranked, used
 for corroboration, or used as fallback feeds there. Their query parameters and
 POST bodies cannot enable them.
@@ -33,10 +33,10 @@ explicit selective fetching may attempt those stored references within its limit
 | The Economist | [economist.json](economist.json) | 64 | 1 |
 | Financial Times | [ft.json](ft.json) | 427 | 1 |
 | Foreign Policy | [foreignpolicy.json](foreignpolicy.json) | 65 | 1 |
-| CNBC | [cnbc.json](cnbc.json) | 103 | 1 |
+| CNBC | [cnbc.json](cnbc.json) | 104 | 1 |
 | Reuters | [reuters.json](reuters.json) | 76 | 1 |
 | Business Insider | [businessinsider.json](businessinsider.json) | 129 | 1 |
-| **Total** | | **1553** | **10** |
+| **Total** | | **1554** | **10** |
 
 Each file must contain only its assigned publisher and exactly one main feed.
 Missing, duplicate (even identical), or malformed main-feed configuration fails
@@ -69,10 +69,10 @@ coverage ranking, and `feed` uses the existing publisher-profile fallback.
 
 ## Current coverage
 
-The stored inventory has **1553 entries across ten publishers**: **35 WSJ feeds**,
+The stored inventory has **1554 entries across ten publishers**: **35 WSJ feeds**,
 **543 NY Times feeds**, **50 Washington Post feeds**, **61 Bloomberg feeds/sitemaps**,
 **64 Economist feeds**, **427 Financial Times feeds**, **65 Foreign Policy feeds**,
-**103 CNBC feeds**, **76 Reuters feeds**, **129 Business Insider feeds**, and one `Main feed` for the publisher.
+**104 CNBC feeds**, **76 Reuters feeds**, **129 Business Insider feeds**, and exactly one `Main feed` per publisher.
 `RSS_LINKS_PER_SECTION` caps each active publisher's `Main feed`. With a limit
 of 1, up to ten article entries can be returned (one per publisher); with the
 default of 5, up to 50. Empty, stale, failed or filtered main feeds can yield
@@ -482,9 +482,82 @@ classification. Unverified YouTube feeds and unlisted regional/subsection guesse
 are not added. All 60 additions remain inactive: only the original sitemap Main
 feed participates in APIs, ranking, corroboration or automatic downstream saving.
 
+### CNBC stored feed inventory
+
+The updated `cnbc_rss_feeds_new.xlsx` (`Summary` and all **201 records** in
+`All feeds`) and `cnbc_rss_new.md` were reviewed in full. The workbook is dated
+**21 October 2026**; its 90 cached Summary formulas reconcile with the source
+rows: **134 live**, **16 slowing**, **48 stale**, **3 empty**, zero unconfirmed.
+The Markdown calls the updated workbook `cnbc_rss_feeds.xlsx`; the supplied
+`cnbc_rss_feeds_new.xlsx` is the actual source used here.
+
+Only **one URL is new** relative to the previous 103-entry inventory:
+
+| Section | Added URL | Daily operational feeds |
+| --- | --- | ---: |
+| Cybersecurity | `https://www.cnbc.com/id/100807029/device/rss/rss.html` | 0 |
+
+The research upgraded Cybersecurity from unconfirmed to live after a user-saved
+20 October copy showed 30 stories, newest dated 20 October. **This is supplied
+research evidence, not a new live availability or extraction audit by Folio.**
+Most other CNBC dates come from Feedly's newest indexed article because the
+researcher could not open CNBC feeds. The research's 30-day `live` classification
+does not imply an eligible article within Folio's 72-hour window.
+
+All **103 existing entries are retained unchanged**. The resulting **104 CNBC
+entries** comprise:
+
+| Workbook group | Stored entries |
+| --- | ---: |
+| Top news (including the existing Main feed) | 9 |
+| Business and industries | 26 |
+| Markets, investing and finance | 16 |
+| Economy and politics | 4 |
+| Personal finance, Make It and Select | 5 |
+| Countries, people and other topic pages | 2 |
+| Opinion, columns and blogs | 6 |
+| TV shows | 11 |
+| Video | 4 |
+| Industry and market feeds (older address style) | 20 |
+| Other CNBC feeds (partner news feed) | 1 |
+| **Total CNBC** | **104** |
+
+The sole Main feed remains
+`https://www.cnbc.com/id/100003114/device/rss/rss.html`, with
+`ordering: editorial`, `format: rss`, `homepageScore: 9`, and `edition: US`.
+Cybersecurity inherits the existing non-main metadata: `ordering: newest`,
+`format: rss`, `homepageScore: 9`, `edition: US`. No new editorial score or
+publisher identity is inferred. The alternate-address column and Summary URL
+patterns are not expanded into extra records; only explicit selected URL cells
+are stored. Existing distinct IDs and older `rssCmp` URLs remain distinct.
+
+The supplied official RSS-page copy identifies **54 listed feeds** (23 News,
+3 Investing, 6 Blogs, 17 Video and TV, 3 Europe TV, 2 Asia TV); the other **147**
+workbook rows are unlisted. Of the 54, the workbook marks 42 live, 11 stale and
+one slowing. Official listing is therefore not proof of freshness. Cybersecurity
+is unlisted; no AI or Internet feed URL is invented from Feedspot labels.
+
+For TV/video sources, the research confirms `search.cnbc.com` addresses: the
+user-saved `www.cnbc.com` Squawk Box response was valid but empty. The existing
+show/video URL choices are retained, not replaced with those empty alternates.
+The four video references and mixed TV feeds are inventory, not a promise of
+text articles: CNBC media/AP/Select and general article filters remain unchanged.
+
+Of 201 source rows, **97 are excluded**: all 67 non-live rows (16 slowing,
+48 stale, 3 empty), 21 live podcast feeds, five live YouTube feeds, three live
+old podcast addresses, and one live smart-speaker audio feed. Separately owned
+CNBC-branded outlets are outside the supplied workbook and were not added.
+Neither workbook nor Markdown is a runtime dependency.
+
+There is exactly **one CNBC Main feed** and **ten Main feeds overall**. Adding
+Cybersecurity does not expand GET/POST `/api/links`, GET/POST `/api/collect`,
+their ranking pool or downstream automatic saving. No fallback, proxy policy,
+retrieval order or extraction-domain rule changes. The separately authorized
+selective workflow remains opt-in and unchanged.
+
 ## Collection cost and downstream limits
 
-Each fresh collection attempts **ten main feed sources**, not all 1553 stored
+Each fresh collection attempts **ten main feed sources**, not all 1554 stored
 entries. Retries and Google News resolution may require additional requests;
 ten sources does not mean exactly ten outbound requests. `RSS_LINKS_PER_SECTION`
 controls article output, not which feed sources are active. There is no new

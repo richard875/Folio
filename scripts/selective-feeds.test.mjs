@@ -27,7 +27,7 @@ const url = (query = "") => new URL(`https://folio.example/api/feed-catalog?${qu
 
 test("catalog enumerates every record with stable identity and honest metadata without changing Main selection", () => {
   const real = createFeedCatalog(feedInventory);
-  assert.equal(real.records.length, 1553);
+  assert.equal(real.records.length, 1554);
   assert.equal(real.records.filter((feed) => feed.isMain).length, 10);
   assert.equal(mainFeeds.length, 10);
   const reversed = createFeedCatalog([...entries].reverse());

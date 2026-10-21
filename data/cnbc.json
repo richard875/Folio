@@ -244,6 +244,15 @@
   },
   {
     "site": "CNBC",
+    "section": "Cybersecurity",
+    "url": "https://www.cnbc.com/id/100807029/device/rss/rss.html",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 9,
+    "edition": "US"
+  },
+  {
+    "site": "CNBC",
     "section": "Deals and IPOs",
     "url": "https://www.cnbc.com/id/10000621/device/rss/rss.html",
     "ordering": "newest",

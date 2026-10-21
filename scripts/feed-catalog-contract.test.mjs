@@ -20,7 +20,7 @@ test("ten publisher files preserve the complete inventory but expose only one ma
     assert.ok(entries.every((feed) => feed.site === site));
     assert.equal(entries.filter(({ section }) => section === "Main feed").length, 1);
   }
-  assert.equal(catalog.length - mainFeeds.length, 1543);
+  assert.equal(catalog.length - mainFeeds.length, 1544);
 });
 
 test("main selection fails closed on missing or duplicate mains, including identical duplicates", () => {
@@ -35,9 +35,9 @@ test("main selection fails closed on missing or duplicate mains, including ident
 
 test("WSJ catalog includes exactly the researched active article feeds, including Japan and legacy", () => {
   const feeds = validateFeedCatalog(catalog);
-  assert.equal(feeds.length, 1553);
+  assert.equal(feeds.length, 1554);
   assert.equal(new Set(feeds.map(({ site }) => site)).size, 10);
-  assert.equal(new Set(feeds.map(({ site, url }) => `${site}:${url}`)).size, 1553);
+  assert.equal(new Set(feeds.map(({ site, url }) => `${site}:${url}`)).size, 1554);
   const wsj = feeds.filter(({ site }) => site === "WSJ");
   assert.equal(wsj.length, 35);
   const current = wsj.filter(({ url }) => new URL(url).hostname === "feeds.content.dowjones.io");
@@ -205,6 +205,42 @@ test("corrected NYT and WaPo research provenance is documented", async () => {
     assert.ok(readme.toLowerCase().includes(fact), fact);
   }
   assert.match(readme, /actual article|true dates|Feedly feed-level dates/i);
+});
+
+test("CNBC updated workbook adds only Cybersecurity and preserves its sole editorial Main feed", () => {
+  const cnbc = validateFeedCatalog(catalog).filter(({ site }) => site === "CNBC");
+  assert.equal(cnbc.length, 104);
+  assert.equal(new Set(cnbc.map(({ url }) => url)).size, 104);
+  // All selected exact URL cells from the reviewed 201-row updated workbook.
+  // CI intentionally does not depend on the private Downloads workbook.
+  assert.equal(createHash("sha256").update(cnbc.map(({ url }) => url).sort().join("\n")).digest("hex"),
+    "044f4972b3219cd917852f730fc0b87b1d60324983a41fddf760265d34e421bc");
+  const raw = publisherCatalogs.find(({ site }) => site === "CNBC").entries;
+  assert.equal(createHash("sha256").update(JSON.stringify(raw.filter(({ section }) => section !== "Cybersecurity"))).digest("hex"),
+    "ed8e70f8a51bf3c2a76ffb4db9b30a25398e2a161aade4be3a8e48cd2fc10daa");
+  assert.deepEqual(cnbc.filter(({ section }) => section === "Cybersecurity"), [{
+    site: "CNBC", section: "Cybersecurity", url: "https://www.cnbc.com/id/100807029/device/rss/rss.html",
+    ordering: "newest", format: "rss", homepageScore: 9, edition: "US",
+  }]);
+  assert.deepEqual(mainFeeds.filter(({ site }) => site === "CNBC"), [{
+    site: "CNBC", section: "Main feed", url: "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+    ordering: "editorial", format: "rss", homepageScore: 9, edition: "US",
+  }]);
+  assert.ok(cnbc.every(({ ordering, section, homepageScore, edition, format }) =>
+    ordering === (section === "Main feed" ? "editorial" : "newest") && homepageScore === 9 && edition === "US" && format === "rss"));
+  assert.ok(!mainFeeds.some(({ section }) => section === "Cybersecurity"));
+  assert.ok(!cnbc.some(({ url }) => /simplecast|art19|youtube|podcast\.cnbc|cnbcnewsfeed|<ID>/.test(url)));
+});
+
+test("CNBC guide records updated research, exact counts, exclusions and daily main-only behavior", async () => {
+  const text = (await readFile(new URL("data/README.md", root), "utf8")).replace(/[*`]/g, "").replace(/\s+/g, " ");
+  for (const fact of ["cnbc_rss_feeds_new.xlsx", "cnbc_rss_new.md", "201 records", "90 cached", "134 live",
+    "16 slowing", "48 stale", "3 empty", "54 listed feeds", "147", "97 are excluded", "Cybersecurity", "search.cnbc.com",
+    "one CNBC Main feed", "ten Main feeds overall", "selective workflow remains opt-in and unchanged"])
+    assert.ok(text.includes(fact), fact);
+  assert.match(text, /not a new live availability or extraction audit by Folio/);
+  assert.match(text, /All 103 existing entries are retained unchanged/);
+  assert.match(text, /No fallback, proxy policy, retrieval order or extraction-domain rule changes/);
 });
 
 test("executable source has no dependency on the historical Markdown catalog or its parser", async () => {
