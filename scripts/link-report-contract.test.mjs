@@ -148,3 +148,29 @@ test("Claude skills describe corrected catalog identities, locale scope and pinn
   assert.match(reader, /no separate legacy parser branch/);
   assert.doesNotMatch(reader, /inactive native JSON\s+branch|Request the current key privately/);
 });
+
+test("briefing and reading guidance separates retrieval quality, provenance and upstream failures", async () => {
+  for (const path of [
+    "docs/prompts/daily-news-brief.md",
+    "docs/skills/folio-news/references/workflows.md",
+    "docs/skills/universal-article-reader/SKILL.md",
+  ]) {
+    const text = (await readGuide(path)).replace(/[*`]/g, "").replace(/\s+/g, " ");
+    for (const fact of ["Jina Markdown", "partial=false", "checksums", "original publisher URLs", "sourceUrl", "request-level Folio 401"])
+      assert.ok(text.includes(fact), `${path}: missing ${fact}`);
+    assert.match(text, /snapshot dates are not publication dates/i, path);
+    assert.match(text, /substantive reporting/i, path);
+    assert.match(text, /upstream/i, path);
+  }
+  const portable = await readGuide("docs/skills/folio-news/SKILL.md");
+  assert.match(portable, /references\/workflows\.md#saved-text-quality-and-retrieval-failures/);
+  const api = await readGuide("docs/skills/folio-news/references/api.md");
+  assert.match(api, /workflow is unchanged/);
+  assert.match(api, /Request-level Folio 401/);
+  const evals = JSON.parse(await readGuide("docs/skills/folio-news/evals/evals.json"));
+  assert.equal(evals.evals.length, 4);
+  assert.equal(new Set(evals.evals.map(item => item.id)).size, 4);
+  const qualityEval = evals.evals.find(item => item.id === 4);
+  for (const fact of ["archive picker", "Jina Markdown", "partial=false", "upstream 403"])
+    assert.ok(qualityEval.prompt.includes(fact), `Missing quality scenario: ${fact}`);
+});

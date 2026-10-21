@@ -18,8 +18,11 @@ and packaging, but not for Folio's Node build/runtime; no third-party Python
 packages are needed.
 
 The current instructions cover corrected Reuters locale labels/IDs, bounded
-sitemap child resolution/source ranks, and job-bound snapshot reading even when
-a newer folder becomes latest. Re-upload the regenerated ZIP to replace an older
+sitemap child resolution/source ranks, job-bound snapshot reading even when
+a newer folder becomes latest, and saved-text quality checks for Jina/archive
+content and per-article upstream failures. Retrieval/proxy configuration remains
+server-side; no portable client/API changes or proxy credentials are needed.
+Re-upload the regenerated ZIP to replace an older
 installed copy; editing this repository does not update Claude's installed skill.
 The repository-oriented `../universal-article-reader/SKILL.md` is a separate skill,
 not part of this portable ZIP. The daily briefing prompt is also separate from
@@ -45,4 +48,4 @@ Checked 21 October 2026:
 - [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview): required YAML name/description, progressive loading of references/scripts; Claude.ai network access varies with user/admin settings; API skill containers have no network or runtime package installation.
 - [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude): code-execution prerequisites and ZIP folder upload via Customize → Skills. Current help and platform overview differ on some plan/admin/UI details; consult your current interface rather than promising universal availability.
 
-This is not a connector or HTTP permission grant. On the Claude API, live Folio calls need separately authorized host-side tooling outside the skill container; this bundle does not implement that integration. No live API calls or Claude behavior evals are implied by passing the mocked client tests. `evals/evals.json` contains three behavior prompts for evaluation. Installation, secret provisioning, scheduling and deployment remain separate actions.
+This is not a connector or HTTP permission grant. On the Claude API, live Folio calls need separately authorized host-side tooling outside the skill container; this bundle does not implement that integration. No live API calls or Claude behavior evals are implied by passing the mocked client tests. `evals/evals.json` contains four behavior prompts for evaluation. Installation, secret provisioning, scheduling and deployment remain separate actions.

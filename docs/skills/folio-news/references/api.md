@@ -75,3 +75,19 @@ At most 100 articles. HTTP 202 returns `callId,statusEndpoint,...`. Follow only 
 `GET /api/agent/read?folder=...&snapshot=...&file=...` returns `folder,snapshotId,filename,offset,nextOffset,text,chunkCharacters,totalCharacters,totalBytes,sha256,partial,endOfArticle,nextUrl`. Follow sequentially until `endOfArticle:true` and `nextUrl:null`; concatenate text **without trimming or normalization**. Count Unicode code points (Python `len`), UTF-8 bytes and SHA-256 against the manifest. On 409 discard the incomplete session; do not mix snapshots. `nextManifestUrl` must target exactly `/api/agent/latest`, article navigation exactly `/api/agent/read`. Reject cross-origin URLs, credentials, fragments, hash parameters, unexpected paths/queries, changed pins, loops and unsafe filenames.
 
 Reading all saved files with valid checksums is distinct from successful complete publisher extraction. Preserve partial flags and collection failures in the final answer.
+
+## Retrieval is a server concern
+
+The API/client workflow is unchanged by retrieval-method fixes. Send original
+publisher candidate URLs; do not select methods with wrapper URLs, extra request
+fields or client-side publisher/proxy calls. Folio can return article text sourced
+from Jina Markdown or archives. `sourceUrl`, where exposed in article JSON, records
+the actual final retrieval URL, not necessarily the original publisher URL.
+Keep publisher citations distinct from that provenance. Neither a method's local
+test success nor `partial=false` establishes universal or deployed availability.
+
+Request-level Folio 401 is an authentication failure; an upstream 401/403/429 or
+unsupported-site message inside a per-article result does not establish invalid
+Folio credentials. Preserve those failures and follow the
+[saved-text quality checks](workflows.md#saved-text-quality-and-retrieval-failures)
+without changing credentials or blindly replaying save jobs.

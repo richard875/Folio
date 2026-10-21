@@ -1,7 +1,7 @@
 ---
 name: universal-article-reader
 description: Use when working with Folio to read or save an article URL, collect news from its configured feeds, read saved articles through its agent API, or explain/debug its extraction pipeline. Follow Folio's actual publisher-specific retrieval configuration, authentication and quality limits; do not substitute an unrelated universal scraper workflow.
-version: 2.0.1
+version: 2.0.2
 ---
 
 # Folio article reading and news collection
@@ -21,6 +21,7 @@ Paths below are relative to the repository root, not this skill directory.
 | Retrieval URLs, user agents, headers, timeouts | `reader/methods.ts`, executed by `reader/fetch.ts` |
 | Candidate selection and caches | `reader/read.ts` |
 | HTML parsing, images, Markdown and partial heuristic | `reader/extract.ts` |
+| Method-specific Jina/Freedium response decoding | `reader/response.ts` |
 | Feed filtering, ranking and summaries | `src/lib/rss/selection.ts`, `src/lib/rss/summary.ts` |
 | Link-report JSON schema, serialization and validation | `src/lib/rss/report.ts`, `src/lib/rss/links.ts` |
 | Collection and selective save jobs | `src/lib/batch/jobs.ts`, `src/lib/batch/save-batch.ts` |
@@ -282,6 +283,14 @@ Third-party retrieval services control their own downstream publisher fetches.
   title and first 900 text characters but are imperfect. Wayback methods also
   reject their own UI titled `Wayback Machine`; still assess returned text for
   other archive/challenge boilerplate, which has historically passed heuristics.
+- Verify saved bytes before interpreting Jina Markdown or archived text. Check
+  that the body matches the selected story and contains substantive reporting;
+  exclude service/challenge pages or unrelated text even if `partial=false` and
+  checksums match. Record content-quality gaps separately from file integrity.
+  Cite original publisher URLs, not a retrieval service's `sourceUrl`; snapshot
+  dates are not publication dates. Per-article upstream errors are not necessarily
+  Folio authentication failures; a request-level Folio 401 still means stop.
+  Do not replay save jobs or change credentials to force another method.
 - `partial=false` requires at least 1,400 characters and four paragraphs longer
   than 40 characters, separated by blank lines. Readability-selected HTML retains
   paragraph/block boundaries and line breaks in the extracted text. Long coherent text can still

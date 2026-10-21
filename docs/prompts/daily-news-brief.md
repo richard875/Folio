@@ -215,6 +215,22 @@ timestamps are **save times**, not publication dates. Disclose uncertain recency
 extraction. Assess the text itself, prefer fuller coverage where available, and
 never present a feed summary as though you read the full article.
 
+Folio handles retrieval methods and proxy routing server-side. Submit original
+publisher URLs, not WallHop/Freedium/archive wrappers; do not configure proxies,
+fetch publishers directly, or resubmit a batch to force a different method.
+Per-article upstream 401/403/429, unsupported-site or timeout errors are not
+necessarily a Folio authentication failure; a request-level Folio 401 still means
+stop. Report extraction gaps rather than changing credentials or replaying saves.
+
+Saved text may contain Jina Markdown syntax or archived content. Verify exact
+bytes before interpreting it; inspect whether the body matches the selected story
+and contains substantive reporting, not an archive picker, challenge, service
+error or unrelated text. Exclude unusable bodies from story evidence even if
+checksums match and `partial=false`; record their filenames and the coverage gap.
+Cite original publisher URLs, not a retrieval service's `sourceUrl`. Snapshot
+dates are not publication dates. Successful local method checks do not prove the
+deployed service or every publisher works; do not claim universal availability.
+
 ```text
 # Daily Brief — YYYY-MM-DD
 

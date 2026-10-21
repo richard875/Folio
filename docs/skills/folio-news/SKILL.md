@@ -46,6 +46,8 @@ Pass the final status JSON into `read-latest` for new saves: the client requires
 
 The client follows validated same-origin API URLs sequentially, pins snapshots, and verifies exact Unicode character counts, UTF-8 byte counts and SHA-256 before saving a file. Use an explicit new output directory to get article files plus a credential-free verification ledger; inspect those local files before synthesis. A ledger alone is not article understanding. On verification failure, report incomplete; do not call a partially read snapshot complete.
 
+Apply the [saved-text quality checks](references/workflows.md#saved-text-quality-and-retrieval-failures) before synthesis. Retrieval methods and proxy routing stay server-side: do not wrap original URLs, configure proxies or replay saves to force a method. Jina Markdown or archived text can be valid evidence, but verified service/challenge pages are not articles. Distinguish per-article upstream failures from request-level Folio authentication failures.
+
 ## Deliver the briefing
 
 Give a dated/as-of concise briefing with key developments, why they matter, and publisher article citations. Separate reported facts from analysis, avoid unsupported causal claims, and say whether evidence is candidate-only or saved-text-based. Deduplicate syndication and flag uncertain dates, stale items and conflicting coverage. State feeds attempted/failed, selections saved/failed, partial extractions and verified/read file counts. Checksums prove saved-file integrity, **not** full publisher extraction, comprehensive source coverage or factual truth. Offer a focused follow-up rather than an unlimited discovery loop.

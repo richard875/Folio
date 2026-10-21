@@ -27,6 +27,32 @@
 
 When the user explicitly wants the latest saved articles, `read-latest --output-dir ...` may omit `--status-file`. Disclose that it reads the latest finished folder, not a particular new job; surface untracked-folder warnings, pending collections, failures and partial extractions. Use the ledger to identify verified files, then read their local contents.
 
+## Saved-text quality and retrieval failures
+
+Folio chooses retrieval methods and proxy routing server-side. Submit original
+publisher URLs returned as candidates, not WallHop/Freedium/archive wrappers.
+The portable client needs only Folio credentials, not proxy credentials. Do not
+fetch publishers directly, configure proxies or replay saves to force a method.
+Feed discovery succeeding does not establish full-text extraction availability.
+
+Saved text may contain Jina Markdown syntax or archived content; these formats
+are not themselves failures. First verify exact bytes/counts/checksums without
+normalizing markup or whitespace. Then inspect each selected file: does the body
+match the requested story and contain substantive reporting? An archive picker,
+challenge, service error or unrelated body is unusable evidence even when
+`partial=false` and integrity checks pass. Exclude it from story synthesis, retain
+its filename in the ledger, and report a content-quality/coverage gap separately
+from transport or checksum failure. Cite original publisher URLs, not a retrieval
+service's `sourceUrl`; snapshot dates are not publication dates.
+
+Per-article upstream 401/403/429, unsupported-site or timeout errors are not
+necessarily a Folio authentication failure. A request-level Folio 401 still means
+stop; request-level 429 follows the existing backoff instructions. Do not change
+credentials or automatically resubmit a finished batch because some articles
+failed. Use other already selected, usable saved coverage or report fewer stories.
+Successful local method checks do not establish deployed or publisher-wide
+availability. Do not promise that Freedium, Jina or any archive handles every URL.
+
 ## No authorized HTTP path
 
 State: “This chat cannot currently make authorized HTTPS requests to Folio. Installing a skill does not grant that access.” Offer uploaded credential-free candidate JSON or already saved article files. Analyze only supplied content and label its date/coverage. An authorized local operator can run the bundled CLI with environment credentials; do not ask for the access hash in chat, put it in a ZIP, or route it through web search/browser URLs. Do not claim live retrieval, saves or schedules took place.
