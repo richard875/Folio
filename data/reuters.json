@@ -685,47 +685,47 @@
   },
   {
     "site": "Reuters",
-    "section": "Australia",
+    "section": "All Reuters stories — Australia edition",
     "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com&ceid=AU:en&hl=en-AU&gl=AU",
     "ordering": "google-ranked",
     "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
+    "homepageScore": 4,
+    "edition": "Australia"
   },
   {
     "site": "Reuters",
-    "section": "Canada",
+    "section": "All Reuters stories — Canada edition",
     "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com&ceid=CA:en&hl=en-CA&gl=CA",
     "ordering": "google-ranked",
     "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
+    "homepageScore": 4,
+    "edition": "Canada"
   },
   {
     "site": "Reuters",
-    "section": "India",
+    "section": "All Reuters stories — India edition",
     "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com&ceid=IN:en&hl=en-IN&gl=IN",
     "ordering": "google-ranked",
     "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
+    "homepageScore": 4,
+    "edition": "India"
   },
   {
     "site": "Reuters",
-    "section": "Singapore",
+    "section": "All Reuters stories — Singapore edition",
     "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com&ceid=SG:en&hl=en-SG&gl=SG",
     "ordering": "google-ranked",
     "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
+    "homepageScore": 4,
+    "edition": "Singapore"
   },
   {
     "site": "Reuters",
-    "section": "United Kingdom",
+    "section": "All Reuters stories — United Kingdom edition",
     "url": "https://news.google.com/rss/search?q=when:24h+site:reuters.com&ceid=GB:en&hl=en-GB&gl=GB",
     "ordering": "google-ranked",
     "format": "rss",
-    "homepageScore": 8,
-    "edition": "US"
+    "homepageScore": 4,
+    "edition": "United Kingdom"
   }
 ]

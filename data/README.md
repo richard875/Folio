@@ -9,7 +9,7 @@ are not runtime data sources.
 
 **Only the single `section: "Main feed"` entry in each file is operational for daily collection.**
 `GET`/`POST /api/links`, `GET`/`POST /api/collect`, and their downstream automatic
-article-saving workflows use exactly these ten sources. The other 1544 entries
+article-saving workflows use exactly these ten sources. The other 1724 entries
 are inactive reference inventory in those operations: never fetched, ranked, used
 for corroboration, or used as fallback feeds there. Their query parameters and
 POST bodies cannot enable them.
@@ -63,7 +63,7 @@ not rewritten or purged; fresh collections always use only main feeds.
 The first five fields are required. Unknown fields and invalid entries fail
 validation. Duplicate non-main site/section/URL entries keep their first position
 in generic validation; duplicate Main feeds are always rejected, even if identical.
-`format` describes the source; the XML parser still detects its actual structure.
+`format` is a catalog hint; the parser detects XML or supported JSON from content.
 `editorial` preserves curated order, `newest`/`google-ranked` use freshness and
 coverage ranking, and `feed` uses the existing publisher-profile fallback.
 
@@ -147,11 +147,15 @@ recent articles: the supplied research's latest What's News item was 6 October,
 outside the existing 72-hour non-editorial window on 19 October. Sports can also
 age out. A configured feed is not a promise of a fresh article on each run.
 
+The updated `WSJ RSS Feeds Complete Verified List 2.md` confirms that the saved
+official RSS listing page was a 404, not a current feed directory. No additional
+article-feed URLs were found in that second research round.
+
 Podcasts (including active shows), sponsored series, frozen/empty feeds, Japanese
 Barron's/Capital Journal, JSON mirrors, dead URLs and unverified YouTube are not
 included in the stored inventory. The existing article/media/sponsored-content
-filters apply to active Main feed candidates; stored Japanese feeds are not
-executed, and their text extraction or publisher access is not newly guaranteed.
+filters apply to daily and explicitly selected candidates; stored Japanese feeds
+are inactive for daily collection, and extraction/access is not guaranteed.
 Adding reference inventory alone does not create collection requests or proxy
 traffic. Only the selected Main feed participates; the other WSJ feeds do not
 contribute candidates or cross-publisher corroboration.
@@ -165,10 +169,13 @@ workbooks contain `Summary` and `All feeds` sheets, with 858 feed rows). The
 corrected workbook counts 624 live, 53 slowing and 181 stale feeds. The 21 October
 2026 re-check (`nyt_rss_feeds.xlsx`) added **205 Athletic feeds** (team, city,
 league and section feeds from The Athletic), 6 YouTube channels and 3 Athletic
-podcasts, bringing the workbook to 1,074 rows. Of those, **172 new live Athletic
-feeds** were added to `nyt.json`. The final stored NYT inventory has 715
-text-feed entries; prior Markdown progress counts and the superseded workbook are
-not current totals.
+podcasts, bringing the workbook to 1,074 rows. **171 new live Athletic feeds**
+were added to `nyt.json`, taking the stored inventory from 543 to **714** entries.
+The latest `nyt_rss_feeds_2.xlsx` has the same 1,074 primary URL rows and marks
+74 feeds on NYT's official RSS page. Its Travel/columnist alternate URLs are
+not separate stored records. Sports, Paul Krugman, Charles M. Blow and Farhad
+Manjoo are stale and already excluded. Arizona Cardinals and Winnipeg Jets
+remain unconfirmed and excluded; no URL was guessed or promoted to live.
 
 **These URLs were not directly verified.** The supplied research could not access
 NYT feeds; statuses come from Feedly's newest indexed item and Apple Podcasts.
@@ -191,13 +198,13 @@ within Folio's 72-hour window. No new live network audit was performed.
 | Topics: companies | 14 |
 | Topics: organizations | 15 |
 | Topics: people | 2 |
-| Athletic: leagues/sports (excluding Podcasts) | 43 |
-| Athletic: teams (NFL/NBA/MLB/NHL/soccer/college football) | 166 |
-| Athletic: cities | 39 |
+| Athletic: leagues/sports (excluding Podcasts) | 42 |
+| Athletic: teams (NFL/NBA/MLB/NHL/soccer/college football/college basketball) | 210 |
+| Athletic: cities | 44 |
 | Athletic: writers | 9 |
 | Athletic: newsletters/tags | 2 |
 | Other products: Chinese simplified/traditional, Cooking, Wirecutter | 4 |
-| **Total NY Times** | **543** |
+| **Total NY Times** | **714** |
 
 Every exact NY Times URL and section label is in [`nyt.json`](nyt.json). Section feeds
 use `https://rss.nytimes.com/services/xml/rss/nyt/<Name>.xml`; collection URLs use
@@ -231,13 +238,19 @@ The corrected workbooks supersede the earlier research workbooks. **Corrected 20
 text URLs were added (Soccer and Tripp Mickle), three slowing/stale feeds became live
 again (Fashion, Jobs, Soccer), and Fashion now uses `Fashion.xml` instead of the
 `Style.xml` alias. The live `JobMarket.xml` URL is not duplicated because `Jobs.xml`
-is already stored. The corrected inventory therefore contains 543 entries; the
-HomePage Main feed is unchanged. The live `JobMarket.xml` URL is not
-duplicated because `Jobs.xml` is already stored. The corrected inventory therefore
-contains 543 entries; the HomePage Main feed is unchanged. The corrected file marks every one of these 543 stored URLs live.
+is already stored. That historical correction produced 543 entries before the
+171 Athletic additions; the HomePage Main feed remains unchanged.
 
-Of the 858 corrected workbook rows, the following categories remain excluded from
-the stored text inventory:
+The latest workbook marks **713 of the 714 stored URLs live** and the retained
+Tressie McMillan Cottom column **slowing** (newest indexed item 19 September).
+This existing reference is preserved, not represented as newly verified live.
+Freshness filters still apply when it is explicitly selected. Of 1,074 primary
+rows, **360 are excluded**: 184 stale, 66 slowing, 21 unconfirmed and 89 live
+audio/video/quiz/game/corporate or redundant alias rows. The 307 retained Athletic
+URLs include 42 league/sport, 210 team, 44 city, nine writer and two tag feeds.
+
+For provenance, the earlier 858-row correction excluded the following rows
+before the later Athletic expansion (not current overall totals):
 
 | Reason | Rows |
 | --- | ---: |
@@ -263,8 +276,9 @@ The Headlines, The Interview, The Opinions, Student News Quiz, Wordplay (Gamepla
 Shows (podcasts), News Quiz, and Athletic Podcasts. Some may include transcripts,
 but they are not treated as general text-news feeds. Mixed text collections such
 as What to Watch and Graphics remain stored references, not operational feeds.
-`slowing` is not proof a feed is permanently stopped; it is conservatively left
-out of the stored inventory. NYT Open is in that group. No row status proves that
+`slowing` is not proof a feed is permanently stopped. Most such rows, including
+NYT Open, remain excluded; the retained Cottom reference is disclosed above.
+No row status proves that
 Folio can successfully fetch or extract that source.
 
 ### Corrected NY Times and Washington Post research
@@ -272,20 +286,24 @@ Folio can successfully fetch or extract that source.
 The Economist research included corrected replacements for the earlier NYT and WaPo
 workbooks. The corrected NYT workbook is the supplied `nyt_rss_feeds_new.xlsx`:
 it rechecked Feedly-indexed rows against actual newest article dates. It reports
-**624 live rows**, with 23 status changes from the earlier workbook. The 543-entry
-NYT inventory removes 15 newly non-live stored references, adds live Soccer and
-Tripp Mickle, corrects the Fashion URL to `Fashion.xml`, and avoids duplicating
+**624 live rows**, with 23 status changes from the earlier workbook. The then-543-entry
+NYT inventory removed 15 newly non-live stored references, added live Soccer and
+Tripp Mickle, corrected the Fashion URL to `Fashion.xml`, and avoided duplicating
 the live `JobMarket.xml` alias. The NYT Main feed is unchanged. The workbook's
 cached category formulas reconcile all 858 rows. Actual article dates were verified
 against Feedly's newest indexed item for each feed.
 
 The corrected WaPo workbook is `washington_post_rss_feeds_new.xlsx`. It rechecks
 Feedly dates against newest article dates, reports **56 live rows**, and records
-four status changes. All 50 stored text-feed URLs remain live and unchanged — WaPo
-is unchanged at 56 — so `wapo.json` required no URL changes. Its Summary formulas
+four status changes. Its 50 stored text-feed URLs were unchanged; 56 was the
+workbook's live-row count including six podcasts, not the stored inventory size.
+That correction required no URL changes. Its Summary formulas
 reconcile all 499 rows.
 Both updated lists remain third-party research rather than fresh Folio network
 audits; only each publisher's Main feed is operational.
+
+These are historical correction counts. The latest stored counts are 714 NYT
+and 53 WaPo as detailed in their current inventory sections.
 
 ### Economist stored article-feed inventory
 
@@ -295,13 +313,13 @@ dated 20 October 2026. The workbook reports 69 live, 45 slowing, 144 stale and
 four unconfirmed rows; its cached Summary formulas reconcile all 262 records.
 The research did not open Economist feeds because its robots.txt bars automated
 fetching; dates come from Feedly except Acast/EIU checks. No fresh Economist audit
-was performed, and none of these additions is operational.
+was performed, and none of these additions is operational for daily collection.
 
 Stored text-oriented references include the current weekly-edition sections,
 1843, 17 older RSS aliases, 15 numbered print-section feeds, one older section
 feed, two live graphic-detail blog addresses, and six EIU feeds. Podcasts,
 discontinued/stale/slowing/unconfirmed feeds, video, and the podcast-page feed
-are excluded. HTTP legacy URLs are preserved as inactive references exactly as
+are excluded. HTTP legacy URLs are preserved as daily-inactive references exactly as
 researched; they are not silently upgraded. The fixed weekly/print/archive URLs
 do not create a rolling discovery mechanism. All 64 Economist entries retain
 `ordering: newest`, `homepageScore: 5`, and RSS/news-sitemap formats matching
@@ -311,13 +329,21 @@ Every exact added URL and section is in [economist.json](economist.json). The
 Economist's Main feed is a normal RSS latest feed; unlike Bloomberg, this inventory
 does not add a sitemap replacement.
 
+The latest `economist_rss_feeds_2.xlsx` was read across both sheets: **263 rows**,
+70 live, 43 slowing, 147 stale and three unconfirmed (80 cached Summary formulas).
+All 64 retained URLs are live in that research. The 199 excluded rows comprise
+193 non-live rows and six live audio/YouTube/podcast-page URLs. The additional
+podcast does not change the text inventory. The supplied Weekly Edition page is
+subscriber audio, not an RSS listing; no feed is invented from the 121 unconfirmed
+`/topics/` and menu-section probes in `new-research-2.md`.
+
 ### Washington Post stored article-feed inventory
 
 The existing Arc front-page `Main feed` is retained unchanged. The 52 reference
-additions come from the user-supplied `wapo_rss_feeds_2.xlsx` (`Summary` and all 503
+additions come from the user-supplied `washington_post_rss_feeds_2.xlsx` (`Summary` and all 503
 records in `All feeds`) and `new-research-2.md`. The research is dated 21 October
 2026; the file additions were made on 21 October. The Markdown refers to a
-different workbook filename, but the supplied `wapo_rss_feeds_2.xlsx` is the
+different workbook filename, but the supplied `washington_post_rss_feeds_2.xlsx` is the
 actual source read.
 
 **These are research-indexed URLs, not newly verified working feeds.** The
@@ -325,10 +351,10 @@ researcher could not directly access the main WaPo site and used third-party
 Feedly/Apple records. Its old-host 502 observations are historical reports, not tests run by
 Folio. `live` means a new indexed item within the research's 30-day window;
 low-subscriber feeds may have lagging dates. No live fetch or extraction audit
-was performed, and none of these additions is enabled for API collection.
+was performed, and none of these additions is enabled for daily API collection.
 
-Three feeds were added on WaPo's official RSS page (updated 21 May 2026) that
-were not in the previous inventory:
+Three URLs listed on WaPo's official RSS page (updated 21 May 2026) were added
+to this inventory; this does not assert when WaPo first listed them:
 
 | Section | Added URL | Status |
 | --- | --- | --- |
@@ -336,13 +362,15 @@ were not in the previous inventory:
 | The Optimist | `https://www.washingtonpost.com/arcio/rss/category/lifestyle/inspired-life/` | slowing |
 | Going Out Guide | `https://www.washingtonpost.com/arcio/rss/category/entertainment/going-out-guide/` | unconfirmed |
 
-George F. Will's previous `feeds.washingtonpost.com` address stopped in 2023; the
-new Arc address is live as of 16 October 2026.
+The workbook reports that the Arc `author/George-Will/` form stopped in May 2023;
+the newly retained Arc form has an indexed item dated 16 October 2026. The old
+`feeds.washingtonpost.com` linkset is instead classified `host down`, with a
+16 October indexed item. These are distinct endpoints, not the same failure.
 
 | Stored group | Feeds | Operational feeds |
 | --- | ---: | ---: |
 | Arc front page (`Main feed`) | 1 | 1 |
-| Arc sections/subsections | 13 | 0 |
+| Arc sections/subsections | 15 | 0 |
 | Arc writers | 34 | 0 |
 | Older writer pages | 2 | 0 |
 | Legacy George F. Will XML feed | 1 | 0 |
@@ -390,18 +418,21 @@ Of the workbook's 503 rows, 53 text-feed URLs are stored and 450 are excluded:
 | Exclusion | Rows |
 | --- | ---: |
 | `host down` (old-host feeds reported as returning 502) | 46 |
-| `slowing` (31–365 days without an indexed item) | 113 |
+| `slowing` (excluding the retained Optimist reference) | 112 |
 | `stale` (over a year without an indexed item) | 284 |
 | `unknown` (Arc Editorials; no last-item date) | 1 |
-| `live` audio podcasts | 6 |
+| `live` audio podcasts and YouTube | 7 |
 
 All podcast categories, including ended/sponsored/co-produced shows, are excluded;
 non-live podcasts are counted under their status above, not counted twice.
-Slowing is not proof of permanent closure, and a host outage may recover. Both
-remain excluded from this research-based inventory addition.
+Slowing is not proof of permanent closure, and a host outage may recover.
+The Optimist (slowing) and Going Out Guide (unconfirmed) are explicit official-page
+reference exceptions; neither is described as live or enabled for daily collection.
+Of the 53 stored URLs, 51 are live, one slowing and one unconfirmed in the research.
 
-The 90 cached Summary formula counts match the 503 source rows, but its four
-status columns total only 502 because they omit the one `unknown` row. The
+The 75 cached Summary formula counts match the source categories. The displayed
+four status columns total 501 of 503 because they omit both the one `unknown`
+row and the one `unconfirmed` row. The
 workbook specifically marks the pre-2014 Will XML URL `live`, with a last item
 dated 16 October, contradicting the Markdown's blanket claim that all pre-2014
 feeds are dead. This specific row is retained as an explicitly labelled,
@@ -461,7 +492,8 @@ and its `/authors/` versus `/opinion/authors/` path. Alternate cells, older
 `feeds.bloomberg.com` aliases and guessed section/writer patterns are not added.
 The dated `/sitemaps/news/2026-10.xml` reference is a fixed October archive, not
 an automatically rolling monthly feed. No index crawling or monthly URL generation
-is introduced; sitemap indexes are not supported feed inputs for this purpose.
+is introduced for daily collection; the separate selective workflow supports
+bounded, shallow same-origin sitemap-index traversal.
 
 Other references include BloombergNEF, Professional Services insights, Professional
 Brazil, Bloomberg HT, Línea (Spanish and Brazilian editions), Technoz, TV Bulgaria,
@@ -478,7 +510,9 @@ language labels on partner/Brazil records are informational, not language filter
 The supplied Professional Brazil URL is HTTP and is preserved verbatim as an
 inactive reference; it was not silently changed to an unverified HTTPS endpoint.
 No publisher-domain allowlists, retrieval orders, proxy policies or summary rules
-were expanded for partner domains. They are never fetched through collection.
+were expanded for partner domains. They are never fetched through daily collection;
+explicit selective requests may fetch their feeds, but incompatible article
+domains are still filtered and reported rather than silently allowed.
 
 #### Bloomberg exclusions
 
@@ -501,7 +535,15 @@ Eli Lake and Jonathan Bernstein writer feeds are not stored. Slowing is not proo
 of permanent closure; the inventory conservatively follows the research's live
 classification. Unverified YouTube feeds and unlisted regional/subsection guesses
 are not added. All 60 additions remain inactive: only the original sitemap Main
-feed participates in APIs, ranking, corroboration or automatic downstream saving.
+feed participates in daily APIs, ranking, corroboration or automatic downstream saving.
+
+The later `new1/bloomberg_rss_feeds.xlsx` contains **229 rows** (133 live,
+12 slowing, 63 stale, seven empty and 14 gone), with 66 cached Summary formulas.
+All 61 stored URLs remain live in the supplied research; no new text-feed URL
+was missed. The latest **168 exclusions** are 132 podcast rows, eight YouTube
+rows, 20 non-live writer rows, four non-live section rows and four discovery/media
+sitemap or section-front rows. The 217-row figures above describe the initial
+source batch, not the latest workbook totals.
 
 ### CNBC stored feed inventory
 
@@ -567,8 +609,17 @@ text articles: CNBC media/AP/Select and general article filters remain unchanged
 Of 201 source rows, **97 are excluded**: all 67 non-live rows (16 slowing,
 48 stale, 3 empty), 21 live podcast feeds, five live YouTube feeds, three live
 old podcast addresses, and one live smart-speaker audio feed. Separately owned
-CNBC-branded outlets are outside the supplied workbook and were not added.
+CNBC-branded outlets were outside that initial 201-row workbook and were not added.
 Neither workbook nor Markdown is a runtime dependency.
+
+The later `new1/cnbc_rss_feeds.xlsx` contains **208 rows** (139 live, 16 slowing,
+50 stale, three empty), with 96 cached Summary formulas. The 104 stored URLs
+remain live and unchanged. Seven added research rows do not add core CNBC text
+feeds: two stale CNBC World show URLs and five separately owned licensed-outlet
+feeds. The latter are explicitly excluded, not claimed absent from the research.
+Latest exclusions total **104**: 69 non-live rows, 21 live podcasts, five live
+YouTube rows, three old podcast URLs, one smart-speaker feed and five licensed
+outlet feeds. Publisher/domain restrictions are unchanged.
 
 There is exactly **one CNBC Main feed** and **ten Main feeds overall**. Adding
 Cybersecurity does not expand GET/POST `/api/links`, GET/POST `/api/collect`,
@@ -576,9 +627,57 @@ their ranking pool or downstream automatic saving. No fallback, proxy policy,
 retrieval order or extraction-domain rule changes. The separately authorized
 selective workflow remains opt-in and unchanged.
 
+### Reuters stored feed inventory
+
+The latest supplied `new1/reuters_rss_feeds.xlsx` has **263 primary URL rows**
+across `Summary` and `All feeds`. The stored **81** entries comprise 77 rows
+classified `active section` and four `live` rows. An `active section` is a
+research-listed Google News query, not evidence of a fetched recent item.
+The 182 omitted rows comprise 142 stale, six slowing, eight unconfirmed, seven
+older-stories-only, six old-path and 13 live audio/YouTube/corporate rows.
+
+The five added all-stories Google News editions are Australia (`AU:en`), Canada
+(`CA:en`), India (`IN:en`), Singapore (`SG:en`) and United Kingdom (`GB:en`).
+Their query is `when:24h site:reuters.com`: locale preferences, **not country-topic
+filters**. Labels now say `All Reuters stories — … edition`, editions match the
+locale, and all retain Reuters' existing `homepageScore: 4` (not an invented 8).
+The original US Main feed, URL, weight and Google News resolution/description
+summary policy are unchanged. Label corrections change those five feed IDs and
+the catalog version; clients must rediscover rather than reuse stale selections.
+
+### Business Insider stored feed inventory
+
+Both sheets of `business_insider_rss_feeds_2.xlsx` contain **284 primary URL rows**:
+142 live, 32 slowing and 110 stale. The **129 stored URLs** are all marked live
+in that research. The 155 excluded rows are 142 non-live rows plus eight live
+old-address aliases, three live podcasts and two live YouTube feeds. The India
+edition remains excluded: the supplied saved page/research reports it offline;
+this review did not independently test DNS or availability.
+
+The original Google News sitemap Main feed is retained, despite the research
+also recommending a normal RSS all-news URL. That RSS URL is a stored reference,
+not an automatic sitemap replacement or fallback. Non-US licensed editions and
+Insider feeds do not change extraction allowlists or publisher counts.
+
+### Financial Times and Foreign Policy re-check
+
+Both sheets of the later `new1` workbooks were reviewed. Financial Times has
+**564 rows**: 438 live, 33 slowing, 90 stale and three `do not use`. Of the
+**427 stored entries**, 426 are selected live workbook URLs; the existing
+`https://www.ft.com/?format=rss` Main feed is additionally preserved even though
+that exact URL is not a primary workbook row. The 138 omitted source rows are
+126 non-live rows and 12 live podcast/YouTube/podcast-page rows. The added
+podcasts/YouTube channels do not expand the text inventory.
+
+Foreign Policy has **179 rows**: 88 live, 33 slowing, 44 stale, 12 empty and two
+unconfirmed. Its **65 retained URLs** are all live in the research. The 114
+excluded rows are 91 non-live rows plus 17 live forwarding aliases and six live
+podcast feeds. The later podcast/stale-YouTube additions add no article feeds.
+Both publishers' Main feeds and retrieval configuration remain unchanged.
+
 ## Collection cost and downstream limits
 
-Each fresh collection attempts **ten main feed sources**, not all 1554 stored
+Each fresh collection attempts **ten main feed sources**, not all 1734 stored
 entries. Retries and Google News resolution may require additional requests;
 ten sources does not mean exactly ten outbound requests. `RSS_LINKS_PER_SECTION`
 controls article output, not which feed sources are active. There is no new

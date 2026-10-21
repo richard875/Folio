@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import { test } from "node:test";
 import { parseLinksReport } from "../src/lib/rss/report.ts";
-import { mainFeeds, publisherCatalogs } from "../src/lib/rss/sources.ts";
+import { feedInventory, mainFeeds, publisherCatalogs } from "../src/lib/rss/sources.ts";
 
 const root = new URL("../", import.meta.url);
 const guides = [
@@ -40,6 +40,9 @@ test("current documentation distinguishes publisher inventories from ten active 
   for (const path of guides) {
     const text = (await readGuide(path)).replace(/\s+/g, " ");
     assert.doesNotMatch(text, /data\/feeds\.json|All 599 feeds are requested|All 599 feeds are fetched|up to 599 entries|at most 599 entries/i, path);
+    for (const match of text.replace(/[*`]/g, "").matchAll(/other (\d+) (?:stored )?(?:feed )?(?:entries|reference feeds|are reference-only)/g)) {
+      assert.equal(Number(match[1]), feedInventory.length - mainFeeds.length, `${path}: reference-only count`);
+    }
   }
   for (const path of ["README.md", "data/README.md", "scripts/fetch-links.md", "scripts/collect-articles.md",
     "scripts/swagger.md", "deployment.md", "docs/prompts/daily-news-brief.md", "docs/skills/universal-article-reader/SKILL.md"]) {

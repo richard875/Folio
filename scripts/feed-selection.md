@@ -59,7 +59,7 @@ come only from the feed, never generated text or fetched article bodies:
   short/headline-only text and publisher labels such as `Reuters`. Do not replace
   a missing description with the title. The summary follows its URL through Google
   resolution. This exception does not apply to other RSS/Atom sources or the
-  legacy, unconfigured Reuters JSON branch.
+   content-detected Reuters JSON feeds.
 
 All summaries are capped at 1,000 characters, with an ellipsis when truncated.
 Empty descriptions are omitted. These excerpts/headlines are not full article
@@ -69,8 +69,8 @@ See the [links API and JSON schema](fetch-links.md) for the stored report contra
 
 ## Freshness and importance
 
-The [stored inventory](../data/README.md) includes 35 WSJ, 543 NY Times,
-50 Washington Post, 61 Bloomberg and 64 Economist entries,
+The [stored inventory](../data/README.md) has 1734 entries, including 36 WSJ,
+714 NY Times, 53 Washington Post, 61 Bloomberg and 64 Economist entries,
 but daily operations use only each publisher's Main feed. Research freshness/status
 claims for reference feeds do not enable them. Main-feed ordering and existing
 freshness rules are unchanged; no reference-feed candidates influence ranking.

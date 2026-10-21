@@ -122,7 +122,7 @@ Do not raise concurrency on Free without measuring RSS.
 The ten publisher JSON inventories under `data/` are bundled through
 `src/lib/rss/sources.ts`; rebuild/redeploy after editing them. Only the ten Main
 feeds (one per publisher) are operational for both links and collection APIs.
-The other 1544 stored entries are reference-only for daily operations, never fetched
+The other 1724 stored entries are reference-only for daily operations, never fetched
 or used as fallback feeds there. Explicit [selective feed fetching](scripts/selective-feeds.md)
 uses catalog IDs, independent candidate limits, a shared feed admission slot and
 bounded synchronous requests; it creates no jobs or reports. With

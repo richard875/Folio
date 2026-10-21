@@ -21,6 +21,9 @@ test("ten publisher files preserve the complete inventory but expose only one ma
     assert.equal(entries.filter(({ section }) => section === "Main feed").length, 1);
   }
   assert.equal(catalog.length - mainFeeds.length, 1724);
+  assert.equal(createHash("sha256").update(JSON.stringify(mainFeeds)).digest("hex"),
+    "c9324c2345866d77d19b5e73a0b8b29acbba11830a8bc558a8b5886d3f0a52b0",
+    "All ten original Main feeds and their metadata must remain unchanged");
 });
 
 test("main selection fails closed on missing or duplicate mains, including identical duplicates", () => {
@@ -76,7 +79,7 @@ test("feed README inventories every added WSJ section and documents the new cata
   }
 });
 
-test("NY Times catalog matches the offline workbook's selected live text-feed URL inventory", () => {
+test("NY Times catalog matches the offline workbook's selected text-feed URL inventory", () => {
   const nyt = validateFeedCatalog(catalog).filter(({ site }) => site === "NY Times");
   assert.equal(nyt.length, 714);
   // SHA-256 of sorted, newline-joined exact selected URL cells from All feeds.
@@ -116,7 +119,7 @@ test("NY Times catalog excludes known aliases, inactive feeds, non-text collecti
   assert.ok(nyt.some(({ url }) => url === "https://www.nytimes.com/wirecutter/feed/"));
 });
 
-test("Washington Post reference inventory matches the workbook's 53 live text-feed URL cells", () => {
+test("Washington Post reference inventory matches 51 live and two official-page exception URLs", () => {
   const wapo = validateFeedCatalog(catalog).filter(({ site }) => site === "Washington Post");
   assert.equal(wapo.length, 53);
   // Reviewed offline against all 503 workbook rows; no Downloads dependency in QA.
@@ -143,11 +146,11 @@ test("Washington Post reference inventory matches the workbook's 53 live text-fe
 
 test("Washington Post guide records exclusions, source discrepancies and inactive-reference status", async () => {
   const text = (await readFile(new URL("data/README.md", root), "utf8")).replace(/\s+/g, " ");
-  for (const fact of ["wapo_rss_feeds_2.xlsx", "new-research-2.md", "503", "450", "unknown",
-    "90 cached", "third-party", "legacy reference", "502"])
+  for (const fact of ["washington_post_rss_feeds_2.xlsx", "new-research-2.md", "503", "450", "unknown",
+    "75 cached", "third-party", "legacy reference", "502"])
     assert.ok(text.includes(fact), fact);
   assert.match(text, /Washington Post.*53/);
-  assert.match(text, /none of these additions is enabled for API collection/);
+  assert.match(text, /none of these additions is enabled for daily API collection/);
   assert.match(text, /No live fetch or extraction audit/);
 });
 
@@ -201,10 +204,60 @@ test("Economist inventory matches the reviewed workbook's 64 selected text-feed 
 
 test("corrected NYT and WaPo research provenance is documented", async () => {
   const readme = (await readFile(new URL("data/README.md", root), "utf8")).replace(/\s+/g, " ");
-  for (const fact of ["corrected 20 october", "624", "23 of 858", "corrected workbooks", "wapo is unchanged at 56"]) {
+  for (const fact of ["corrected 20 october", "624", "23 of 858", "corrected workbooks", "56 was the workbook's live-row count"]) {
     assert.ok(readme.toLowerCase().includes(fact), fact);
   }
   assert.match(readme, /actual article|true dates|Feedly feed-level dates/i);
+});
+
+test("Reuters locale editions retain publisher weight and cannot masquerade as country-topic feeds", () => {
+  const reuters = catalog.filter(({ site }) => site === "Reuters");
+  assert.equal(reuters.length, 81);
+  assert.ok(reuters.every(({ homepageScore }) => homepageScore === 4));
+  for (const [edition, country, language] of [
+    ["Australia", "AU", "en-AU"], ["Canada", "CA", "en-CA"], ["India", "IN", "en-IN"],
+    ["Singapore", "SG", "en-SG"], ["United Kingdom", "GB", "en-GB"],
+  ]) {
+    const record = reuters.find(({ section }) => section === `All Reuters stories — ${edition} edition`);
+    assert.ok(record, edition);
+    const query = new URL(record.url).searchParams;
+    assert.equal(record.edition, edition);
+    assert.equal(record.ordering, "google-ranked");
+    assert.equal(query.get("q"), "when:24h site:reuters.com");
+    assert.equal(query.get("ceid"), `${country}:en`);
+    assert.equal(query.get("gl"), country);
+    assert.equal(query.get("hl"), language);
+  }
+});
+
+test("remaining publisher inventories preserve offline-reviewed exact URLs", () => {
+  // Reviewed against every sheet of the latest supplied workbooks. FT additionally
+  // retains its pre-existing Main URL, which is not a primary workbook URL cell.
+  for (const [site, count, digest] of [
+    ["Financial Times", 427, "55214178e064d7e43da1e8d324b9cb6d0ccce7f2f5613abf9dc227b740e205ab"],
+    ["Foreign Policy", 65, "6320e9e42d69386e4283987ba6158d10c6c47079956029c9b1cee16129ae82a1"],
+    ["Business Insider", 129, "48eb4c3cfcd86f3d8dbd6ebef04b8e5e439698678bcc23eb88cf11054441a104"],
+    ["Reuters", 81, "93e8bcdc752f0bb3f1b270de530444ed4daa9967882c136e71f9cc4ae93a0d43"],
+  ]) {
+    const feeds = catalog.filter((feed) => feed.site === site);
+    assert.equal(feeds.length, count, site);
+    assert.equal(createHash("sha256").update(feeds.map(({ url }) => url).sort().join("\n")).digest("hex"), digest, site);
+  }
+});
+
+test("current inventory guide tables reconcile with stored publisher groups and exclusions", async () => {
+  const text = await readFile(new URL("data/README.md", root), "utf8");
+  const table = (heading, end) => text.split(heading)[1].split(end)[0];
+  const sum = (body) => [...body.matchAll(/^\| (?!\*\*Total)[^|]+\| (\d+) \|/gm)]
+    .reduce((total, match) => total + Number(match[1]), 0);
+  assert.equal(sum(table("| Included group | Feeds |", "Every exact NY Times")), 714);
+  assert.equal(sum(table("| Stored group | Feeds | Operational feeds |", "Section URLs use")), 53);
+  assert.equal(sum(table("#### Washington Post exclusions", "All podcast categories")), 450);
+  assert.match(text, /The other 1724 entries/);
+  assert.match(text, /not all 1734 stored/);
+  assert.match(text, /\*\*713 of the 714 stored URLs live\*\*/);
+  assert.match(text, /Tressie McMillan Cottom column \*\*slowing\*\*/);
+  assert.doesNotMatch(text, /wapo_rss_feeds_2\.xlsx|715\s+text-feed|172 new live Athletic|old.*host.*stopped in 2023/);
 });
 
 test("CNBC updated workbook adds only Cybersecurity and preserves its sole editorial Main feed", () => {
