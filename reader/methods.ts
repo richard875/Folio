@@ -27,14 +27,24 @@ export type RetrievalMethod = {
   totalBudgetMs?: number;
   /** Service headers must never be forwarded to another redirect hostname. */
   headers?: { hostname: string; values: Readonly<Record<string, string>> };
+  /** Normal document request first; legacy loader headers are used only if advertised. */
+  navigationHeaders?: Readonly<Record<string, string>>;
 };
 
 export const METHODS = {
   wallhop: {
     name: "WallHop (normal HTML page)",
     url: "https://wallhop.io/{url}",
-    // Its normal WSJ page loads this same URL with the header below.
-    // No /raw or /api endpoints; no page scripts are executed by Folio.
+    // Current pages serve the article on document navigation. Sending the old
+    // load header immediately can return an empty 403. Keep it only for pages
+    // explicitly advertising that legacy loader; never execute page scripts.
+    navigationHeaders: {
+      "sec-fetch-dest": "document",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-site": "none",
+      "sec-fetch-user": "?1",
+      "upgrade-insecure-requests": "1",
+    },
     headers: { hostname: "wallhop.io", values: { "X-Wallhop-Load": "1" } },
     attemptTimeoutMs: 25_000,
     totalBudgetMs: 25_000,

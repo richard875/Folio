@@ -42,8 +42,9 @@ export async function fetchHtmlWithRedirects(
   const attemptMs = definition?.attemptTimeoutMs ?? METHOD_DEFAULTS.attemptTimeoutMs;
   const maxBytes = boundedInteger(process.env.ARTICLE_MAX_RESPONSE_BYTES, DEFAULT_MAX_BYTES, HARD_MAX_BYTES);
   let currentUrl = url;
+  let loadRequested = false;
 
-  for (let attempt = 0; ; attempt++) {
+  for (let attempt = 0; ; ) {
     const remainingMs = probeDeadline - Date.now();
     if (remainingMs <= 0) throw new Error("time budget");
 
@@ -67,7 +68,9 @@ export async function fetchHtmlWithRedirects(
             "accept-language": "en-US,en;q=0.9",
             // Recheck on every redirect; never leak service headers to origins.
             ...(definition?.headers?.hostname === new URL(currentUrl).hostname
-              ? definition.headers.values
+              ? definition.navigationHeaders && !loadRequested
+                ? definition.navigationHeaders
+                : definition.headers.values
               : {}),
           },
         }, maxBytes);
@@ -110,6 +113,7 @@ export async function fetchHtmlWithRedirects(
       if (permanentNetworkFailure(error) || error instanceof Error && "httpStatus" in error &&
           typeof error.httpStatus === "number" && error.httpStatus >= 400 && error.httpStatus < 500 && error.httpStatus !== 408) throw error;
       if (attempt >= limit || Date.now() >= probeDeadline) throw error;
+      attempt++;
       continue;
     }
 
@@ -117,8 +121,18 @@ export async function fetchHtmlWithRedirects(
     // method, not repeated requests for the same payload.
     if (type && !/html|text|json|xml/i.test(type)) throw new Error(`Unsupported type ${type}`);
     if (buf.byteLength > maxBytes) throw new Error(`Response too large (article limit: ${maxBytes} bytes).`);
+    const html = new TextDecoder("utf-8", { fatal: false }).decode(buf);
+    // Older WallHop pages advertise a same-URL fetch with this header. Support
+    // that one explicit loader step, not generic script execution or a new API.
+    // It shares the original method deadline, byte limit and retry allowance.
+    if (!loadRequested && definition?.navigationHeaders &&
+        definition.headers?.hostname === new URL(currentUrl).hostname &&
+        /<script\b[^>]*>[\s\S]*?\bX-Wallhop-Load\b[\s\S]*?<\/script\s*>/i.test(html)) {
+      loadRequested = true;
+      continue;
+    }
     return {
-      html: new TextDecoder("utf-8", { fatal: false }).decode(buf),
+      html,
       finalUrl,
     };
   }

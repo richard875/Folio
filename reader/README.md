@@ -19,6 +19,8 @@ publisher with Googlebot, Bingbot, Facebook, then Twitter user agents.
 
 WallHop uses normal HTML pages, never `/raw` or `/api`. Listed services are
 attempts, not guarantees of working or complete articles.
+It requests document navigation first; the legacy load header is used only when
+advertised by a loading-page script, within the same 25-second method budget.
 
 **Routing is separate from order:** explicitly bypassing `wallhop.io` and
 `freedium-mirror.cfd` makes those hosts direct; others use the configured proxy

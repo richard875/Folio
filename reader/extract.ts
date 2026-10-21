@@ -89,6 +89,16 @@ export type ParsedPage = {
   images: ArticleImage[];
 };
 
+/** DOM textContent does not insert paragraph boundaries (notably in linkedom). */
+function readableText(content: string): string {
+  const { document } = parseHTML(`<html><body>${content}</body></html>`);
+  for (const br of document.querySelectorAll("br")) br.replaceWith(document.createTextNode("\n"));
+  for (const block of document.querySelectorAll("p,div,section,article,h1,h2,h3,h4,h5,h6,li,blockquote,pre,figcaption,tr")) {
+    block.appendChild(document.createTextNode("\n\n"));
+  }
+  return document.body.textContent || "";
+}
+
 const CHALLENGE = /just a moment|enable javascript|cf-browser-verification|access denied|captcha|are you a robot/i;
 
 export function parseArticleHtml(html: string, pageUrl: string): ParsedPage | null {
@@ -128,7 +138,8 @@ export function parseArticleHtml(html: string, pageUrl: string): ParsedPage | nu
     meta(document, 'meta[name="date"]') ||
     "";
 
-  const text = (readable?.textContent || ld?.body || "").replace(/\n{3,}/g, "\n\n").trim();
+  const text = (readable?.content ? readableText(readable.content) : readable?.textContent || ld?.body || "")
+    .replace(/\n{3,}/g, "\n\n").trim();
   const images = readable?.content
     ? imagesFrom(parseHTML(readable.content).document, pageUrl)
     : imagesFrom(document, pageUrl);

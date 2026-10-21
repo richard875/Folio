@@ -196,9 +196,13 @@ Shared fallback method IDs, in order:
 19. `direct-facebook`
 20. `direct-twitter`
 
-WallHop uses `https://wallhop.io/{url}`, **never `/raw` or `/api`**. Folio sends
-`X-Wallhop-Load: 1` only to `wallhop.io` to load its normal article HTML instead of
-the JS loading screen. Do not remove that header or forward it to other hosts.
+WallHop uses `https://wallhop.io/{url}`, **never `/raw` or `/api`**. Folio requests
+document-navigation HTML first, without the legacy load header (sending it up
+front can return an empty 403). Only a returned script advertising the older
+loader enables one same-URL request with `X-Wallhop-Load: 1`. Keep that header
+as a hostname-scoped loader fallback; neither it nor the navigation headers may
+be forwarded to other hosts. Both steps share the caller-bounded 25-second
+allowance, without executing scripts or silently bypassing the configured proxy.
 The retired `freedium.cfd` is not scheduled; retain `freedium-mirror.cfd`.
 Archive.fo/li/md, Ghost Archive, AMP traversal and extra aggregators from older
 skill versions are not configured steps. Do not silently add them.
@@ -268,7 +272,8 @@ Third-party retrieval services control their own downstream publisher fetches.
   title and first 900 text characters but are imperfect; known Wayback boilerplate
   has previously been saved as an article. Reject such content in your assessment.
 - `partial=false` requires at least 1,400 characters and four paragraphs longer
-  than 40 characters, separated by blank lines. Long coherent text can therefore
+  than 40 characters, separated by blank lines. Readability-selected HTML retains
+  paragraph/block boundaries and line breaks in the extracted text. Long coherent text can still
   be marked partial when paragraph breaks are lost. Do not equate that heuristic
   with independently verified publisher completeness.
 - Candidate ranking largely favors text length. A substantial candidate stops a

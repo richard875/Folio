@@ -130,12 +130,20 @@ Edit `METHODS` in `methods.ts`. URL templates support:
 
 To add a service, define its `name` and `url` there, then insert its ID into the
 desired publisher arrays. Optional settings are `userAgent`, `attemptTimeoutMs`,
-`totalBudgetMs`, and hostname-scoped `headers`. Changing a template changes the
+`totalBudgetMs`, hostname-scoped `headers`, and optional `navigationHeaders`.
+Navigation headers share the service header's hostname scope. Changing a template changes the
 destination for every publisher using that method. Do not put credentials here.
 
-WallHop's 25-second allowance and `X-Wallhop-Load: 1` header live here. The header
-is sent only to `wallhop.io`, not forwarded to another redirect hostname. It loads
-article HTML from the same normal page URL rather than its JavaScript loading screen.
+WallHop's 25-second allowance and headers live here. Fetch normal document HTML
+first using navigation headers, not `X-Wallhop-Load: 1`: the latter can return an
+empty 403 on current pages. Only a returned script advertising that legacy loader
+enables one same-URL request with the load header. Both modes are scoped to
+`wallhop.io`; neither is forwarded to a different redirect hostname. The loader
+shares the original deadline, response limit and retry allowance, even when
+`FETCH_RETRY_LIMIT=0` (it is a distinct advertised step, not an automatic retry).
+No script execution, `/raw`/`/api` endpoint, proxy bypass or new extraction order
+is introduced. A fetched article can still be marked partial by the existing
+text/paragraph heuristic; success does not independently establish completeness.
 
 ## Fetch order is NOT proxy routing
 
@@ -175,8 +183,10 @@ selects random exit IPs independently. See the [pool setup](../README.md#multipl
 2. A parsed candidate marked `partial` does not stop the cascade. The reader keeps
    the longest candidate and tries later methods for something substantial.
 3. The existing substantial-content rule is at least **1,400 characters AND four
-   paragraphs over 40 characters, separated by blank lines**. Lost paragraph
-   breaks can mark long articles partial. This refactor does not change that rule.
+   paragraphs over 40 characters, separated by blank lines**. Extraction preserves
+   paragraph/block boundaries and HTML line breaks from Readability's selected
+   content rather than relying on DOM `textContent` to invent separators. Pages
+   without usable structure can still be marked partial; the thresholds are unchanged.
 4. A non-partial candidate ends the normal cascade. Rate-limited methods may get
    a later retry pass if no candidate exists and the total budget remains.
 5. `[read] extracted` reports the chosen result at the end, **not a new fetch**.

@@ -50,9 +50,11 @@ For the second-attempt group, the first attempt is the publisher page when the
 proxy is enabled/configured, otherwise Freedium Mirror. All existing fallbacks
 remain in their previous relative order. Later methods are tried when earlier
 ones fail or yield short/incomplete text; a substantial result can stop the cascade.
-For WSJ, WallHop's normal page loads article HTML from the same URL with
-`X-Wallhop-Load: 1`; Folio sends that header only to WallHop, without executing
-page scripts. WallHop gets at most **25 seconds total**, bounded by the existing
+Folio requests WallHop's normal page as document navigation first, without the
+legacy load header: current pages can return an empty 403 when it is sent up front.
+Only if a returned script advertises the older loader does Folio make one same-URL
+request with `X-Wallhop-Load: 1`, scoped to `wallhop.io`, without executing scripts.
+Navigation and the optional loader step share **25 seconds total**, bounded by the existing
 48-second article budget, because its WSJ loading page advertises 10–20 seconds.
 Query-bearing URLs split the normal passes into roughly 24 seconds each, so the
 remaining pass deadline can shorten that 25-second allowance.

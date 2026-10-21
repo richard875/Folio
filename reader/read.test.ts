@@ -4,6 +4,7 @@ import { hashMatches } from "./auth.ts";
 import { fetchHtml, fetchHtmlWithRedirects } from "./fetch.ts";
 import { readArticle } from "./read.ts";
 import { probeList } from "./targets.ts";
+import { isSubstantial, parseArticleHtml } from "./extract.ts";
 
 const originalFetch = globalThis.fetch;
 const originalAccessHash = process.env.ACCESS_HASH;
@@ -200,21 +201,115 @@ describe("extraction service catalog", () => {
 });
 
 describe("WallHop HTML extraction", () => {
-  it("requests normal-page article HTML and does not forward the load header to a redirected publisher", async () => {
-    const requested: Array<{ url: string; load: string | null }> = [];
+  it("preserves real article paragraphs instead of collapsing them into a falsely partial block", () => {
+    const paragraphs = ["First", "Second", "Third", "Fourth"].map((label) =>
+      `${label} paragraph explains the evidence. ` + "Detailed reporting on a developing situation gives readers context. ".repeat(8));
+    const html = `<html><head><title>Paragraph fixture</title></head><body><article>${paragraphs.map((p) => `<p>${p}<em>Inline emphasis.</em></p>`).join("")}</article></body></html>`;
+    const result = parseArticleHtml(html, "https://wallhop.io/https://www.wsj.com/paragraph-story");
+    assert.ok(result);
+    assert.ok(result.text.includes("Inline emphasis.\n\nSecond paragraph"));
+    for (const paragraph of paragraphs) assert.ok(result.text.includes(paragraph));
+    assert.equal(isSubstantial(result.text), true);
+    assert.equal(result.text.split(/\n\s*\n/).filter((p) => p.length > 40).length, 4);
+  });
+
+  it("requests document HTML first and does not forward WallHop headers to a redirected publisher", async () => {
+    const requested: Array<{ url: string; load: string | null; destination: string | null }> = [];
     globalThis.fetch = async (input, init) => {
-      requested.push({ url: String(input), load: new Headers(init?.headers).get("X-Wallhop-Load") });
+      requested.push({ url: String(input), load: new Headers(init?.headers).get("X-Wallhop-Load"), destination: new Headers(init?.headers).get("sec-fetch-dest") });
       return requested.length === 1
         ? new Response(null, { status: 302, headers: { location: "https://www.wsj.com/story" } })
         : articleResponse();
     };
     const result = await fetchHtmlWithRedirects("https://wallhop.io/https://www.wsj.com/story", "wallhop", Date.now() + 1000);
     assert.deepEqual(requested, [
-      { url: "https://wallhop.io/https://www.wsj.com/story", load: "1" },
-      { url: "https://www.wsj.com/story", load: null },
+      { url: "https://wallhop.io/https://www.wsj.com/story", load: null, destination: "document" },
+      { url: "https://www.wsj.com/story", load: null, destination: null },
     ]);
     assert.equal(result.finalUrl, "https://www.wsj.com/story");
     assert.ok(result.html.includes("Example article"));
+  });
+
+  it("reads the reported WSJ URL without the legacy header that returns an empty 403", async () => {
+    process.env.FETCH_RETRY_LIMIT = "0";
+    const url = "https://www.wsj.com/world/ukraine-starlink-elon-musk-trump-dbc49193?mod=hp_lead_pos1";
+    const requested: string[] = [];
+    globalThis.fetch = async (input, init) => {
+      requested.push(String(input));
+      const headers = new Headers(init?.headers);
+      if (headers.has("X-Wallhop-Load")) return new Response(null, { status: 403 });
+      assert.equal(headers.get("sec-fetch-dest"), "document");
+      assert.equal(headers.get("sec-fetch-mode"), "navigate");
+      assert.equal(headers.get("sec-fetch-site"), "none");
+      return articleResponse();
+    };
+    const result = await readArticle(url, ACCESS_HASH);
+    assert.equal(result.title, "Example article");
+    assert.equal(result.partial, false);
+    assert.deepEqual(requested, ["https://wallhop.io/https://www.wsj.com/world/ukraine-starlink-elon-musk-trump-dbc49193"]);
+  });
+
+  it("retains one advertised legacy loader step on the same URL even with retries disabled", async () => {
+    process.env.FETCH_RETRY_LIMIT = "0";
+    const headers: Headers[] = [];
+    const requested: string[] = [];
+    globalThis.fetch = async (input, init) => {
+      requested.push(String(input));
+      headers.push(new Headers(init?.headers));
+      return headers.length === 1
+        ? new Response('<html><body>Loading article<script>fetch(location.href, {headers: {"X-Wallhop-Load":"1"}})</script></body></html>')
+        : articleResponse();
+    };
+    const url = "https://wallhop.io/https://www.wsj.com/legacy-loader-story";
+    const html = await fetchHtml(url, "wallhop", Date.now() + 1000);
+    assert.ok(html.includes("Example article"));
+    assert.deepEqual(requested, [url, url]);
+    assert.equal(headers[0].get("sec-fetch-dest"), "document");
+    assert.equal(headers[0].get("X-Wallhop-Load"), null);
+    assert.equal(headers[1].get("X-Wallhop-Load"), "1");
+    assert.equal(headers[1].get("sec-fetch-dest"), null);
+  });
+
+  it("does not treat article prose mentioning the load header as a loading-page script", async () => {
+    let calls = 0;
+    globalThis.fetch = async (_input, init) => {
+      calls++;
+      assert.equal(new Headers(init?.headers).get("X-Wallhop-Load"), null);
+      return new Response('<html><body><article>The X-Wallhop-Load header is mentioned in this article.</article></body></html>');
+    };
+    await fetchHtml("https://wallhop.io/https://www.wsj.com/header-story", "wallhop", Date.now() + 1000);
+    assert.equal(calls, 1);
+  });
+
+  it("does not loop on legacy loaders or leak their header after a redirect", async () => {
+    process.env.FETCH_RETRY_LIMIT = "0";
+    const headers: Array<{ host: string; load: string | null }> = [];
+    globalThis.fetch = async (input, init) => {
+      headers.push({ host: new URL(String(input)).hostname, load: new Headers(init?.headers).get("X-Wallhop-Load") });
+      if (headers.length === 1) return new Response('<script>fetch(location.href, {headers: {"X-Wallhop-Load":"1"}})</script>');
+      if (headers.length === 2) return new Response(null, { status: 302, headers: { location: "https://www.wsj.com/legacy-result" } });
+      return articleResponse();
+    };
+    await fetchHtml("https://wallhop.io/https://www.wsj.com/legacy-result", "wallhop", Date.now() + 1000);
+    assert.deepEqual(headers, [
+      { host: "wallhop.io", load: null }, { host: "wallhop.io", load: "1" }, { host: "www.wsj.com", load: null },
+    ]);
+    let calls = 0;
+    globalThis.fetch = async () => { calls++; return new Response('<script>fetch(location.href, {headers: {"X-Wallhop-Load":"1"}})</script>'); };
+    await fetchHtml("https://wallhop.io/https://www.wsj.com/repeated-loader", "wallhop", Date.now() + 1000);
+    assert.equal(calls, 2);
+  });
+
+  it("shares the original deadline with the legacy loader rather than resetting its 25 seconds", async (t) => {
+    let now = Date.now();
+    t.mock.method(Date, "now", () => now);
+    let calls = 0;
+    globalThis.fetch = async () => {
+      calls++; now += 25100;
+      return new Response('<script>fetch(location.href, {headers: {"X-Wallhop-Load":"1"}})</script>');
+    };
+    await assert.rejects(fetchHtml("https://wallhop.io/https://www.wsj.com/slow-loader", "wallhop", now + 48000), /time budget/);
+    assert.equal(calls, 1);
   });
 
   it("allows slow WallHop HTML but caps the total method budget at 25 seconds in both transport modes", async (t) => {
@@ -247,7 +342,8 @@ describe("WallHop HTML extraction", () => {
       const requested: string[] = [];
       globalThis.fetch = async (input, init) => {
         requested.push(String(input));
-        assert.equal(new Headers(init?.headers).get("X-Wallhop-Load"), "1");
+        assert.equal(new Headers(init?.headers).get("X-Wallhop-Load"), null);
+        assert.equal(new Headers(init?.headers).get("sec-fetch-dest"), "document");
         return articleResponse();
       };
       const result = await readArticle(url, ACCESS_HASH);
