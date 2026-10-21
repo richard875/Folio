@@ -20,7 +20,7 @@ test("ten publisher files preserve the complete inventory but expose only one ma
     assert.ok(entries.every((feed) => feed.site === site));
     assert.equal(entries.filter(({ section }) => section === "Main feed").length, 1);
   }
-  assert.equal(catalog.length - mainFeeds.length, 1721);
+  assert.equal(catalog.length - mainFeeds.length, 1724);
 });
 
 test("main selection fails closed on missing or duplicate mains, including identical duplicates", () => {
@@ -35,9 +35,9 @@ test("main selection fails closed on missing or duplicate mains, including ident
 
 test("WSJ catalog includes exactly the researched active article feeds, including Japan and legacy", () => {
   const feeds = validateFeedCatalog(catalog);
-  assert.equal(feeds.length, 1731);
+  assert.equal(feeds.length, 1734);
   assert.equal(new Set(feeds.map(({ site }) => site)).size, 10);
-  assert.equal(new Set(feeds.map(({ site, url }) => `${site}:${url}`)).size, 1731);
+  assert.equal(new Set(feeds.map(({ site, url }) => `${site}:${url}`)).size, 1734);
   const wsj = feeds.filter(({ site }) => site === "WSJ");
   assert.equal(wsj.length, 36);
   const current = wsj.filter(({ url }) => new URL(url).hostname === "feeds.content.dowjones.io");
@@ -116,17 +116,17 @@ test("NY Times catalog excludes known aliases, inactive feeds, non-text collecti
   assert.ok(nyt.some(({ url }) => url === "https://www.nytimes.com/wirecutter/feed/"));
 });
 
-test("Washington Post reference inventory matches the workbook's 50 live text-feed URL cells", () => {
+test("Washington Post reference inventory matches the workbook's 53 live text-feed URL cells", () => {
   const wapo = validateFeedCatalog(catalog).filter(({ site }) => site === "Washington Post");
-  assert.equal(wapo.length, 50);
-  // Reviewed offline against all 499 workbook rows; no Downloads dependency in QA.
+  assert.equal(wapo.length, 53);
+  // Reviewed offline against all 503 workbook rows; no Downloads dependency in QA.
   assert.equal(createHash("sha256").update(wapo.map(({ url }) => url).sort().join("\n")).digest("hex"),
-    "3b0d6833da2d315429cf606fe580a9e7603fcc69d97d7708be1acaf08d1f0a18");
-  assert.equal(wapo.filter(({ url }) => url.includes("/arcio/rss/category/")).length, 13);
-  assert.equal(wapo.filter(({ section }) => section.startsWith("Writer — ")).length, 33);
+    "4fcba8a73a164bac67bf37679068e7abf1bc57047fad95860dc52d5127eb7c73");
+  assert.equal(wapo.filter(({ url }) => url.includes("/arcio/rss/category/")).length, 15);
+  assert.equal(wapo.filter(({ section }) => section.startsWith("Writer — ")).length, 34);
   assert.equal(wapo.filter(({ section }) => section.startsWith("Writer (legacy page) — ")).length, 2);
   assert.equal(wapo.filter(({ section }) => section.startsWith("Writer (legacy XML) — ")).length, 1);
-  assert.equal(new Set(wapo.map(({ section }) => section)).size, 50);
+  assert.equal(new Set(wapo.map(({ section }) => section)).size, 53);
   assert.ok(wapo.every(({ site, url, ordering, format, homepageScore, edition }) =>
     site === "Washington Post" && new URL(url).hostname === "www.washingtonpost.com" &&
     new URL(url).protocol === "https:" && ordering === "newest" && format === "rss" && homepageScore === 6 && edition === "US"));
@@ -143,10 +143,10 @@ test("Washington Post reference inventory matches the workbook's 50 live text-fe
 
 test("Washington Post guide records exclusions, source discrepancies and inactive-reference status", async () => {
   const text = (await readFile(new URL("data/README.md", root), "utf8")).replace(/\s+/g, " ");
-  for (const fact of ["wapo_rss_feeds.xlsx", "wapo_rss.md", "499", "449", "unknown",
-    "70 cached", "third-party", "legacy reference", "502"])
+  for (const fact of ["wapo_rss_feeds_2.xlsx", "new-research-2.md", "503", "450", "unknown",
+    "90 cached", "third-party", "legacy reference", "502"])
     assert.ok(text.includes(fact), fact);
-  assert.match(text, /Washington Post.*50/);
+  assert.match(text, /Washington Post.*53/);
   assert.match(text, /none of these additions is enabled for API collection/);
   assert.match(text, /No live fetch or extraction audit/);
 });

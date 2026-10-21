@@ -79,7 +79,7 @@ environment variables override `.env`. Article retrieval has separate retry caps
 The ten publisher JSON files under `data/` are bundled through
 `src/lib/rss/sources.ts`. Changes require rebuilding/restarting production;
 the deployed server does not need source attachments at runtime.
-The stored inventory has 1731 entries (36 WSJ, 714 NY Times, 50 Washington Post,
+The stored inventory has 1734 entries (36 WSJ, 714 NY Times, 53 Washington Post,
 61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 104 CNBC, 81 Reuters and 129 Business Insider feeds/sitemaps), but **only the ten
 `Main feed` entries are selected before any fetching or ranking**, one per publisher.
 The other 1544 entries are inactive reference data, never used as fallback sources.

@@ -28,7 +28,7 @@ explicit selective fetching may attempt those stored references within its limit
 | --- | --- | ---: | ---: |
 | WSJ | [wsj.json](wsj.json) | 36 | 1 |
 | NY Times | [nyt.json](nyt.json) | 714 | 1 |
-| Washington Post | [wapo.json](wapo.json) | 50 | 1 |
+| Washington Post | [wapo.json](wapo.json) | 53 | 1 |
 | Bloomberg | [bloomberg.json](bloomberg.json) | 61 | 1 |
 | The Economist | [economist.json](economist.json) | 64 | 1 |
 | Financial Times | [ft.json](ft.json) | 427 | 1 |
@@ -36,7 +36,7 @@ explicit selective fetching may attempt those stored references within its limit
 | CNBC | [cnbc.json](cnbc.json) | 104 | 1 |
 | Reuters | [reuters.json](reuters.json) | 81 | 1 |
 | Business Insider | [businessinsider.json](businessinsider.json) | 129 | 1 |
-| **Total** | | **1731** | **10** |
+| **Total** | | **1734** | **10** |
 
 Each file must contain only its assigned publisher and exactly one main feed.
 Missing, duplicate (even identical), or malformed main-feed configuration fails
@@ -69,8 +69,8 @@ coverage ranking, and `feed` uses the existing publisher-profile fallback.
 
 ## Current coverage
 
-The stored inventory has **1731 entries across ten publishers**: **36 WSJ feeds**,
-**714 NY Times feeds**, **50 Washington Post feeds**, **61 Bloomberg feeds/sitemaps**,
+The stored inventory has **1734 entries across ten publishers**: **36 WSJ feeds**,
+**714 NY Times feeds**, **53 Washington Post feeds**, **61 Bloomberg feeds/sitemaps**,
 **64 Economist feeds**, **427 Financial Times feeds**, **65 Foreign Policy feeds**,
 **104 CNBC feeds**, **81 Reuters feeds**, **129 Business Insider feeds**, and exactly one `Main feed` per publisher.
 `RSS_LINKS_PER_SECTION` caps each active publisher's `Main feed`. With a limit
@@ -313,11 +313,12 @@ does not add a sitemap replacement.
 
 ### Washington Post stored article-feed inventory
 
-The existing Arc front-page `Main feed` is retained unchanged. The 49 reference
-additions come from the user-supplied `wapo_rss_feeds.xlsx` (`Summary` and all 499
-records in `All feeds`) and `wapo_rss.md`. The research is dated 19 October 2026;
-the file additions were made on 20 October. The Markdown refers to a different
-workbook filename, but the supplied `wapo_rss_feeds.xlsx` is the actual source read.
+The existing Arc front-page `Main feed` is retained unchanged. The 52 reference
+additions come from the user-supplied `wapo_rss_feeds_2.xlsx` (`Summary` and all 503
+records in `All feeds`) and `new-research-2.md`. The research is dated 21 October
+2026; the file additions were made on 21 October. The Markdown refers to a
+different workbook filename, but the supplied `wapo_rss_feeds_2.xlsx` is the
+actual source read.
 
 **These are research-indexed URLs, not newly verified working feeds.** The
 researcher could not directly access the main WaPo site and used third-party
@@ -326,14 +327,26 @@ Folio. `live` means a new indexed item within the research's 30-day window;
 low-subscriber feeds may have lagging dates. No live fetch or extraction audit
 was performed, and none of these additions is enabled for API collection.
 
+Three feeds were added on WaPo's official RSS page (updated 21 May 2026) that
+were not in the previous inventory:
+
+| Section | Added URL | Status |
+| --- | --- | --- |
+| George F. Will | `https://www.washingtonpost.com/arcio/rss/author/George%20F%20-Will/` | live |
+| The Optimist | `https://www.washingtonpost.com/arcio/rss/category/lifestyle/inspired-life/` | slowing |
+| Going Out Guide | `https://www.washingtonpost.com/arcio/rss/category/entertainment/going-out-guide/` | unconfirmed |
+
+George F. Will's previous `feeds.washingtonpost.com` address stopped in 2023; the
+new Arc address is live as of 16 October 2026.
+
 | Stored group | Feeds | Operational feeds |
 | --- | ---: | ---: |
 | Arc front page (`Main feed`) | 1 | 1 |
 | Arc sections/subsections | 13 | 0 |
-| Arc writers | 33 | 0 |
+| Arc writers | 34 | 0 |
 | Older writer pages | 2 | 0 |
 | Legacy George F. Will XML feed | 1 | 0 |
-| **Total Washington Post** | **50** | **1** |
+| **Total Washington Post** | **53** | **1** |
 
 Section URLs use `https://www.washingtonpost.com/arcio/rss/category/` plus:
 
@@ -343,10 +356,12 @@ Section URLs use `https://www.washingtonpost.com/arcio/rss/category/` plus:
 | D.C., Md. & Va. | `local/` |
 | Elections | `elections/` |
 | Europe | `world/europe/` |
+| Going Out Guide | `entertainment/going-out-guide/` |
 | Local Crime & Public Safety | `local/public-safety/` |
 | Maryland | `local/maryland/` |
 | Middle East | `world/middle-east/` |
 | Opinions | `opinions/` |
+| The Optimist | `lifestyle/inspired-life/` |
 | Politics | `politics/` |
 | Technology | `technology/` |
 | U.S. News | `national/` |
@@ -370,12 +385,12 @@ unchanged; adding these references creates no feed fetches or proxy traffic.
 
 #### Washington Post exclusions and source discrepancies
 
-Of the workbook's 499 rows, 50 text-feed URLs are stored and 449 are excluded:
+Of the workbook's 503 rows, 53 text-feed URLs are stored and 450 are excluded:
 
 | Exclusion | Rows |
 | --- | ---: |
 | `host down` (old-host feeds reported as returning 502) | 46 |
-| `slowing` (31–365 days without an indexed item) | 112 |
+| `slowing` (31–365 days without an indexed item) | 113 |
 | `stale` (over a year without an indexed item) | 284 |
 | `unknown` (Arc Editorials; no last-item date) | 1 |
 | `live` audio podcasts | 6 |
@@ -385,8 +400,8 @@ non-live podcasts are counted under their status above, not counted twice.
 Slowing is not proof of permanent closure, and a host outage may recover. Both
 remain excluded from this research-based inventory addition.
 
-The 70 cached Summary formula counts match the 499 source rows, but its four
-status columns total only 498 because they omit the one `unknown` row. The
+The 90 cached Summary formula counts match the 503 source rows, but its four
+status columns total only 502 because they omit the one `unknown` row. The
 workbook specifically marks the pre-2014 Will XML URL `live`, with a last item
 dated 16 October, contradicting the Markdown's blanket claim that all pre-2014
 feeds are dead. This specific row is retained as an explicitly labelled,

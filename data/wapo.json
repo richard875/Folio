@@ -448,5 +448,32 @@
     "format": "rss",
     "homepageScore": 6,
     "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Writer — George F. Will",
+    "url": "https://www.washingtonpost.com/arcio/rss/author/George%20F%20-Will/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "The Optimist",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/lifestyle/inspired-life/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
+  },
+  {
+    "site": "Washington Post",
+    "section": "Going Out Guide",
+    "url": "https://www.washingtonpost.com/arcio/rss/category/entertainment/going-out-guide/",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 6,
+    "edition": "US"
   }
 ]
