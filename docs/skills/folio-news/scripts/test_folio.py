@@ -2,6 +2,7 @@
 import contextlib
 import copy
 import hashlib
+import http.client
 import io
 import json
 from pathlib import Path
@@ -141,6 +142,23 @@ class SecurityTests(unittest.TestCase):
             c, _ = client(raw)
             with self.assertRaises(folio.FolioError):
                 c.request("/api/links")
+
+    def test_interrupted_http_body_is_sanitized_without_retry(self):
+        class InterruptedResponse(Response):
+            def read(self, size):
+                raise http.client.IncompleteRead(KEY.encode(), 100)
+
+        class InterruptedNetwork(MockNetwork):
+            def open(self, request, timeout):
+                self.requests.append((request, timeout))
+                return InterruptedResponse({})
+
+        net = InterruptedNetwork()
+        c = folio.Client(ORIGIN, KEY, net)
+        with self.assertRaises(folio.FolioError) as caught:
+            c.request("/api/links", "POST")
+        self.assertNotIn(KEY, str(caught.exception))
+        self.assertEqual(len(net.requests), 1)
 
     def test_recursive_redaction(self):
         c, _ = client()

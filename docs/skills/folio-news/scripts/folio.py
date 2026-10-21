@@ -2,6 +2,7 @@
 """Bounded Folio-only client. Secrets are environment-only; no automatic retries."""
 import argparse
 import hashlib
+import http.client
 import json
 import os
 from pathlib import Path
@@ -137,7 +138,7 @@ class Client:
                     429: "Busy; wait at least five seconds before an explicit retry.",
                     502: "Upstream feeds failed."}.get(code, "Request failed.")
             raise FolioError("HTTP %s. %s No automatic retry." % (code, hint)) from None
-        except (urllib.error.URLError, OSError, TimeoutError):
+        except (urllib.error.URLError, OSError, TimeoutError, http.client.HTTPException):
             raise FolioError("Network failure or timeout. Submission may be uncertain; no automatic retry.") from None
         except (UnicodeError, ValueError):
             raise FolioError("Invalid JSON/UTF-8 response; no automatic retry.") from None

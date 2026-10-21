@@ -279,6 +279,7 @@ Link reports are saved and returned as JSON only. Each publisher/section group h
 ```sh
 npm run lint
 npm test
+npm run test:skill  # Portable Python client tests; Python 3 stdlib only
 npm run typecheck
 npm run build
 npm start
