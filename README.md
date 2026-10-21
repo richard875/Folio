@@ -248,8 +248,8 @@ Saved-file verification proves exact retrieval, not correct or complete extracti
 ### Feed summaries
 
 The [feed inventory](data/README.md) is split into ten publisher JSON files under
-`data/`: 1554 stored entries, including 35 WSJ, 543 NY Times, 50 Washington Post,
-61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 104 CNBC, 76 Reuters and 129 Business Insider feeds/sitemaps.
+`data/`: 1731 stored entries, including 36 WSJ, 714 NY Times, 50 Washington Post,
+61 Bloomberg, 64 Economist, 427 Financial Times, 65 Foreign Policy, 104 CNBC, 81 Reuters and 129 Business Insider feeds/sitemaps.
 The updated CNBC research adds Cybersecurity as a non-main reference; its original
 Main feed and metadata remain unchanged. See the [CNBC provenance and exclusions](data/README.md#cnbc-stored-feed-inventory).
 **Only the ten `Main feed` entries are active** for daily `/api/links` and

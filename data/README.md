@@ -26,17 +26,17 @@ explicit selective fetching may attempt those stored references within its limit
 
 | Publisher | File | Stored entries | Active entries |
 | --- | --- | ---: | ---: |
-| WSJ | [wsj.json](wsj.json) | 35 | 1 |
-| NY Times | [nyt.json](nyt.json) | 543 | 1 |
+| WSJ | [wsj.json](wsj.json) | 36 | 1 |
+| NY Times | [nyt.json](nyt.json) | 714 | 1 |
 | Washington Post | [wapo.json](wapo.json) | 50 | 1 |
 | Bloomberg | [bloomberg.json](bloomberg.json) | 61 | 1 |
 | The Economist | [economist.json](economist.json) | 64 | 1 |
 | Financial Times | [ft.json](ft.json) | 427 | 1 |
 | Foreign Policy | [foreignpolicy.json](foreignpolicy.json) | 65 | 1 |
 | CNBC | [cnbc.json](cnbc.json) | 104 | 1 |
-| Reuters | [reuters.json](reuters.json) | 76 | 1 |
+| Reuters | [reuters.json](reuters.json) | 81 | 1 |
 | Business Insider | [businessinsider.json](businessinsider.json) | 129 | 1 |
-| **Total** | | **1554** | **10** |
+| **Total** | | **1731** | **10** |
 
 Each file must contain only its assigned publisher and exactly one main feed.
 Missing, duplicate (even identical), or malformed main-feed configuration fails
@@ -69,10 +69,10 @@ coverage ranking, and `feed` uses the existing publisher-profile fallback.
 
 ## Current coverage
 
-The stored inventory has **1554 entries across ten publishers**: **35 WSJ feeds**,
-**543 NY Times feeds**, **50 Washington Post feeds**, **61 Bloomberg feeds/sitemaps**,
+The stored inventory has **1731 entries across ten publishers**: **36 WSJ feeds**,
+**714 NY Times feeds**, **50 Washington Post feeds**, **61 Bloomberg feeds/sitemaps**,
 **64 Economist feeds**, **427 Financial Times feeds**, **65 Foreign Policy feeds**,
-**104 CNBC feeds**, **76 Reuters feeds**, **129 Business Insider feeds**, and exactly one `Main feed` per publisher.
+**104 CNBC feeds**, **81 Reuters feeds**, **129 Business Insider feeds**, and exactly one `Main feed` per publisher.
 `RSS_LINKS_PER_SECTION` caps each active publisher's `Main feed`. With a limit
 of 1, up to ten article entries can be returned (one per publisher); with the
 default of 5, up to 50. Empty, stale, failed or filtered main feeds can yield
@@ -80,11 +80,12 @@ fewer. The research inventories below are preserved for reference, not enabled.
 
 ### WSJ stored article-feed inventory
 
-The existing Flipboard `Main feed` is retained. The 34 additions below come from
-the user-supplied *WSJ RSS Feeds: Complete Verified List* dated 19 October 2026:
-15 standard English sections, eight unlisted English feeds, seven Japanese
-feeds, and four legacy feeds reported as updating. This records the research's
-status, not a new live availability audit or extraction guarantee.
+The existing Flipboard `Main feed` is retained. The 35 additions below come from
+the user-supplied *WSJ RSS Feeds: Complete Verified List* dated 21 October 2026:
+15 standard English sections, eight unlisted English feeds, eight Japanese
+feeds (including the new Personal Technology feed), and four legacy feeds
+reported as updating. This records the research's status, not a new live
+availability audit or extraction guarantee.
 
 All WSJ feeds use `ordering: newest`, `format: rss`, and the existing publisher
 weight `homepageScore: 8`; no new per-section importance scores or curated homepage
@@ -128,6 +129,7 @@ been restored to literal underscores in the JSON URLs.
 | Japan — Opinion | `RSSJapanOpinion` |
 | Japan — Life | `RSSJapanLife` |
 | Japan — Heard on the Street | `RSSJapanHeardonTheStreet` |
+| Japan — Personal Technology | `RSSJapanPersonalTechnology` |
 
 Legacy URLs use `https://feeds.a.dj.com/rss/` plus the case-sensitive filename:
 
@@ -160,9 +162,13 @@ The existing HomePage `Main feed` is retained unchanged. The inventory was first
 assembled from `nyt_rss_feeds.xlsx` and then corrected using the replacement
 `nyt_rss_feeds_new.xlsx` and the updates documented in `economist_rss.md` (both
 workbooks contain `Summary` and `All feeds` sheets, with 858 feed rows). The
-corrected workbook counts 624 live, 53 slowing and 181 stale feeds. The final
-stored NYT inventory has 543 text-feed entries; prior Markdown progress counts
-and the superseded workbook are not current totals.
+corrected workbook counts 624 live, 53 slowing and 181 stale feeds. The 21 October
+2026 re-check (`nyt_rss_feeds.xlsx`) added **205 Athletic feeds** (team, city,
+league and section feeds from The Athletic), 6 YouTube channels and 3 Athletic
+podcasts, bringing the workbook to 1,074 rows. Of those, **172 new live Athletic
+feeds** were added to `nyt.json`. The final stored NYT inventory has 715
+text-feed entries; prior Markdown progress counts and the superseded workbook are
+not current totals.
 
 **These URLs were not directly verified.** The supplied research could not access
 NYT feeds; statuses come from Feedly's newest indexed item and Apple Podcasts.
@@ -185,9 +191,9 @@ within Folio's 72-hour window. No new live network audit was performed.
 | Topics: companies | 14 |
 | Topics: organizations | 15 |
 | Topics: people | 2 |
-| Athletic: leagues/sports (excluding Podcasts) | 33 |
-| Athletic: teams (NFL/NBA/MLB/NHL/soccer/college football) | 79 |
-| Athletic: cities | 13 |
+| Athletic: leagues/sports (excluding Podcasts) | 43 |
+| Athletic: teams (NFL/NBA/MLB/NHL/soccer/college football) | 166 |
+| Athletic: cities | 39 |
 | Athletic: writers | 9 |
 | Athletic: newsletters/tags | 2 |
 | Other products: Chinese simplified/traditional, Cooking, Wirecutter | 4 |

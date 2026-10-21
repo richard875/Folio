@@ -32,7 +32,7 @@ const rss = `<?xml version="1.0"?><rss version="2.0"><channel><title>News</title
 
 test("catalog preserves the ten primary feed URLs and metadata alongside WSJ and NY Times additions", async () => {
   const allFeeds = validateFeedCatalog(catalog);
-  assert.equal(allFeeds.length, 1554);
+  assert.equal(allFeeds.length, 1731);
   const feeds = allFeeds.filter((item) => item.section === "Main feed");
   assert.equal(feeds.length, 10);
   assert.equal(new Set(feeds.map((item) => item.site)).size, 10);

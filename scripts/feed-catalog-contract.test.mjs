@@ -20,7 +20,7 @@ test("ten publisher files preserve the complete inventory but expose only one ma
     assert.ok(entries.every((feed) => feed.site === site));
     assert.equal(entries.filter(({ section }) => section === "Main feed").length, 1);
   }
-  assert.equal(catalog.length - mainFeeds.length, 1544);
+  assert.equal(catalog.length - mainFeeds.length, 1721);
 });
 
 test("main selection fails closed on missing or duplicate mains, including identical duplicates", () => {
@@ -35,11 +35,11 @@ test("main selection fails closed on missing or duplicate mains, including ident
 
 test("WSJ catalog includes exactly the researched active article feeds, including Japan and legacy", () => {
   const feeds = validateFeedCatalog(catalog);
-  assert.equal(feeds.length, 1554);
+  assert.equal(feeds.length, 1731);
   assert.equal(new Set(feeds.map(({ site }) => site)).size, 10);
-  assert.equal(new Set(feeds.map(({ site, url }) => `${site}:${url}`)).size, 1554);
+  assert.equal(new Set(feeds.map(({ site, url }) => `${site}:${url}`)).size, 1731);
   const wsj = feeds.filter(({ site }) => site === "WSJ");
-  assert.equal(wsj.length, 35);
+  assert.equal(wsj.length, 36);
   const current = wsj.filter(({ url }) => new URL(url).hostname === "feeds.content.dowjones.io");
   assert.deepEqual(current.map(({ url }) => new URL(url).pathname.split("/").at(-1)), [
     "RSSWorldNews", "RSSUSnews", "socialpoliticsfeed", "socialeconomyfeed", "WSJcomUSBusiness",
@@ -47,7 +47,7 @@ test("WSJ catalog includes exactly the researched active article feeds, includin
     "RSSOpinion", "RSSArtsCulture", "RSSLifestyle", "RSSStyle", "rsssportsfeed", "rssmarkets",
     "socialmarketsfeed", "socialtechfeed", "socialcentralbankingfeed", "wsj_lifestyle",
     "wsj_food_drink", "wsj_homepage", "wsj_world_news", "RSSJapanNewsWorld", "RSSJapanMarket",
-    "RSSJapanBusiness", "RSSJapanTechnology", "RSSJapanOpinion", "RSSJapanLife", "RSSJapanHeardonTheStreet",
+    "RSSJapanBusiness", "RSSJapanTechnology", "RSSJapanOpinion", "RSSJapanLife", "RSSJapanHeardonTheStreet", "RSSJapanPersonalTechnology",
   ]);
   assert.deepEqual(wsj.filter(({ url }) => new URL(url).hostname === "feeds.a.dj.com")
     .map(({ url }) => new URL(url).pathname), [
@@ -55,7 +55,7 @@ test("WSJ catalog includes exactly the researched active article feeds, includin
   ]);
   assert.equal(wsj[0].url, "https://flipboard.com/@WSJ.rss");
   assert.ok(wsj.every(({ ordering, format, homepageScore }) => ordering === "newest" && format === "rss" && homepageScore === 8));
-  assert.equal(wsj.filter(({ edition }) => edition === "Japan").length, 7);
+  assert.equal(wsj.filter(({ edition }) => edition === "Japan").length, 8);
   assert.ok(wsj.every(({ section, edition }) => section.startsWith("Japan — ") === (edition === "Japan")));
   assert.ok(current.every(({ url }) => !/\\|\.xml$|\/json\//.test(url)));
   assert.ok(wsj.every(({ url }) => !/podcast|simplecast|megaphone|youtube|RSSJapanBarrons|RSSJapanCapitalJournal|\/cfo$|\/cio$|socialoffduty/.test(url)));
@@ -70,29 +70,29 @@ test("feed README inventories every added WSJ section and documents the new cata
   for (const path of ["README.md", "data/README.md", "scripts/fetch-links.md", "docs/prompts/daily-news-brief.md", "docs/skills/universal-article-reader/SKILL.md"]) {
     const text = await readFile(new URL(path, root), "utf8");
     assert.ok(text.includes(String(catalog.length)), `${path}: catalog total`);
-    assert.ok(text.includes("35"), `${path}: WSJ count`);
-    assert.ok(text.includes("543"), `${path}: NY Times count`);
+    assert.ok(text.includes("36"), `${path}: WSJ count`);
+    assert.ok(text.includes("714"), `${path}: NY Times count`);
     assert.doesNotMatch(text, /at most ten (?:links|candidates)|one `Main feed` each|No extra Opinion feed is added|at most one link per publisher\s+is selected/);
   }
 });
 
 test("NY Times catalog matches the offline workbook's selected live text-feed URL inventory", () => {
   const nyt = validateFeedCatalog(catalog).filter(({ site }) => site === "NY Times");
-  assert.equal(nyt.length, 543);
+  assert.equal(nyt.length, 714);
   // SHA-256 of sorted, newline-joined exact selected URL cells from All feeds.
   // Pins the complete reviewed source inventory without depending on Downloads.
   assert.equal(createHash("sha256").update(nyt.map(({ url }) => url).sort().join("\n")).digest("hex"),
-    "f7dcb1f0ca04184f63848162614768c9c02b488862ff7c8a88f1005230ef6056");
+    "6ce46d1e6cca407812ee0ab82cae5825b5abd1311dd8588cf9f1318073afe00c");
   assert.equal(nyt.filter(({ url }) => new URL(url).hostname === "rss.nytimes.com").length, 66);
   assert.equal(nyt.filter(({ url }) => url.includes("/svc/collections/")).length, 337);
-  assert.equal(nyt.filter(({ url }) => url.includes("/athletic/rss/")).length, 136);
+  assert.equal(nyt.filter(({ url }) => url.includes("/athletic/rss/")).length, 307);
   for (const [prefix, expected] of Object.entries({
     "Section — ": 26, "Column — ": 37, "Writer — ": 49, "Newsletter — ": 2,
     "Spotlight — ": 6, "News event — ": 2, "Topic (subject) — ": 99,
     "Topic (place) — ": 85, "Topic (company) — ": 14, "Topic (organization) — ": 15,
     "Topic (person) — ": 2,
   })) assert.equal(nyt.filter(({ section }) => section.startsWith(prefix)).length, expected, prefix);
-  assert.equal(new Set(nyt.map(({ section }) => section)).size, 543);
+  assert.equal(new Set(nyt.map(({ section }) => section)).size, 659);
   assert.ok(nyt.every(({ url, homepageScore, format }) => new URL(url).protocol === "https:" && homepageScore === 8 && format === "rss"));
   assert.ok(nyt.every(({ section, ordering }) => ordering === (section === "Main feed" ? "editorial" : "newest")));
   assert.equal(nyt.filter(({ edition }) => edition !== "US").length, 3);

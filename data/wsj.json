@@ -280,6 +280,15 @@
   },
   {
     "site": "WSJ",
+    "section": "Japan — Personal Technology",
+    "url": "https://feeds.content.dowjones.io/public/rss/RSSJapanPersonalTechnology",
+    "ordering": "newest",
+    "format": "rss",
+    "homepageScore": 8,
+    "edition": "Japan"
+  },
+  {
+    "site": "WSJ",
     "section": "Opinion (legacy latest)",
     "url": "https://feeds.a.dj.com/rss/LatestNewsOpinion.xml",
     "ordering": "newest",

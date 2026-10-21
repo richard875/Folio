@@ -18,7 +18,7 @@ of the article format. Its shared schema validates the stored report before task
 are created; a malformed report or mismatched saved path fails the job before saving
 articles. Summaries remain in the report but are not part of saving tasks.
 Both GET and POST collect use only the ten publisher `Main feed` sources through
-the same links handler. The other 1544 stored feed entries are reference-only:
+the same links handler. The other 1722 stored feed entries are reference-only:
 they are never fetched, ranked or used as fallback sources. No query/body option
 enables them. With a link limit of 1, at most ten article entries reach saving.
 The job uses its freshly generated report, never scans/replays older link files,
