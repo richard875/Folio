@@ -82,8 +82,10 @@ export const METHODS = {
     url: "https://removepaywalls.com/{url}",
   },
   removepaywall: {
-    name: "RemovePaywall (.com)",
-    url: "https://removepaywall.com/{url}",
+    name: "RemovePaywall (.com archive search UI)",
+    // Advertised public entry point; avoid two normalization redirects. The
+    // returned archive-picker UI is not itself an extracted article.
+    url: "https://www.removepaywall.com/search?url={encodedUrl}",
   },
   "removepaywall-co": {
     name: "RemovePaywall (.co)",
@@ -91,11 +93,13 @@ export const METHODS = {
   },
   wayback: {
     name: "Wayback Machine",
-    url: "https://web.archive.org/web/{url}",
+    url: "https://web.archive.org/web/2/{url}",
+    totalBudgetMs: 10_000,
   },
   "wayback-id": {
     name: "Wayback Machine (identity view)",
-    url: "https://web.archive.org/web/id_/{url}",
+    url: "https://web.archive.org/web/2id_/{url}",
+    totalBudgetMs: 10_000,
   },
   "jina-http": {
     name: "Jina Reader (HTTP article URL)",

@@ -136,7 +136,7 @@ own downstream requests, whose exit IPs Folio cannot control.
 With proxy routing enabled, extraction tries the publisher URL through the proxy
 before the existing retrieval-service cascade, except that WallHop precedes it for
 WSJ, Foreign Policy and CNBC (see retrieval order above). Except for WallHop's
-25-second allowance, each extraction method gets
+25-second allowance and Wayback's 10-second snapshot allowance, each extraction method gets
 at most **6 seconds total** across redirects/retries and **one retry**, further
 bounded by the existing article deadline and `FETCH_RETRY_LIMIT`. This prevents an
 unreachable service from exhausting the entire extraction budget. Direct mode
@@ -157,8 +157,7 @@ This intentionally uses your machine/Render's IP for **those exact hosts only**;
 other sites still use the proxy. The intended configuration bypasses the working
 mirror and WallHop; archive.is, archive.today and archive.ph remain proxied.
 This is an explicit example, not a hardcoded default or a verified deployment export.
-The older `.env.example` lists only the mirror; set both hosts explicitly when using
-the intended routing above. An unset/empty list
+The tracked `.env.example` lists both hosts for this intended routing. An unset/empty list
 bypasses nothing. Do not bypass archive sites based on local-only access tests. No
 automatic direct fallback is introduced. Subdomains do not match implicitly, and
 redirects are routed again by destination hostname. Private-network protections

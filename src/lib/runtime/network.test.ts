@@ -8,6 +8,7 @@ import { publicFetch, publicFetchRedirects, outboundProxyUrl, outboundProxyUrls,
 import { probeList } from "../../../reader/targets.ts";
 import { Agent } from "undici";
 import { fetchHtml } from "../../../reader/fetch.ts";
+import { METHODS, methodUrl, type MethodId } from "../../../reader/methods.ts";
 
 async function fakeProxy(t: TestContext, handle: (request: IncomingMessage, socket: Duplex) => void) {
   const server = createServer((_request, response) => { response.writeHead(500).end(); });
@@ -57,10 +58,10 @@ function tunnel(socket: Duplex, response: string, inspect?: (request: string) =>
   });
 }
 
-function fixtureDns(t: TestContext, address: string) {
+function fixtureDns(t: TestContext, address: string, hosts = ["publisher.example"]) {
   const original = dns.lookup;
   dns.lookup = ((hostname: string, options: unknown, callback: (...args: unknown[]) => void) => {
-    if (hostname === "publisher.example") callback(null, [{ address, family: 4 }]);
+    if (hosts.includes(hostname)) callback(null, [{ address, family: 4 }]);
     else Reflect.apply(original, dns, [hostname, options, callback]);
   }) as typeof dns.lookup;
   syncBuiltinESMExports();
@@ -442,4 +443,33 @@ test("diagnostics expose certificate failures and proxy authentication failures 
   assert.equal(permanentNetworkFailure(Object.assign(new Error("reset"), { code: "ECONNRESET" })), false);
   assert.equal(permanentNetworkFailure(new Error("Proxy response (407) !== 200 when HTTP Tunneling")), true);
   assert.doesNotMatch(JSON.stringify(networkErrorDetails(error)), /secret|credentials|destination/);
+});
+
+test("every article method uses the proxy except the exact WallHop and Freedium hosts, including redirects", async (t) => {
+  await fakeProxy(t, (_request, socket) => socket.destroy());
+  process.env.OUTBOUND_PROXY_BYPASS_HOSTS = "wallhop.io,freedium-mirror.cfd";
+  const methods = Object.keys(METHODS) as MethodId[];
+  const article = "https://publisher.example/story";
+  const hosts = methods.map(method => new URL(methodUrl(method, article)).hostname);
+  fixtureDns(t, "93.184.216.34", [...hosts, "snapshot.example", "freedium-mirror.cfd.evil.example"]);
+  const calls: Array<{ host: string; direct: boolean }> = [];
+  t.mock.method(globalThis, "fetch", async (input: unknown, init: RequestInit & { dispatcher: unknown }) => {
+    const host = new URL(String(input)).hostname;
+    calls.push({ host, direct: init.dispatcher instanceof Agent });
+    return new Response("article");
+  });
+  for (const method of methods) await fetchHtml(methodUrl(method, article), method, Date.now() + 1000);
+  for (const call of calls) assert.equal(call.direct, ["wallhop.io", "freedium-mirror.cfd"].includes(call.host), call.host);
+  let redirect = true;
+  t.mock.method(globalThis, "fetch", async (_input: unknown, init: RequestInit & { dispatcher: unknown }) => {
+    if (redirect) {
+      redirect = false;
+      assert.ok(init.dispatcher instanceof Agent);
+      return new Response(null, { status: 302, headers: { location: "https://snapshot.example/story" } });
+    }
+    assert.equal(init.dispatcher instanceof Agent, false);
+    return new Response("article");
+  });
+  await fetchHtml("https://freedium-mirror.cfd/https://publisher.example/story", "freedium-mirror", Date.now() + 1000);
+  await publicFetch("https://freedium-mirror.cfd.evil.example/story");
 });

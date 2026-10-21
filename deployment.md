@@ -70,7 +70,8 @@ independently and there is never automatic direct fallback. Proxy-enabled articl
 extraction uses the orders in [reader/README.md](reader/README.md): WallHop precedes
 the publisher for WSJ, Foreign Policy and CNBC; the publisher precedes WallHop for
 the other seven. Ordinary proxy-active methods get at most six seconds/one retry;
-WallHop gets up to 25 seconds, still limited by the article/pass deadline.
+WallHop gets up to 25 seconds and Wayback up to 10 seconds per method including
+snapshot redirects, still limited by the article/pass deadline.
 See [README.md](README.md#optional-outbound-proxy-webshare) for diagnostics.
 
 ### Limits and costs

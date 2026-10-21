@@ -1,6 +1,7 @@
 import { hashMatches } from "./auth.ts";
-import { isSubstantial, looksLikeShell, parseArticleHtml, toMarkdown } from "./extract.ts";
-import { fetchHtml, fetchHtmlWithRedirects } from "./fetch.ts";
+import { isSubstantial, looksLikeShell, toMarkdown } from "./extract.ts";
+import { fetchHtmlWithRedirects } from "./fetch.ts";
+import { parseArticleResponse } from "./response.ts";
 import { assertPublicHttpUrl, probeList, type Probe } from "./targets.ts";
 import type { ArticleResult } from "./types.ts";
 import { BoundedCache, extractionLimit } from "../src/lib/runtime/limits.ts";
@@ -98,12 +99,13 @@ async function extractArticle(original: string): Promise<ArticleResult> {
           const cachedArchiveUrl = getCachedArchiveUrl(original);
           if (cachedArchiveUrl) {
             // Use cached direct archive URL instead of hitting /newest/
-            html = await fetchHtml(
+            const result = await fetchHtmlWithRedirects(
               cachedArchiveUrl,
               probe.method,
               Math.min(passStarted + passBudget, started + BUDGET_MS),
             );
-            finalUrl = cachedArchiveUrl;
+            html = result.html;
+            finalUrl = result.finalUrl;
           } else {
             const result = await fetchHtmlWithRedirects(
               probe.url,
@@ -113,19 +115,21 @@ async function extractArticle(original: string): Promise<ArticleResult> {
             html = result.html;
             finalUrl = result.finalUrl;
             // Cache the resolved URL for future requests
-            if (finalUrl !== probe.url && finalUrl.includes("archive.is")) {
+            if (finalUrl !== probe.url && new URL(finalUrl).hostname === "archive.is") {
               setCachedArchiveUrl(original, finalUrl);
             }
           }
         } else {
-          html = await fetchHtml(
+          const result = await fetchHtmlWithRedirects(
             probe.url,
             probe.method,
             Math.min(passStarted + passBudget, started + BUDGET_MS),
           );
+          html = result.html;
+          finalUrl = result.finalUrl;
         }
 
-        const parsed = parseArticleHtml(html, finalUrl);
+        const parsed = parseArticleResponse(html, finalUrl, probe.method);
         if (!parsed || looksLikeShell(parsed.title, parsed.text)) {
           continue;
         }
@@ -142,7 +146,7 @@ async function extractArticle(original: string): Promise<ArticleResult> {
           sourceUrl: finalUrl,
         };
         draft.markdown = toMarkdown(draft);
-        if (!best || parsed.text.length > best.text.length) best = draft;
+        if (!best || best.partial && !partial || best.partial === partial && parsed.text.length > best.text.length) best = draft;
         if (!partial) break;
       } catch (error) {
         // Track 429 errors for second pass
@@ -176,14 +180,16 @@ async function extractArticle(original: string): Promise<ArticleResult> {
             html = result.html;
             retryFinalUrl = result.finalUrl;
             // Cache the resolved URL for future requests
-            if (retryFinalUrl !== probe.url && retryFinalUrl.includes("archive.is")) {
+            if (retryFinalUrl !== probe.url && new URL(retryFinalUrl).hostname === "archive.is") {
               setCachedArchiveUrl(original, retryFinalUrl);
             }
           } else {
-            html = await fetchHtml(probe.url, probe.method, started + BUDGET_MS);
+            const result = await fetchHtmlWithRedirects(probe.url, probe.method, started + BUDGET_MS);
+            html = result.html;
+            retryFinalUrl = result.finalUrl;
           }
 
-          const parsed = parseArticleHtml(html, retryFinalUrl);
+          const parsed = parseArticleResponse(html, retryFinalUrl, probe.method);
           if (!parsed || looksLikeShell(parsed.title, parsed.text)) {
             continue;
           }
@@ -200,7 +206,7 @@ async function extractArticle(original: string): Promise<ArticleResult> {
             sourceUrl: retryFinalUrl,
           };
           draft.markdown = toMarkdown(draft);
-          if (!best || parsed.text.length > best.text.length) best = draft;
+          if (!best || best.partial && !partial || best.partial === partial && parsed.text.length > best.text.length) best = draft;
           if (!partial) break;
         } catch (error) {
           // Ignore second-pass failures

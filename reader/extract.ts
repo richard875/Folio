@@ -107,7 +107,7 @@ export function parseArticleHtml(html: string, pageUrl: string): ParsedPage | nu
 
   // Skip non-HTML content (markdown, plain text, JSON from services like Jina AI)
   const trimmed = html.trim();
-  if (!trimmed.startsWith("<") && !trimmed.startsWith("<")) {
+  if (!trimmed.startsWith("<")) {
     // Not HTML - likely markdown/plain text from text extraction services
     return null;
   }

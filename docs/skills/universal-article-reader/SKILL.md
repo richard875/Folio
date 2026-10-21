@@ -204,6 +204,14 @@ as a hostname-scoped loader fallback; neither it nor the navigation headers may
 be forwarded to other hosts. Both steps share the caller-bounded 25-second
 allowance, without executing scripts or silently bypassing the configured proxy.
 The retired `freedium.cfd` is not scheduled; retain `freedium-mirror.cfd`.
+Freedium can serve cached articles as HTML or stream an HTML string in Svelte
+data. Decode only inert string data; do not execute scripts or follow internal
+API addresses. An HTTP 200 unsupported-site/blocked result is not an article.
+Jina's Markdown envelope is accepted only for Jina methods on `r.jina.ai`, with
+upstream warning responses rejected. Generic text/JSON remains unsupported.
+Wayback templates use `/web/2/` and `/web/2id_/` to select actual latest snapshots.
+RemovePaywall.com uses its advertised `/search?url=<encoded URL>` entry point;
+an archive-picker or JavaScript-only service interface is not article text.
 Archive.fo/li/md, Ghost Archive, AMP traversal and extra aggregators from older
 skill versions are not configured steps. Do not silently add them.
 
@@ -258,7 +266,8 @@ Third-party retrieval services control their own downstream publisher fetches.
 - With proxy configuration active, ordinary methods get six seconds total and at
   most one retry, further capped by `FETCH_RETRY_LIMIT` and the caller deadline.
   This also applies to explicitly bypassed services. WallHop gets up to 25 seconds
-  total in either mode; a shorter remaining/pass deadline still wins.
+  total in either mode; Wayback gets up to 10 seconds per method including redirects.
+  A shorter remaining/pass deadline still wins.
 - Ordinary per-attempt caps are 15 seconds, or 10 for legacy text methods. Direct-only
   methods retain their existing retry budget. Permanent certificate/DNS/auth and
   non-transient HTTP failures fail fast; a later 429 pass is possible when no
@@ -267,10 +276,12 @@ Third-party retrieval services control their own downstream publisher fetches.
   Oversized responses are cancelled, not truncated. Parsing can use much more memory.
 - Parsing uses linkedom, Mozilla Readability, JSON-LD `articleBody` and metadata
   fallbacks. It does not execute page scripts, crawl AMP links or parse arbitrary
-  hydration payloads. Plain text/Markdown service responses are currently rejected.
+  hydration payloads. The narrowly scoped Jina envelope and Freedium HTML-string
+  formats above are exceptions, not a general hydration/script evaluator.
 - Parsed text under 280 characters is rejected. Shell-pattern checks examine the
-  title and first 900 text characters but are imperfect; known Wayback boilerplate
-  has previously been saved as an article. Reject such content in your assessment.
+  title and first 900 text characters but are imperfect. Wayback methods also
+  reject their own UI titled `Wayback Machine`; still assess returned text for
+  other archive/challenge boilerplate, which has historically passed heuristics.
 - `partial=false` requires at least 1,400 characters and four paragraphs longer
   than 40 characters, separated by blank lines. Readability-selected HTML retains
   paragraph/block boundaries and line breaks in the extracted text. Long coherent text can still

@@ -19,6 +19,7 @@
     "typecheck": "tsc --noEmit",
     "check:auth": "node scripts/check-auth-invariant.mjs",
     "reader:plan": "node --experimental-strip-types reader/plan.ts",
+    "reader:audit": "node --env-file-if-exists=.env --experimental-strip-types reader/audit.ts",
     "test:reader": "node --import ./scripts/test-env.mjs --experimental-strip-types --test reader/read.test.ts reader/save.test.ts reader/targets.test.ts",
     "test": "node --import ./scripts/test-env.mjs --experimental-strip-types --test 'scripts/**/*.test.mjs' && node --import ./scripts/test-env.mjs --experimental-strip-types --test src/lib/app-data/app-data.test.ts src/lib/app-data/readiness-schedule.test.ts src/lib/auth/gate-identity.test.ts src/lib/auth/sign-in-gate.test.ts src/lib/preview-path-prefix.test.ts reader/read.test.ts reader/save.test.ts reader/targets.test.ts src/lib/batch/jobs.test.ts src/lib/batch/deadline.test.ts src/lib/batch/save-batch.test.ts src/lib/rss/google-news.test.ts src/lib/rss/selection.test.ts src/lib/rss/summary.test.ts src/lib/agent/articles.test.ts src/lib/swagger/docs.test.ts src/lib/runtime/runtime.test.ts src/lib/runtime/network.test.ts",
     "test:proxy": "node --import ./scripts/test-env.mjs --experimental-strip-types --test src/lib/runtime/network.test.ts",

@@ -34,3 +34,4 @@ Feed inventories are separate: [publisher JSON files](../data/README.md), with
 only one Main feed per publisher active for automatic collection.
 
 [Detailed AI/maintainer guide →](AI-GUIDE.md)
+[Live method checks and current service limitations →](../scripts/retrieval-methods.md)

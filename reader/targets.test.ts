@@ -68,9 +68,9 @@ describe("declarative retrieval configuration", () => {
         ["archive.today", `https://archive.today/latest/${url}`],
         ["archive.ph", `https://archive.ph/${url}`], ["archive.is", `https://archive.is/${url}`],
         ["removepaywalls", `https://removepaywalls.com/${url}`],
-        ["removepaywall", `https://removepaywall.com/${url}`],
+        ["removepaywall", `https://www.removepaywall.com/search?url=${enc}`],
         ["removepaywall-co", `https://removepaywall.co/${url}`],
-        ["wayback", `https://web.archive.org/web/${url}`], ["wayback-id", `https://web.archive.org/web/id_/${url}`],
+        ["wayback", `https://web.archive.org/web/2/${url}`], ["wayback-id", `https://web.archive.org/web/2id_/${url}`],
         ["jina-http", `https://r.jina.ai/http://${noProto}`], ["jina-https", `https://r.jina.ai/https://${noProto}`],
         ["jina-enc", `https://r.jina.ai/http://${enc}`],
         ["textise-dot-iitty", `https://r.jina.ai/http://cc.bingj.com/cache.aspx?d=503-123&u=${enc}`],
@@ -86,6 +86,7 @@ describe("declarative retrieval configuration", () => {
     assert.equal(METHOD_DEFAULTS.proxyBudgetMs, 6000);
     assert.equal(methodDefinition("wallhop")?.totalBudgetMs, 25000);
     assert.equal(methodDefinition("wallhop")?.attemptTimeoutMs, 25000);
+    for (const method of ["wayback", "wayback-id"]) assert.equal(methodDefinition(method)?.totalBudgetMs, 10000);
     assert.deepEqual(methodDefinition("wallhop")?.headers, { hostname: "wallhop.io", values: { "X-Wallhop-Load": "1" } });
     for (const method of ["jina-http", "jina-https", "jina-enc", "textise-dot-iitty", "textise-iitty"]) {
       assert.equal(methodDefinition(method)?.attemptTimeoutMs, 10000);

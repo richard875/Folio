@@ -5,6 +5,7 @@ import { fetchHtml, fetchHtmlWithRedirects } from "./fetch.ts";
 import { readArticle } from "./read.ts";
 import { probeList } from "./targets.ts";
 import { isSubstantial, parseArticleHtml } from "./extract.ts";
+import { parseArticleResponse } from "./response.ts";
 
 const originalFetch = globalThis.fetch;
 const originalAccessHash = process.env.ACCESS_HASH;
@@ -64,6 +65,113 @@ function articleResponse(): Response {
     headers: { "content-type": "text/html" },
   });
 }
+
+describe("service response formats", () => {
+  const text = Array.from({ length: 4 }, () => "Independent reporting explains the evidence and gives readers detailed context. ".repeat(7)).join("\n\n").trim();
+  const jina = `Title: An extracted article\n\nURL Source: https://publisher.example/story\n\nMarkdown Content:\n${text}`;
+
+  it("accepts Jina Markdown envelopes only for Jina methods on its exact host", () => {
+    for (const method of ["jina-http", "jina-https", "jina-enc", "textise-dot-iitty"]) {
+      const parsed = parseArticleResponse(jina, "https://r.jina.ai/https://publisher.example/story", method);
+      assert.equal(parsed?.title, "An extracted article");
+      assert.equal(parsed?.text, text);
+      assert.equal(isSubstantial(parsed!.text), true);
+    }
+    assert.equal(parseArticleResponse(jina, "https://publisher.example/story", "direct"), null);
+    assert.equal(parseArticleResponse(jina, "https://r.jina.ai.evil.example/story", "jina-http"), null);
+    assert.equal(parseArticleResponse(text, "https://r.jina.ai/story", "jina-http"), null);
+    assert.equal(parseArticleResponse(JSON.stringify({ content: text }), "https://r.jina.ai/story", "jina-http"), null);
+  });
+
+  it("rejects upstream warnings, invalid sources and incomplete Jina envelopes", () => {
+    for (const body of [
+      jina.replace("Markdown Content:", "Warning: Target URL returned error 403: Forbidden\n\nMarkdown Content:"),
+      jina.replace("https://publisher.example/story", "http://169.254.169.254/metadata"),
+      jina.replace("https://publisher.example/story", "https://user:secret@publisher.example/story"),
+      jina.replace("An extracted article", "Just a moment..."),
+      `untrusted prefix\n${jina}`, jina.replace(text, "Too short"),
+    ]) assert.equal(parseArticleResponse(body, "https://r.jina.ai/story", "jina-http"), null);
+  });
+
+  it("reads Freedium streamed HTML as inert JSON string data, preserving blocks and title", () => {
+    const html = text.split("\n\n").map(p => `<p>${p}</p>`).join("");
+    const body = `<html><body><script>__sveltekit_fixture.resolve(1, () => [{html:${JSON.stringify(html)},article:{title:"Streamed story"},error:null}])</script></body></html>`;
+    const parsed = parseArticleResponse(body, "https://freedium-mirror.cfd/https://medium.com/story", "freedium-mirror");
+    assert.equal(parsed?.title, "Streamed story");
+    assert.equal(parsed?.text.trim(), text.trim());
+    assert.equal(isSubstantial(parsed!.text), true);
+    assert.equal(parseArticleResponse(body, "https://publisher.example/story", "direct"), null);
+    assert.equal(parseArticleResponse(body.replace(JSON.stringify(html), '(()=>{throw Error("never execute")})()'), "https://freedium-mirror.cfd/story", "freedium-mirror"), null);
+  });
+
+  it("does not mistake Freedium unsupported-site or upstream-blocked records for articles", () => {
+    for (const code of ["UNSUPPORTED_SITE", "UPSTREAM_BLOCKED", "NOT_FOUND"]) {
+      const body = `<html><body><script>__sveltekit_fixture.resolve(1, () => [{html:null,error:{code:"${code}",message:"${text}"}}])</script></body></html>`;
+      assert.equal(parseArticleResponse(body, "https://freedium-mirror.cfd/story", "freedium-mirror"), null);
+    }
+  });
+
+  it("rejects Wayback's own JavaScript/bootstrap page instead of saving it as a partial article", () => {
+    const body = `<html><head><title>Wayback Machine</title></head><body><article><p>The Wayback Machine requires your browser to support JavaScript. ${text}</p></article></body></html>`;
+    for (const method of ["wayback", "wayback-id"]) assert.equal(parseArticleResponse(body, "https://web.archive.org/web/2/https://publisher.example/story", method), null);
+  });
+
+  it("extracts Jina content through the actual fallback cascade", async () => {
+    process.env.FETCH_RETRY_LIMIT = "0";
+    globalThis.fetch = async input => String(input).startsWith("https://r.jina.ai/")
+      ? new Response(jina, { headers: { "content-type": "text/plain" } })
+      : new Response(null, { status: 404 });
+    const result = await readArticle("https://publisher.example/jina-format-story", ACCESS_HASH);
+    assert.equal(result.text, text);
+    assert.equal(result.partial, false);
+    assert.ok(result.sourceUrl?.startsWith("https://r.jina.ai/"));
+  });
+
+  it("retains redirect provenance and resolves relative images against the final destination", async () => {
+    globalThis.fetch = async input => String(input).startsWith("https://freedium-mirror.cfd/")
+      ? new Response(null, { status: 302, headers: { location: "https://snapshot.example/articles/story" } })
+      : new Response(`<html><head><title>Redirected story</title></head><body><article><img src="./photo.jpg">${text.split("\n\n").map(p => `<p>${p}</p>`).join("")}</article></body></html>`);
+    const result = await readArticle("https://publisher.example/redirect-provenance-story", ACCESS_HASH);
+    assert.equal(result.sourceUrl, "https://snapshot.example/articles/story");
+    assert.equal(result.images[0]?.src, "https://snapshot.example/articles/photo.jpg");
+  });
+
+  it("prefers a substantial fallback over a longer but unstructured partial result", async () => {
+    globalThis.fetch = async input => String(input).startsWith("https://freedium-mirror.cfd/")
+      ? new Response(`<html><head><title>Long partial</title></head><body><article><p>${"A long single paragraph without enough structure. ".repeat(100)}</p></article></body></html>`)
+      : articleResponse();
+    const result = await readArticle("https://publisher.example/complete-over-long-partial", ACCESS_HASH);
+    assert.equal(result.title, "Example article");
+    assert.equal(result.partial, false);
+  });
+
+  it("allows Wayback snapshot redirects beyond six seconds but never resets its ten-second budget", async (t) => {
+    let now = Date.now();
+    t.mock.method(Date, "now", () => now);
+    process.env.OUTBOUND_PROXY_URL = "http://proxy.example:80/";
+    for (const method of ["wayback", "wayback-id"]) {
+      let calls = 0;
+      globalThis.fetch = async () => {
+        if (++calls === 1) {
+          now += 7000;
+          return new Response(null, { status: 302, headers: { location: "https://web.archive.org/web/20261001000000/https://publisher.example/story" } });
+        }
+        return articleResponse();
+      };
+      const result = await fetchHtmlWithRedirects("https://web.archive.org/web/2/https://publisher.example/story", method, now + 48000);
+      assert.ok(result.html.includes("Example article"));
+      assert.equal(calls, 2);
+      calls = 0;
+      globalThis.fetch = async () => {
+        calls++; now += 10001;
+        return new Response(null, { status: 302, headers: { location: "/next" } });
+      };
+      await assert.rejects(fetchHtml("https://web.archive.org/web/2/https://publisher.example/story", method, now + 48000), /time budget/);
+      assert.equal(calls, 1);
+      await assert.rejects(fetchHtml("https://web.archive.org/web/2/https://publisher.example/story", method, now - 1), /time budget/);
+    }
+  });
+});
 
 describe("fetch retries", () => {
   it("retries network failures and stops immediately on success", async () => {

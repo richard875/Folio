@@ -15,6 +15,8 @@ operational caveats. Executable configuration remains the source of truth.
 | `fetch.ts` | Executes a method: transport, redirects, retries and bounded response buffering. |
 | `read.ts` | Coordinates the cascade, URL passes, article caches and candidate selection. |
 | `extract.ts` | Parses HTML, extracts metadata/text/images, checks partial content and renders Markdown. |
+| `response.ts` | Safely decodes method-specific Jina Markdown and Freedium streamed HTML. |
+| `audit.ts` | Explicit bounded live checks, with metadata-only results under ignored `docs/qa/`. |
 | `auth.ts` | Verifies the server access hash. |
 | `save.ts`, `save-api.ts` | Safe file persistence and save-request handling. |
 | `types.ts` | Article response types. |
@@ -64,10 +66,10 @@ rules, not the RSS catalog: adding a publisher here does not subscribe to its fe
 | 4 | `archive.ph` | `archive.ph/…` |
 | 5 | `archive.is` | `archive.is/…` |
 | 6 | `removepaywalls` | `removepaywalls.com/…` |
-| 7 | `removepaywall` | `removepaywall.com/…` |
+| 7 | `removepaywall` | `www.removepaywall.com/search?url=…`, encoded URL |
 | 8 | `removepaywall-co` | `removepaywall.co/…` |
-| 9 | `wayback` | `web.archive.org/web/…` |
-| 10 | `wayback-id` | `web.archive.org/web/id_/…` |
+| 9 | `wayback` | `web.archive.org/web/2/…`, latest snapshot selector |
+| 10 | `wayback-id` | `web.archive.org/web/2id_/…`, latest identity view |
 | 11 | `jina-http` | `r.jina.ai/http://…` |
 | 12 | `jina-https` | `r.jina.ai/https://…` |
 | 13 | `jina-enc` | Legacy encoded Jina URL |
@@ -79,9 +81,12 @@ rules, not the RSS catalog: adding a publisher here does not subscribe to its fe
 | 19 | `direct-facebook` | Publisher URL, Facebook user agent |
 | 20 | `direct-twitter` | Publisher URL, Twitter user agent |
 
-These are attempted methods, not guarantees that each service works. The existing
-parser accepts HTML; plain-text/Markdown responses from services such as Jina
-are still rejected. Those legacy probes are preserved, not repaired by this refactor.
+These are attempted methods, not guarantees that each service works. HTML goes
+through Readability. Jina's `Title` / `URL Source` / `Markdown Content` envelope
+is accepted only for Jina methods on `r.jina.ai`, excluding upstream warning
+responses. Arbitrary plain text/JSON is still rejected. Freedium's streamed HTML
+string is decoded as data, never executed as JavaScript. A service can fail or
+return only a browser interface. See [method verification](../scripts/retrieval-methods.md).
 The retired `freedium.cfd` is not scheduled. WallHop uses its normal HTML page,
 never `/raw` or `/api`.
 
@@ -181,7 +186,9 @@ selects random exit IPs independently. See the [pool setup](../README.md#multipl
    if needed. Both share the **48-second** budget; two URL variants get roughly
    **24 seconds each** for their normal passes.
 2. A parsed candidate marked `partial` does not stop the cascade. The reader keeps
-   the longest candidate and tries later methods for something substantial.
+   the longest partial candidate and tries later methods for something substantial.
+   A substantial fallback outranks a longer partial candidate. All methods retain
+   the actual final response URL for provenance and relative image resolution.
 3. The existing substantial-content rule is at least **1,400 characters AND four
    paragraphs over 40 characters, separated by blank lines**. Extraction preserves
    paragraph/block boundaries and HTML line breaks from Readability's selected
@@ -194,7 +201,8 @@ selects random exit IPs independently. See the [pool setup](../README.md#multipl
 Not every configured fallback will run before the budget expires. The ordinary
 attempt cap is 15 seconds (10 for legacy text services); when proxy configuration
 is active, ordinary methods get six seconds total and at most one retry. WallHop
-gets at most 25 seconds total in either mode. Caller/pass deadlines can shorten
+gets at most 25 seconds total in either mode; the two Wayback methods get at most
+10 seconds each, including snapshot redirects. Caller/pass deadlines can shorten
 any of these, and bypassed services still use the proxy-active budget rules.
 `FETCH_RETRY_LIMIT` still controls retries subject to these caps. Response buffering
 still defaults to 8 MB, configurable up to 16 MB through `ARTICLE_MAX_RESPONSE_BYTES`.
