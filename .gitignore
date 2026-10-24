@@ -48,5 +48,7 @@ Thumbs.db
 
 # Private attachments
 /docs/private/
+# Private Claude handoff bundles may contain live Folio API credentials.
+/temp/
 # Keep the legacy location protected if an old local tool recreates it.
 /attachments/private/*
