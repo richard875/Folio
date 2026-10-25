@@ -102,7 +102,7 @@ test("scheduled briefing prompt specifies two Sydney cloud tasks and a self-cont
   assert.match(normalizedSetup, /Part A is setup-only/);
   assert.match(normalizedSetup, /Editing this file alone creates no tasks/);
   assert.match(normalizedRun, /do not create, edit, duplicate or reschedule tasks/);
-  for (const fact of ["Australia/Sydney", "RSS_LINKS_PER_SECTION=10", "SAVE_CONCURRENCY=1", "READ_CONCURRENCY=1", "up to 100 candidates per run", "at most 90 minutes", "240 polls", "15 seconds", "60 minutes elapsed since batch submission", "previous successful briefing", "prior cloud history was unavailable"])
+  for (const fact of ["Australia/Sydney", "RSS_LINKS_PER_SECTION=10", "SAVE_CONCURRENCY=1", "READ_CONCURRENCY=1", "up to 100 candidates per run", "at most 5 hours", "5-hour total run cap", "240 polls", "15 seconds", "60 minutes elapsed since batch submission", "previous successful briefing", "prior cloud history was unavailable"])
     assert.ok(normalizedRun.toLowerCase().includes(fact.toLowerCase()), `Run missing ${fact}`);
   assert.match(normalizedRun, /not a fixed daily total/);
   assert.match(normalizedRun, /These are server settings, not API query options/);
@@ -126,7 +126,7 @@ test("scheduled briefing prompt specifies two Sydney cloud tasks and a self-cont
   assert.match(normalizedRun, /order the batch, so higher-priority reporting is attempted first/);
   assert.match(normalizedRun, /keep different publishers' articles about the same event/);
   assert.match(normalizedRun, /Do not shrink the save set merely to fit a short briefing/);
-  assert.doesNotMatch(normalizedRun, /10[–-]15 distinct article|maximum 15|at most 15|capped at 15|at most 30 minutes|at most 60 polls/);
+  assert.doesNotMatch(normalizedRun, /10[–-]15 distinct article|maximum 15|at most 15|capped at 15|at most (?:30|90) minutes|90-minute total|at most 60 polls/);
 });
 
 test("current guides do not reinstate obsolete Markdown link-report contracts", async () => {

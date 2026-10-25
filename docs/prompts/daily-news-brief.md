@@ -120,7 +120,7 @@ Fixed operating choices:
 - Keep the briefing concise, roughly three minutes' reading time. Analyze in
   Claude, not inside Folio. Return the result in this task's Claude history, along
   with a credential-free selection/verification ledger or cloud output attachment.
-- Allow **at most 90 minutes elapsed execution per invocation**, or the platform's
+- Allow **at most 5 hours elapsed execution per invocation**, or the platform's
   shorter limit. Within that budget, poll a started save job at most **240 times**,
   no faster than **15 seconds** apart, respecting longer `Retry-After` values.
   Also stop polling at **60 minutes elapsed since batch submission**: Folio's
@@ -298,7 +298,7 @@ GET <FOLIO_ORIGIN>/api/save-batch/status?callId=<CALL_ID>&hash=<ACCESS_HASH>
 ```
 
 For this scheduled run, poll every 15 seconds while `status` is `in progress`,
-at most 240 polls, stopping at 60 minutes since submission or the 90-minute total
+at most 240 polls, stopping at 60 minutes since submission or the 5-hour total
 run cap (or the platform's shorter limit), whichever comes first. Increase the
 interval to honor `Retry-After` or service load; do not extend these caps. A server
 deadline or platform limit can leave some URLs unattempted or the job pending:
