@@ -1,3 +1,5 @@
+![Folio repository cover](docs/folio-repo-cover.png)
+
 # Folio
 
 A private article reader and news-collection API with a React interface. Extract
