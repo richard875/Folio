@@ -178,7 +178,7 @@ advancing the cursor, so reader-plan/budget checks do not consume account slots.
 Bypassed/direct requests do not advance it. Failures consume their assigned slot;
 there is no quota-based skipping or hidden direct fallback. The cursor is local to
 one Node process and resets on restart/pool change. Webshare rotating mode still
-selects random exit IPs independently. See the [pool setup](../README.md#multiple-accounts-round-robin-pool).
+selects random exit IPs independently. See the [pool setup](../REFERENCE.md#multiple-accounts-round-robin-pool).
 
 ## Why later methods can still run after WallHop succeeds
 

@@ -26,7 +26,7 @@ advertised by a loading-page script, within the same 25-second method budget.
 `freedium-mirror.cfd` makes those hosts direct; others use the configured proxy
 when enabled. No hosts bypass it by default. Redirects are checked separately.
 An optional `OUTBOUND_PROXY_URLS` pool rotates accounts per proxied request;
-bypassed requests do not advance it. [Pool setup](../README.md#multiple-accounts-round-robin-pool).
+bypassed requests do not advance it. [Pool setup](../REFERENCE.md#multiple-accounts-round-robin-pool).
 
 **Configure:** [retrieval.config.ts](retrieval.config.ts) for order;
 [methods.ts](methods.ts) for service URLs and settings.

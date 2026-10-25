@@ -1,5 +1,8 @@
 # Folio — agent workspace instructions
 
+Shared instructions for agents editing this repository. `CLAUDE.md` imports this
+file; keep project rules here and operational explanations in the guides below.
+
 ## Current repository contract
 
 Folio is an existing private, file-backed article reader/news-collection API and
@@ -37,10 +40,27 @@ greeting, audit or documentation request.
   array replacing `OUTBOUND_PROXY_URL`. Shared networking allocates accounts round
   robin per proxied request; bypasses and configuration inspection do not advance it.
   Keep test isolation for both settings and never commit real account URLs.
-- **Current guides:** `README.md`, `deployment.md`, `reader/AI-GUIDE.md`,
-  `scripts/*.md`, and `docs/skills/universal-article-reader/SKILL.md`.
-  Keep the human `reader/README.md` very concise. Handovers/research/prompts are
-  historical snapshots, not current configuration authorities.
+
+## Documentation map
+
+- [README.md](README.md): concise introduction, local quick start and essential
+  operating constraints. Keep detailed configuration and API explanations out of it.
+- [REFERENCE.md](REFERENCE.md): full usage, article retrieval, response limits,
+  proxy configuration, API map, feed-summary rules and development commands.
+  Maintain detailed material here when shortening the README; preserve information.
+- [deployment.md](deployment.md): Render setup, resource limits, temporary storage,
+  history import and release verification. `render.yaml` defines the service;
+  local settings do not establish the live service's configuration.
+- [reader/README.md](reader/README.md): concise human reader overview;
+  [reader/AI-GUIDE.md](reader/AI-GUIDE.md): extraction maintenance details.
+- [data/README.md](data/README.md), `scripts/*.md` and
+  [the article-reader skill](docs/skills/universal-article-reader/SKILL.md):
+  feed inventories and specialist API/workflow contracts.
+- [docs/README.md](docs/README.md): supporting-document index. Handovers, research
+  and recovered prompts are historical snapshots, not configuration authorities.
+
+Check current code/configuration when maintaining these guides. Update links and
+documentation contract tests when moving material; leave historical evidence intact.
 
 ## AI Agent Resources
 
@@ -61,7 +81,7 @@ Statements about platform provisioning apply only in that platform environment.
 See `.claude/README.md` for the distinction between template material and active
 Folio features. No `.agents/` or `.ai/` resource tree is needed.
 
-## 0.5 Decide scope, auth and storage before implementing
+## Scope, authentication and storage
 
 1. **Clear implementation request:** implement the requested change in place.
 2. **Clearly wants a new app but vague:** choose one coherent product only if
@@ -90,7 +110,7 @@ change requiring an explicit request. For a separately authorized app feature:
 
 If `AGENTS.project.md` exists, read it too.
 
-## 1. Environment and startup
+## Environment and startup
 
 Read `package.json` before installing/upgrading dependencies or running unfamiliar
 scripts. Dependencies are already installed in this checkout. Add packages only
@@ -146,7 +166,7 @@ Do not add login/auth routes without an authorized account feature. Never create
 `src/routes/auth/popup.tsx`: the Vite plugin already serves `/auth/popup` for the
 optional account scaffold. Do not add Grok sign-in buttons to Folio's access-key UI.
 
-## 2. Work safely and verify
+## Work safely and verify
 
 1. **Inspect first.** Check Git status and relevant source/instructions. Preserve
    user changes. Commit, push, credential rotation and history cleanup each need
@@ -212,7 +232,9 @@ file paths/commands when useful to a repository request, but do not assume a loc
 server URL is reachable through the user's chat preview. Do not end with "let me
 know if it works" instead of verifying.
 
-Supporting docs live under `docs/`; do not recreate root `attachments/`,
+Keep the root guides in the roles above. Specialist guides stay alongside their
+code in `reader/`, `data/` and `scripts/`; supporting docs live under `docs/`.
+Do not recreate root `attachments/`,
 `reports/`, `research_notes/` or `screenshots/`. Keep `docs/private/`, generated
 `docs/qa/` and output files ignored. Respect task-specific exclusions even if
 other documentation links to them. Never rewrite historical evidence just to

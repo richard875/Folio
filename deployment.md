@@ -1,6 +1,9 @@
-# Folio
+# Folio deployment
 
-Private article reading, feed collection and checksum-verifiable agent retrieval.
+One Render Free Node web service in Singapore, defined in
+[`render.yaml`](render.yaml), using Nitro's `node-server` preset. Start with
+[README.md](README.md) for local setup; use [REFERENCE.md](REFERENCE.md) for API,
+retrieval and proxy details. This guide covers deployment and operations.
 
 ## Render Free deployment
 
@@ -15,8 +18,10 @@ history and job statuses. Keep important output in a separate local archive.
    branch containing `render.yaml`. Review **Free** and **Singapore** before creating.
 3. Enter `ACCESS_HASH`: a new random secret of at least 32 characters (for example,
    generate with `openssl rand -hex 32`). Do not paste it into Git or shared URLs.
-   The Blueprint also prompts for `READ_CONCURRENCY`, `SAVE_CONCURRENCY` and
-   `RSS_LINKS_PER_SECTION` (`sync: false`); use **1**, **1** and **5** respectively.
+   The Blueprint also prompts for `READ_CONCURRENCY`, `SAVE_CONCURRENCY`,
+   `RSS_LINKS_PER_SECTION` and `FETCH_RETRY_LIMIT` (`sync: false`); use **1**,
+   **1**, **5** and **2** respectively. These are the baseline Free settings;
+   changing the daily candidate limit is an explicit operator choice.
    Fixed settings, including `VITE_AUTH_ENABLED=false` and `FEED_CONCURRENCY=2`,
    are supplied by the Blueprint. Render supplies
    `PORT`; do not replace it with a fixed value. Never set `DATABASE_URL`.
@@ -37,7 +42,8 @@ and redeploy. Format: `http://USERNAME:PASSWORD@p.webshare.io:80/` (placeholder
 credentials only). Use the same setting locally for comparable routing. Never put
 the secret into `render.yaml`, Git, or a `VITE_` variable. Leave both URL settings
 unset for direct connections. Configured proxy failures do not fall back to Render's outbound IP.
-See the README's outbound-proxy section for scope, TLS and DNS behaviour.
+See the [proxy reference](REFERENCE.md#optional-outbound-proxy-webshare) for scope,
+TLS and DNS behaviour.
 Set `OUTBOUND_PROXY_ENABLED=false` to disable the proxy while keeping its URL;
 set `true` to re-enable it, then redeploy. Unset/blank defaults to true and still
 requires a nonblank single URL or pool. Invalid toggle values fail requests.
@@ -52,7 +58,7 @@ all account URLs in the desired round-robin order (1–16 distinct URLs). It rep
 `OUTBOUND_PROXY_URL`; blank/unset falls back to the single URL. In Render enter
 the array without dotenv's outer single quotes. `OUTBOUND_PROXY_MODE` applies to
 every entry. Invalid lists fail requests rather than silently using direct transport
-or the old URL. See the [pool configuration](README.md#multiple-accounts-round-robin-pool).
+or the old URL. See the [pool configuration](REFERENCE.md#multiple-accounts-round-robin-pool).
 Each proxied request, retry and redirect hop takes the next account; bypassed
 requests do not. Allocation is process-local and restarts at account 1 on restart
 or pool change. It balances request counts, not bytes, and does not track quotas
@@ -72,11 +78,13 @@ the publisher for WSJ, Foreign Policy and CNBC; the publisher precedes WallHop f
 the other seven. Ordinary proxy-active methods get at most six seconds/one retry;
 WallHop gets up to 25 seconds and Wayback up to 10 seconds per method including
 snapshot redirects, still limited by the article/pass deadline.
-See [README.md](README.md#optional-outbound-proxy-webshare) for diagnostics.
+See the [proxy reference](REFERENCE.md#optional-outbound-proxy-webshare) for diagnostics.
 
 ### Limits and costs
 
 - Free compute: **0.1 CPU / 512 MB**, shared **750 hours/month/workspace**.
+  See Render's [compute plans](https://render.com/docs/blueprint-spec#plan) and
+  [Free-service limits](https://render.com/docs/free#free-web-services).
 - Idle services sleep after **15 minutes**; the next request takes about **one
   minute** to wake. API clients should allow for this and verify JSON responses,
   not mistake a platform loading page for a completed operation.
@@ -166,8 +174,9 @@ link report never starts article saving. See the [report format](scripts/fetch-l
 
 ### Local release verification
 
-Use the repository's Node **24.20.0** (`.node-version`). Existing dependencies
-need not be reinstalled for a documentation-only change. Export server settings
+Use the repository's Node **24.20.0** (`.node-version`). On a fresh checkout,
+install dependencies with `npm ci --include=dev`; reuse installed dependencies for
+routine verification. Export server settings
 before `npm run dev`: Vite explicitly loads only `ACCESS_HASH`, `FETCH_RETRY_LIMIT`,
 `RSS_LINKS_PER_SECTION` and `SAVE_CONCURRENCY` from `.env`; it does not make arbitrary
 unprefixed settings (such as proxy credentials or `FEED_CONCURRENCY`) available to
@@ -177,9 +186,13 @@ server code. Process variables take precedence. `npm start` uses Node's
 Run the existing verification commands from the repository root:
 
 ```sh
-NODE_OPTIONS=--max-old-space-size=4096 sh -c 'npm ci --include=dev && npm run lint && npm test && npm run typecheck && npm run build'
+NODE_OPTIONS=--max-old-space-size=4096 sh -c 'npm run lint && npm test && npm run typecheck && npm run build'
 PRODUCTION_SMOKE_PORT=8765 npm run test:production
 ```
+
+For documentation-only work, run the documentation and affected contract tests;
+the full release sequence above is for code/runtime changes. The Blueprint also
+performs a fresh `npm ci --include=dev` before its build checks.
 
 The smoke test starts a disposable server, checks non-default-port operation,
 auth, agent checksums, memory, Swagger refresh and desktop/mobile rendering,

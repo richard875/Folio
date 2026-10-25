@@ -100,7 +100,7 @@ test("Claude Code and OpenCode use the same resources and project instructions",
 });
 
 test("resource documentation points to existing shared files without mirror instructions", () => {
-  for (const path of ["AGENTS.md", "README.md", ".claude/README.md",
+  for (const path of ["AGENTS.md", "README.md", "REFERENCE.md", ".claude/README.md",
     ".claude/skills/_INDEX.md", ".claude/references/_INDEX.md"]) {
     const text = readFileSync(path, "utf8");
     assert.doesNotMatch(text, /\.agents\/(?:skill-copies|skills|references)/);

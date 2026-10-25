@@ -19,7 +19,10 @@
 
 ## Current implementation guides
 
-- [Root README](../README.md): setup, API map, single-proxy operation and round-robin account pools.
+- [Root README](../README.md): introduction, local quick start and operating essentials.
+- [Reference](../REFERENCE.md): full usage, API map, retrieval and response limits,
+  single-proxy operation, round-robin account pools and development commands.
+- [Agent instructions](../AGENTS.md): repository contract and editing rules.
 - [Deployment](../deployment.md): single-process Render Free and temporary storage.
 - [Reader overview](../reader/README.md) and [maintainer guide](../reader/AI-GUIDE.md).
 - [Feed catalog](../data/README.md): ten publisher JSON files, 1734 stored entries
@@ -63,4 +66,5 @@ Markdown feed catalog that was removed earlier; the current catalog is
 
 API guides remain beside their tools in `scripts/`; reader/configuration guides
 remain in `reader/` and `data/`. Root setup/deployment instructions remain in
-`README.md` and `deployment.md`. This consolidation covers the former four folders.
+`README.md` and `deployment.md`; detailed usage/configuration lives in root
+`REFERENCE.md`. This consolidation covers the former four folders.

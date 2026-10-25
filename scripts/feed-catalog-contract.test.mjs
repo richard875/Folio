@@ -70,7 +70,7 @@ test("feed README inventories every added WSJ section and documents the new cata
     const name = new URL(url).pathname.split("/").at(-1);
     assert.ok(readme.includes(`| ${section} | \`${name}\` |`), section);
   }
-  for (const path of ["README.md", "data/README.md", "scripts/fetch-links.md", "docs/prompts/daily-news-brief.md", "docs/skills/universal-article-reader/SKILL.md"]) {
+  for (const path of ["REFERENCE.md", "data/README.md", "scripts/fetch-links.md", "docs/prompts/daily-news-brief.md", "docs/skills/universal-article-reader/SKILL.md"]) {
     const text = await readFile(new URL(path, root), "utf8");
     assert.ok(text.includes(String(catalog.length)), `${path}: catalog total`);
     assert.ok(text.includes("36"), `${path}: WSJ count`);

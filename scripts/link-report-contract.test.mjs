@@ -6,7 +6,7 @@ import { feedInventory, mainFeeds, publisherCatalogs } from "../src/lib/rss/sour
 
 const root = new URL("../", import.meta.url);
 const guides = [
-  "README.md", "AGENTS.md", "CLAUDE.md", "deployment.md", ".claude/README.md",
+  "README.md", "REFERENCE.md", "AGENTS.md", "CLAUDE.md", "deployment.md", ".claude/README.md",
   "data/README.md", "docs/README.md", "reader/README.md", "reader/AI-GUIDE.md",
   "scripts/fetch-links.md", "scripts/feed-selection.md", "scripts/collect-articles.md",
   "scripts/save-articles.md", "scripts/agent-reader.md", "scripts/swagger.md",
@@ -44,7 +44,7 @@ test("current documentation distinguishes publisher inventories from ten active 
       assert.equal(Number(match[1]), feedInventory.length - mainFeeds.length, `${path}: reference-only count`);
     }
   }
-  for (const path of ["README.md", "data/README.md", "scripts/fetch-links.md", "scripts/collect-articles.md",
+  for (const path of ["README.md", "REFERENCE.md", "data/README.md", "scripts/fetch-links.md", "scripts/collect-articles.md",
     "scripts/swagger.md", "deployment.md", "docs/prompts/daily-news-brief.md", "docs/skills/universal-article-reader/SKILL.md"]) {
     const text = (await readGuide(path)).replace(/[*`]/g, "").replace(/\s+/g, " ");
     assert.match(text, /ten (?:publisher )?Main feeds?/i, path);
@@ -138,7 +138,7 @@ test("current guides do not reinstate obsolete Markdown link-report contracts", 
 });
 
 test("summary policy is documented consistently for all three publisher exceptions", async () => {
-  for (const path of ["README.md", "scripts/fetch-links.md", "scripts/feed-selection.md", "docs/skills/universal-article-reader/SKILL.md"]) {
+  for (const path of ["REFERENCE.md", "scripts/fetch-links.md", "scripts/feed-selection.md", "docs/skills/universal-article-reader/SKILL.md"]) {
     const text = await readGuide(path);
     for (const fact of ["Bloomberg", "Business Insider", "Reuters", "news:title", "description", "1,000"]) {
       assert.ok(text.includes(fact), `${path}: missing ${fact}`);
