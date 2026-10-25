@@ -110,19 +110,26 @@ Fixed operating choices:
   articles saved/read, and not a fixed daily total. Two runs can repeat candidates.
   Accept a smaller report and disclose it; a lower count alone does not prove
   misconfiguration.
-- Shortlist **10–15 distinct article URLs (maximum 15)**, fewer if coverage is weak;
-  save one batch. Select enough independent/complementary reporting to brief
-  **5–7 stories**, not all candidates. Never invent coverage to meet either target.
+- Save **every distinct eligible candidate URL, up to 100 articles in one batch**.
+  The save target is the full eligible set, not a small editorial shortlist:
+  **93 distinct eligible URLs means submit all 93 for saving**. Extraction failures
+  may reduce the successful count; report them without claiming guaranteed saves.
+  Apply the priorities below to save order and briefing emphasis, not to discard
+  lower-ranked eligible articles. After reading, choose **5–7 stories** for the
+  concise briefing; that story count does not limit articles saved or read.
 - Keep the briefing concise, roughly three minutes' reading time. Analyze in
   Claude, not inside Folio. Return the result in this task's Claude history, along
   with a credential-free selection/verification ledger or cloud output attachment.
-- Allow **at most 30 minutes elapsed execution per invocation**, or the platform's
-  shorter limit. Within that budget, poll a started save job at most **60 times**,
+- Allow **at most 90 minutes elapsed execution per invocation**, or the platform's
+  shorter limit. Within that budget, poll a started save job at most **240 times**,
   no faster than **15 seconds** apart, respecting longer `Retry-After` values.
-  Reserve time for reading and synthesis; the bounds are caps, not a promise of
-  platform runtime. These scheduled-run bounds replace the portable skill's
-  manual-chat polling defaults, without changing its authentication or safety
-  rules. Report pending/incomplete work when a bound is reached.
+  Also stop polling at **60 minutes elapsed since batch submission**: Folio's
+  existing server job deadline is one hour, and a large serial batch can reach it.
+  Reserve time for reading and synthesis; these caps do not extend server deadlines
+  or grant platform runtime. These scheduled saving and polling rules replace the
+  portable skill's smaller manual-chat selection and polling defaults, without
+  changing its authentication or safety rules. Do not shrink the save set merely
+  to fit a short briefing. Report pending/incomplete work when a bound is reached.
 - If available through authorized cloud task history, use the previous successful
   briefing only to identify repeat stories. Prefer substantive developments since
   that briefing, particularly at 14:00. Re-read this run's selected saved text for
@@ -238,16 +245,22 @@ all operational steps needed for a run are included here.
 
 ### 2. Select articles before saving
 
-Apply the fixed editorial priorities above, then public significance, impact,
-timeliness, and independent corroboration. Group duplicate coverage by story, deduplicate identical URLs, and
-retain useful complementary sources. Do not equate repeated syndicated coverage
-with independent confirmation or fabricate missing summaries.
+Build the save set from **all distinct eligible URLs in this run's link report**,
+capped at 100. Deduplicate identical URLs, but keep different publishers' articles
+about the same event for later comparison. Apply the fixed editorial priorities,
+then public significance, impact, timeliness and independent corroboration to
+order the batch, so higher-priority reporting is attempted first if the server
+deadline is reached. Do not equate syndicated coverage with independent confirmation
+or fabricate missing summaries.
 
-Keep a selection ledger with each URL, publisher, section, priority category and
-selection reason. Select 10–15 distinct article URLs, capped at 15, with fewer
-when justified by the available candidates; do not
-save everything automatically. If nothing is usable, report the limitation and
-stop rather than reading an unrelated older collection.
+Keep a candidate ledger with each URL, publisher, section, priority category and
+save/exclusion reason. Exclude only duplicate URLs, clearly invalid/non-article
+links, or candidates beyond the 100-URL API cap; record each exclusion explicitly.
+Do not exclude an eligible article because it lacks a summary, has a lower
+priority, overlaps another article's story, appeared in the previous briefing,
+or will not fit the final write-up. With 93 distinct eligible URLs, submit all 93;
+with fewer, submit the actual eligible count. If nothing is usable, report the
+limitation and stop rather than reading an unrelated older collection.
 
 ### 3. Save the selection asynchronously
 
@@ -267,10 +280,12 @@ Example body (replace with selected candidates):
 }
 ```
 
-The API accepts 1–100 entries, but this scheduled workflow sends only its single
-shortlist of at most 15. Do not start additional batches to reach 100 articles or
-backfill failed extractions automatically. If no usable candidates exist, stop
-with a coverage report instead of sending an empty batch.
+The API accepts 1–100 entries. This scheduled workflow sends **one batch containing
+every distinct eligible candidate, up to 100 URLs**. Verify the submitted count
+equals the eligible count capped at 100; explain any discrepancy in the ledger.
+Do not start additional batches or backfill failed extractions automatically.
+If no usable candidates exist, stop with a coverage report instead of sending
+an empty batch.
 Use the link report's publisher/section labels; do not supply
 per-item `callId` values for this workflow. Article files remain Markdown by
 default; JSON link reports do not require JSON article storage.
@@ -283,9 +298,12 @@ GET <FOLIO_ORIGIN>/api/save-batch/status?callId=<CALL_ID>&hash=<ACCESS_HASH>
 ```
 
 For this scheduled run, poll every 15 seconds while `status` is `in progress`,
-at most 60 polls and within the 30-minute total run cap. Increase the interval to
-honor `Retry-After` or service load; do not extend the total cap. Report a pending
-job with its call ID if still running. For a separately requested manual chat run,
+at most 240 polls, stopping at 60 minutes since submission or the 90-minute total
+run cap (or the platform's shorter limit), whichever comes first. Increase the
+interval to honor `Retry-After` or service load; do not extend these caps. A server
+deadline or platform limit can leave some URLs unattempted or the job pending:
+report actual saved/failed/unattempted counts, plus the call ID and last known
+status, rather than promising all 100 saves. For a separately requested manual chat run,
 stop after at most 24 polls, no faster than five seconds apart. Neither a pending
 job nor an expired polling budget is permission to resubmit. The bundled client performs one poll
 per command and never retries automatically. Terminal statuses are `completed`, `partial`, and `error`, with phase
@@ -408,7 +426,8 @@ Category: [...]
 [Substantive changes, or explicitly say prior cloud history was unavailable.
 Do not repeat unchanged stories just to fill the briefing.]
 
-Coverage: [candidates, selected, saved, failed saves, verified files/expected files,
+Coverage: [candidates, distinct eligible, excluded with reasons, submitted, saved,
+failed saves, unattempted/pending, verified files/expected files,
 partial files, unread/unverified files, failed feeds, and extra folder files].
 Retrieval: [complete/incomplete], folder [folder], snapshot [snapshotId], callId [callId].
 Completed at: [Sydney timestamp].
@@ -423,8 +442,9 @@ your understanding of the news. Never reveal credentials.
 ### Begin this scheduled invocation
 
 Check the cloud runtime prerequisites and remaining execution budget. If ready,
-collect candidate links once, shortlist according to my preferences, save and poll
-one batch, validate its job-bound manifest, read and verify every file, then deliver
+collect candidate links once, include every distinct eligible candidate up to 100
+in priority order, save and poll one batch, validate its job-bound manifest, read
+and verify every file, then deliver
 the briefing and coverage ledger. If blocked or incomplete, leave a clear status
 in this task's cloud result history with any known call ID and the precise gap.
 Do not fabricate a briefing, silently substitute an older collection, retry an
