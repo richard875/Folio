@@ -129,6 +129,38 @@ test("scheduled briefing prompt specifies two Sydney cloud tasks and a self-cont
   assert.doesNotMatch(normalizedRun, /10[–-]15 distinct article|maximum 15|at most 15|capped at 15|at most (?:30|90) minutes|90-minute total|at most 60 polls/);
 });
 
+test("scheduled briefing prompt uploads one correctly named Markdown document to Telegram", async () => {
+  const prompt = await readGuide("docs/prompts/daily-news-brief.md");
+  const [setup, run] = prompt.split("## Part B — Self-contained recurring execution prompt");
+  const delivery = run.split("### 7. Create and send the Markdown file to Telegram")[1]
+    ?.split("### Begin this scheduled invocation")[0];
+  assert.ok(delivery, "Missing self-contained file creation and delivery instructions");
+  const normalized = delivery.replace(/[*`]/g, "").replace(/\s+/g, " ");
+  for (const fact of [
+    "TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID", "multipart/form-data", "text/markdown; charset=utf-8",
+    "Folio Brief <YYYY> <MMM> <DD> <Morning|Afternoon>.md",
+    "Folio Brief 2026 Oct 25 Morning.md", "Folio Brief 2026 Oct 25 Afternoon.md",
+    "Australia/Sydney calendar date", "actual run-start date in Sydney", "English three-letter month",
+    "two-digit day", "intended scheduled slot", "never the completion clock",
+    "result.message_id", "result.chat.id", "result.document.file_name", "result.document.file_size",
+    "delivery uncertain", "delivery failed", "delivery blocked", "do not retry automatically",
+  ]) assert.ok(normalized.includes(fact), `Delivery missing ${fact}`);
+  assert.match(normalized, /POST https:\/\/api\.telegram\.org\/bot<TELEGRAM_BOT_TOKEN>\/sendDocument/);
+  assert.match(normalized, /only one \.md document per run, with no caption/);
+  assert.match(normalized, /Omit caption, parse_mode/);
+  assert.match(normalized, /Do not call sendMessage/);
+  assert.match(normalized, /Upload the finalized file's exact bytes/);
+  assert.match(normalized, /Reject redirects/);
+  assert.match(normalized, /successful delivery receipt.*do not upload it again/);
+  assert.match(normalized, /never fall back to a Telegram text message/);
+  assert.match(normalized, /same file format with an honest status report/);
+  assert.match(normalized, /Keep the briefing's.*run status separate from its delivery status/);
+  assert.match(setup, /Do not send any Telegram test or setup message unless I explicitly request one/);
+  assert.match(run, /Earlier\s+instructions to stop retrieval do not skip this final file\/status handling/);
+  assert.doesNotMatch(prompt, /https:\/\/api\.telegram\.org\/bot\d+:[A-Za-z0-9_-]+/);
+  assert.ok(prompt.includes("https://core.telegram.org/bots/api#senddocument"));
+});
+
 test("current guides do not reinstate obsolete Markdown link-report contracts", async () => {
   for (const path of guides) {
     const text = (await readGuide(path)).replace(/\s+/g, " ");
