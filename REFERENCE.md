@@ -294,6 +294,16 @@ Link reports are saved and returned as JSON only. Each publisher/section group h
 
 ## Development and deployment
 
+`npm install` or `npm ci` installs Husky's local Git hooks through the `prepare`
+script. The `commit-msg` hook uses Commitlint's Conventional Commits rules: write
+messages such as `fix(reader): preserve article paragraphs` or
+`docs: clarify setup`. Scopes are optional. Allowed types are `build`, `chore`,
+`ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, and `test`.
+Headers and body lines are limited to 100 characters, with URL exceptions for
+body lines. Hook setup is skipped when `NODE_ENV=production`, `CI=true`, or
+`HUSKY=0`, including Render's production build. To check an existing message file,
+run `npm run commitlint -- --edit <message-file>`.
+
 ```sh
 npm run lint
 npm test

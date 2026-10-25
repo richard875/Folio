@@ -148,6 +148,7 @@ function authPopupPlugin(): Plugin {
 export default defineConfig(({ command, isPreview, mode }) => {
   const serverEnvKeys = [
     "ACCESS_HASH",
+    "GROK_PREVIEW_CLIENT_SECRET",
     "FETCH_RETRY_LIMIT",
     "RSS_LINKS_PER_SECTION",
     "SAVE_CONCURRENCY",
